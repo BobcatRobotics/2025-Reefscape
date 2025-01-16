@@ -19,11 +19,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.lib.util.swerve.ModuleConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Swerve.SwerveModuleIOInputsAutoLogged;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 public class SwerveModule {
   private final SwerveModuleIO io;
@@ -37,6 +37,7 @@ public class SwerveModule {
   public SwerveModule(
       SwerveModuleIO io,
       int index) {
+
     
     this.io = io;
     this.index = index;
@@ -70,6 +71,8 @@ public class SwerveModule {
     driveDisconnectedAlert.set(!inputs.driveConnected);
     turnDisconnectedAlert.set(!inputs.turnConnected);
     turnEncoderDisconnectedAlert.set(!inputs.canCoderConnected);
+    
+    
   }
 
   /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */

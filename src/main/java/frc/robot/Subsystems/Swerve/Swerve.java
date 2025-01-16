@@ -13,6 +13,9 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,11 +36,12 @@ import frc.robot.Constants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Subsystems.Swerve.Assists.AimAssist;
 import frc.robot.Subsystems.Swerve.Gyro.GyroIO;
+import frc.robot.Subsystems.Swerve.Gyro.GyroIOInputsAutoLogged;
 import frc.robot.Subsystems.Swerve.PoseEstimation.AdvancedSwervePoseEstimator;
 import frc.robot.Subsystems.Swerve.SwerveModule.SwerveModule;
 import frc.robot.Subsystems.Swerve.SwerveModule.SwerveModuleIO;
-import frc.robot.Swerve.GyroIOInputsAutoLogged;
 
 public class Swerve extends SubsystemBase {
 
@@ -50,13 +54,17 @@ public class Swerve extends SubsystemBase {
     private final Field2d field2d = new Field2d();
 
     private final PIDController rotationPID;
-    private final PIDController autoAlignPID;
     private double lastMovingYaw = 0.0;
     private boolean rotating = false;
+    private SwerveSetpoint previousSetpoint;
+
 
     static final Lock odometryLock = new ReentrantLock();
 
     private Rotation2d lastYaw = new Rotation2d();
+
+    private final SwerveSetpointGenerator setpointGenerator;
+    private final RobotConfig config;
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -70,24 +78,35 @@ public class Swerve extends SubsystemBase {
 
         PhoenixOdometryThread.getInstance().start();
 
+
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI,
                 SwerveConstants.teleopRotationKD);
         rotationPID.enableContinuousInput(0, 2 * Math.PI);
-        autoAlignPID = new PIDController(SwerveConstants.autoAlignRotationKP, SwerveConstants.autoAlignRotationKI,
-                SwerveConstants.autoAlignRotationKD);
-        autoAlignPID.enableContinuousInput(0, 2 * Math.PI);
 
         // Using last year's default deviations, need to tune
 
         poseEstimator = new 
         AdvancedSwervePoseEstimator(
             SwerveConstants.swerveKinematics,
-            getYaw(),
+            new Rotation2d(),
             getModulePositions(),
-            getPose(),
+            new Pose2d(),
             SwerveConstants.autostateStdDevs,
             VisionConstants.autoStdDevs 
         );
+
+        config = new RobotConfig(
+            RobotConstants.mass,
+            RobotConstants.MOI,
+            new ModuleConfig(
+                    SwerveConstants.wheelCircumference,
+                    SwerveConstants.maxModuleSpeed,
+                    ODOMETRY_FREQUENCY,
+                    DCMotor.getKrakenX60Foc(1),
+                    SwerveConstants.driveSupplyCurrentLimit,
+                    1),
+            SwerveConstants.moduleTranslations);
+
 
         AutoBuilder.configure(
                 this::getPose,
@@ -99,19 +118,16 @@ public class Swerve extends SubsystemBase {
                                 SwerveConstants.translationKD),
                         new PIDConstants(SwerveConstants.rotationKP, SwerveConstants.rotationKI,
                                 SwerveConstants.rotationKD)),
-                new RobotConfig(
-                        RobotConstants.mass,
-                        RobotConstants.MOI,
-                        new ModuleConfig(
-                                SwerveConstants.wheelCircumference,
-                                SwerveConstants.maxModuleSpeed,
-                                ODOMETRY_FREQUENCY,
-                                DCMotor.getKrakenX60Foc(1),
-                                SwerveConstants.driveSupplyCurrentLimit,
-                                1),
-                        SwerveConstants.moduleTranslations),
+                config,
                 () -> false,
                 this);
+
+        setpointGenerator = new SwerveSetpointGenerator(config, SwerveConstants.maxModuleAngularVelocity);
+
+        ChassisSpeeds currentSpeeds = getChassisSpeeds(); // Method to get current robot-relative chassis speeds
+        SwerveModuleState[] currentStates = getModuleStates(); // Method to get the current swerve module states
+        previousSetpoint = new SwerveSetpoint(currentSpeeds, currentStates, DriveFeedforwards.zeros(config.numModules));
+
     }
 
     public void setLastMovingYaw(double value) {
@@ -163,6 +179,7 @@ public class Swerve extends SubsystemBase {
                 mod.stop();
             }
         }
+
     }
 
     /**
@@ -191,7 +208,7 @@ public class Swerve extends SubsystemBase {
      * @param angleToSpeaker in radians
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative,
-            boolean autoAlign, Rotation2d autoAlignAngle) {
+            AimAssist assist) {
 
         ChassisSpeeds desiredSpeeds = fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
@@ -203,13 +220,14 @@ public class Swerve extends SubsystemBase {
                         translation.getY(),
                         rotation);
 
-        if (autoAlign) {
-            desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(RotationUtil.wrap(getYaw()).getRadians(),
-                    RotationUtil.wrap(autoAlignAngle).getRadians());
-            Logger.recordOutput("Swerve/AutoAlignPID/setpoint", RotationUtil.wrap(autoAlignAngle));
-            Logger.recordOutput("Swerve/AutoAlignPID/error", autoAlignPID.getError());
+        //apply rotational aim assist
+        if (assist.rotActive()) {
+            desiredSpeeds.omegaRadiansPerSecond = assist.outputTheta(getYaw());
             lastMovingYaw = getYaw().getRadians();
-        } else {
+        } 
+        //anti drift
+        else {
+            //if we're not receiving rotational input, actively maintain current heading (lastmovingyaw)
             if (rotation == 0) {
                 if (rotating) {
                     rotating = false;
@@ -222,15 +240,27 @@ public class Swerve extends SubsystemBase {
             }
         }
 
-        desiredSpeeds = ChassisSpeeds.discretize(desiredSpeeds, Constants.loopPeriodSecs);
+        //apply translational aim assist
+        if (assist.transActive()){
+            desiredSpeeds.vxMetersPerSecond += assist.outputX(getPose().getTranslation());
+            desiredSpeeds.vyMetersPerSecond += assist.outputY(getPose().getTranslation());
+        }
+
+        previousSetpoint = setpointGenerator.generateSetpoint(
+            previousSetpoint, // The previous setpoint
+            desiredSpeeds, // The desired target speeds
+            0.02 // The loop time of the robot code, in seconds
+        );
+
         Logger.recordOutput("Swerve/desiredChassisSpeeds", desiredSpeeds);
-        SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
-        // SwerveModuleState[] swerveModuleStates = currentSetpoint.moduleStates();
+        SwerveModuleState[] swerveModuleStates = previousSetpoint.moduleStates();
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxModuleSpeed);
+        //TODO do we need this?
 
         for (SwerveModule mod : modules) {
             mod.runSetpoint(swerveModuleStates[mod.index]);
         }
+        
         Logger.recordOutput("Swerve/desiredModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/ActualModuleStates", getModuleStates());
     }
@@ -331,14 +361,6 @@ public class Swerve extends SubsystemBase {
         lastYaw = Rotation2d.fromDegrees(0);
     }
 
-    /**
-     * Sets the current gyro yaw to 180 degrees
-     */
-    public void reverseZeroGyro() {
-        gyroIO.setYaw(180);
-        lastMovingYaw = 180;
-        lastYaw = Rotation2d.fromDegrees(180);
-    }
 
     /**
      * Sets the modules to an X shape to make the robot harder to push
@@ -364,8 +386,8 @@ public class Swerve extends SubsystemBase {
 
         return AutoBuilder.pathfindToPose(pose,
                 new PathConstraints(Constants.SwerveConstants.maxSpeed, Constants.SwerveConstants.maxAccel,
-                        Constants.SwerveConstants.maxAngularVelocity,
-                        Constants.SwerveConstants.maxAngularAcceleration));
+                        Constants.SwerveConstants.maxModuleAngularVelocity,
+                        Constants.SwerveConstants.maxModuleAngularAcceleration));
     }
 
     // public boolean aligned() {

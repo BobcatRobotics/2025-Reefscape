@@ -6,19 +6,22 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import edu.wpi.first.wpilibj.Joystick;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.AidenGamepads.EightBitDo;
 import frc.lib.util.AidenGamepads.Ruffy;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Subsystems.Swerve.Assists.AimAssist;
 import frc.robot.Subsystems.Swerve.Gyro.GyroIO;
 import frc.robot.Subsystems.Swerve.Gyro.GyroIOPigeon2;
 import frc.robot.Subsystems.Swerve.SwerveModule.SwerveModuleIO;
+import frc.robot.Subsystems.Swerve.SwerveModule.SwerveModuleIOSim;
 import frc.robot.Subsystems.Swerve.SwerveModule.SwerveModuleIOTalonFX;
 
 public class RobotContainer {
@@ -47,7 +50,14 @@ public class RobotContainer {
                                                 new SwerveModuleIOTalonFX(SwerveConstants.Module3Constants.constants)
                                                 );
                                 break;
-
+                        case SIM:
+                                m_swerve = new Swerve(
+                                        new GyroIOPigeon2(),
+                                        new SwerveModuleIOSim(SwerveConstants.Module0Constants.constants),
+                                        new SwerveModuleIOSim(SwerveConstants.Module0Constants.constants),
+                                        new SwerveModuleIOSim(SwerveConstants.Module0Constants.constants),
+                                        new SwerveModuleIOSim(SwerveConstants.Module0Constants.constants));
+                                break;
                         // Replayed robot, disable IO implementations
                         default:
                                 m_swerve = new Swerve(new GyroIO() {
@@ -63,11 +73,6 @@ public class RobotContainer {
                                 break;
 
                 }
-
-                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry 
-                // Tuning"));
-                // autoChooser.addOption("AdjustedKidsMeal", new
-                // PathPlannerAuto("AdjustedKidsMeal"));
 
                 configureBindings();
         }
@@ -88,7 +93,9 @@ public class RobotContainer {
                  * Please give descriptive names
                  */
                 autoChooser.addDefaultOption("Do Nothing", Commands.none());
-                }
+                autoChooser.addDefaultOption("Test", new PathPlannerAuto("test"));        
+        }
+                
 
         /**
          * IMPORTANT NOTE:
@@ -101,6 +108,18 @@ public class RobotContainer {
          * () -> buttonOrAxisValue
          */
         public void configureBindings() {
+
+                AimAssist assist = new AimAssist(
+                        () -> new Translation2d(),
+                        () -> new Rotation2d(),
+                        gp.a,
+                        gp.b,
+                        SwerveConstants.teleopTranslationKP,
+                        SwerveConstants.teleopTranslationKI,
+                        SwerveConstants.teleopTranslationKD, 
+                        SwerveConstants.autoAlignRotationKP,
+                        SwerveConstants.autoAlignRotationKI,
+                        SwerveConstants.autoAlignRotationKD);
                
                 /* Drive with joysticks */
                 m_swerve.setDefaultCommand(
@@ -111,7 +130,8 @@ public class RobotContainer {
                                         gp.rightXAxis,
                                         () -> false,
                                         () -> 0,
-                                        () -> 0));
+                                        () -> 0,
+                                        assist));
                 }
 
         public Command getAutonomousCommand() {
