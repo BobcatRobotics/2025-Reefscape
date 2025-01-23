@@ -50,6 +50,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.VisionObservation;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -364,5 +365,10 @@ public class Drive extends SubsystemBase {
       new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
       new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
     };
+  }
+
+  public void updatePose(VisionObservation visionObservation) {
+    poseEstimator.addVisionMeasurement(
+        visionObservation.getPose(), visionObservation.getTimestamp());
   }
 }

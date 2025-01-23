@@ -30,7 +30,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.limelight.Vision;
+import frc.robot.subsystems.limelight.VisionIO;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,6 +44,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Vision limelight;
 
   // Controller
   private final EightBitDo controller = new EightBitDo(0);
@@ -61,6 +64,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+                limelight=new Vision(drive, VisionIOLimelight(Constants.limelight1));
+
         break;
 
       case SIM:
