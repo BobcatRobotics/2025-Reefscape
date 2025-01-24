@@ -32,6 +32,8 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.limelight.Vision;
 import frc.robot.subsystems.limelight.VisionIO;
+import frc.robot.subsystems.limelight.VisionIOLimelight;
+import frc.robot.subsystems.limelight.AprilTagVisionConstants.limelightConstants;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -64,7 +66,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-                limelight=new Vision(drive, VisionIOLimelight(Constants.limelight1));
+                limelight=new Vision(drive, new VisionIOLimelight(Constants.limelight.constants));
 
         break;
 
@@ -77,6 +79,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+                limelight=new Vision(drive, new VisionIO(){});
+
         break;
 
       default:
@@ -88,6 +92,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+                limelight=new Vision(drive, new VisionIO(){});
         break;
     }
 

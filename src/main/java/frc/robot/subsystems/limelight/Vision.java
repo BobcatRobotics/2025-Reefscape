@@ -81,11 +81,13 @@ public class Vision extends SubsystemBase {
       thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
     }
 
+    if(getPoseValidMG2(swerve.getRotation())){
     swerve.updatePose(
         new VisionObservation(
             getBotPoseMG2(),
             getPoseTimestampMG2(),
             VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+        }
   }
 
   public Pose2d getBotPoseMG2() {

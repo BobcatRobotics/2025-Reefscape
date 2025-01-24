@@ -26,9 +26,7 @@ public class limelightConstants {
    * @param detectorPipelineIndex
    * @param apriltagPiplineIndex
    * @param horpixels
-   * @param filterTimeConstant
    * @param visionMeasurementStdDevs
-   * @param movingAverageNumTaps
    */
   public limelightConstants(
       String name,

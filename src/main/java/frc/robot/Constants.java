@@ -45,9 +45,9 @@ public final class Constants {
   }
 
 
-          public static final class intake {
+          public static final class limelight {
 
-            public static final String name = "limelight-intake";
+            public static final String name = "limelight";
             public static final VisionObservation.LLTYPE limelightType = LLTYPE.LL3G;
             public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
@@ -61,9 +61,7 @@ public final class Constants {
                     Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
-            public static final limelightConstants constants = new limelightConstants(name, limelightType, verticalFOV, horizontalFOV,
-                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
-                    visionMeasurementStdDevs, movingAverageNumTaps);
+            public static final limelightConstants constants = new limelightConstants(name, limelightType, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, visionMeasurementStdDevs);
 
             public static final String ip = "10.1.77.11";
 
