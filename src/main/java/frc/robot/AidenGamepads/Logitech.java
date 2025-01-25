@@ -73,9 +73,9 @@ public class Logitech {
   private void configureAxes() {
     // y is up/down
     // x is left/right
-    leftXAxis = () -> -gp.getRawAxis(0);
+    leftXAxis = () -> gp.getRawAxis(0);
     leftYAxis = () -> -gp.getRawAxis(1);
-    rightXAxis = () -> -gp.getRawAxis(2);
+    rightXAxis = () -> gp.getRawAxis(2);
     rightYAxis = () -> -gp.getRawAxis(3);
   }
 }

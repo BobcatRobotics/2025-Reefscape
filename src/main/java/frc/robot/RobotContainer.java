@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.EightBitDo;
+import frc.robot.AidenGamepads.Logitech;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -34,7 +34,6 @@ import frc.robot.subsystems.limelight.Vision;
 import frc.robot.subsystems.limelight.VisionIO;
 import frc.robot.subsystems.limelight.VisionIOLimelight;
 import frc.robot.subsystems.limelight.AprilTagVisionConstants.limelightConstants;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -49,7 +48,7 @@ public class RobotContainer {
   private final Vision limelight;
 
   // Controller
-  private final EightBitDo controller = new EightBitDo(0);
+  private final Logitech controller = new Logitech(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -100,7 +99,7 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("Test", new PathPlannerAuto("Test Auto"));
+    autoChooser.addOption("Test", new PathPlannerAuto("Example Auto"));
 
     // Set up SysId routines
     // autoChooser.addOption(
