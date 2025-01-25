@@ -42,13 +42,13 @@ public final class Constants {
     REPLAY
   }
 
-  public static final class Limelight3GConstants{
+  public static final class Limelight3GConstants {
     public static final double verticalFOV = 49.7; // degrees obviously
     public static final double horizontalFOV = 63.3;
     public static final int horPixles = 1280;
   }
 
-  public static final class Limelight4Constants{
+  public static final class Limelight4Constants {
     public static final double verticalFOV = 56.2; // degrees obviously
     public static final double horizontalFOV = 82;
     public static final int horPixles = 1280;

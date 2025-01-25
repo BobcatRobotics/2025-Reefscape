@@ -121,8 +121,6 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-
-
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -138,8 +136,7 @@ public class RobotContainer {
             controller.leftYAxis,
             () -> 0.5 * controller.rightXAxis.getAsDouble(),
             controller.a,
-            () -> new Rotation2d())); //TODO, the rotation2d here is the aim assist rotation 
-
+            () -> new Rotation2d())); // TODO, the rotation2d here is the aim assist rotation
 
     // Switch to X pattern when X button is pressed
     controller.x.onTrue(Commands.runOnce(drive::stopWithX, drive));

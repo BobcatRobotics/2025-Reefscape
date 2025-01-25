@@ -35,7 +35,8 @@ public class VisionIOLimelight implements VisionIO {
     inputs.tx = LimelightHelpers.getTX(name);
     inputs.ty = LimelightHelpers.getTY(name);
     inputs.fiducialID = LimelightHelpers.getFiducialID(name);
-    inputs.tClass = Double.parseDouble(LimelightHelpers.getNeuralClassID(name));
+    String llClass = LimelightHelpers.getNeuralClassID(name);
+    inputs.tClass = llClass.isEmpty() ? 0 : Double.parseDouble(llClass);
     inputs.name = name;
     inputs.botPoseMG2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).pose;
     inputs.tagCount = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).tagCount;

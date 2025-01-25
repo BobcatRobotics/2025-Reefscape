@@ -133,7 +133,6 @@ public class Robot extends LoggedRobot {
     robotContainer.limelight.resetGyroLL4();
     autonomousCommand = robotContainer.getAutonomousCommand();
 
-
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
       autonomousCommand.schedule();

@@ -64,7 +64,8 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Limelight" + inputs.name, inputs);
-    LimelightHelpers.SetFiducialIDFiltersOverride(inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
+    LimelightHelpers.SetFiducialIDFiltersOverride(
+        inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
     apriltagPipeline = inputs.pipelineID == 0;
 
@@ -93,19 +94,19 @@ public class Vision extends SubsystemBase {
     return inputs.botPoseMG2;
   }
 
-
-  public void resetGyroLL4(){
-    LimelightHelpers.SetIMUMode(inputs.name,1);
+  public void resetGyroLL4() {
+    LimelightHelpers.SetIMUMode(inputs.name, 1);
     io.setRobotOrientationMG2(swerve.getRotation());
     LimelightHelpers.SetIMUMode(inputs.name, 2);
-}
+  }
 
   /**
    * TODO fix mount angle, this assumes the limelight is mounted at the back of the robot
+   *
    * @param yaw current yaw of the robot
    * @return the angle of the focused apriltag relative to the robot
    */
-  public Rotation2d txToYaw(Rotation2d yaw){
+  public Rotation2d txToYaw(Rotation2d yaw) {
     return yaw.plus(Rotation2d.fromDegrees(180)).minus(getTX());
   }
 
