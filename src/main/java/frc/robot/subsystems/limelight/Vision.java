@@ -92,6 +92,15 @@ public class Vision extends SubsystemBase {
     return inputs.botPoseMG2;
   }
 
+  /**
+   * TODO fix mount angle, this assumes the limelight is mounted at the back of the robot
+   * @param yaw current yaw of the robot
+   * @return the angle of the focused apriltag relative to the robot
+   */
+  public Rotation2d txToYaw(Rotation2d yaw){
+    return yaw.plus(Rotation2d.fromDegrees(180)).minus(getTX());
+  }
+
   /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
   public void SetRobotOrientation(Rotation2d gyro) {
     io.setRobotOrientationMG2(gyro);
