@@ -13,10 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.VisionObservation;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 import frc.robot.util.VisionObservation.LLTYPE;
-
+import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
@@ -81,13 +79,13 @@ public class Vision extends SubsystemBase {
       thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
     }
 
-    if(getPoseValidMG2(swerve.getRotation())){
-    swerve.updatePose(
-        new VisionObservation(
-            getBotPoseMG2(),
-            getPoseTimestampMG2(),
-            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
-        }
+    if (getPoseValidMG2(swerve.getRotation())) {
+      swerve.updatePose(
+          new VisionObservation(
+              getBotPoseMG2(),
+              getPoseTimestampMG2(),
+              VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+    }
   }
 
   public Pose2d getBotPoseMG2() {

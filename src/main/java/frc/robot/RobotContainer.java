@@ -33,7 +33,6 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.limelight.Vision;
 import frc.robot.subsystems.limelight.VisionIO;
 import frc.robot.subsystems.limelight.VisionIOLimelight;
-import frc.robot.subsystems.limelight.AprilTagVisionConstants.limelightConstants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -65,7 +64,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-                limelight=new Vision(drive, new VisionIOLimelight(Constants.limelight.constants));
+        limelight = new Vision(drive, new VisionIOLimelight(Constants.limelight.constants));
 
         break;
 
@@ -78,7 +77,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-                limelight=new Vision(drive, new VisionIO(){});
+        limelight = new Vision(drive, new VisionIO() {});
 
         break;
 
@@ -91,7 +90,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-                limelight=new Vision(drive, new VisionIO(){});
+        limelight = new Vision(drive, new VisionIO() {});
         break;
     }
 
@@ -134,12 +133,10 @@ public class RobotContainer {
             drive,
             controller.leftXAxis,
             controller.leftYAxis,
-            () -> 0.5 * controller.rightXAxis.getAsDouble()));
+            () -> 0.5 * controller.rightXAxis.getAsDouble(),
+            controller.a,
+            () -> new Rotation2d())); //TODO, the rotation2d here is the aim assist rotation 
 
-    // Lock to 0° when A button is held
-    controller.a.whileTrue(
-        DriveCommands.joystickDriveAtAngle(
-            drive, controller.leftXAxis, controller.leftYAxis, () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
     controller.x.onTrue(Commands.runOnce(drive::stopWithX, drive));

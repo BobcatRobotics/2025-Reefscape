@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.util.BobcatUtil;
 import frc.robot.util.VisionObservation.LLTYPE;
 
-
 public class VisionIOLimelight implements VisionIO {
   /** Creates a new VisionIOLimelight. */
   LEDMode currentLedMode = LEDMode.FORCEOFF;

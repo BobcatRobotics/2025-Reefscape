@@ -38,5 +38,4 @@ public class VisionObservation {
     LL3G,
     LL4
   }
-
 }
