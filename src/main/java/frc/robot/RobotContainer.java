@@ -44,7 +44,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Vision limelight;
+  public final Vision limelight;
 
   // Controller
   private final Logitech controller = new Logitech(0);

@@ -64,6 +64,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Limelight" + inputs.name, inputs);
+    LimelightHelpers.SetFiducialIDFiltersOverride(inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
     apriltagPipeline = inputs.pipelineID == 0;
 
@@ -90,6 +91,13 @@ public class Vision extends SubsystemBase {
 
   public Pose2d getBotPoseMG2() {
     return inputs.botPoseMG2;
+  }
+
+
+  public void resetGyroLL4(){
+    LimelightHelpers.SetIMUMode(inputs.name,1);
+    io.setRobotOrientationMG2(swerve.getRotation());
+    LimelightHelpers.SetIMUMode(inputs.name, 2);
   }
 
   /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
