@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AidenGamepads.Logitech;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -64,7 +65,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        limelight = new Vision(drive, new VisionIOLimelight(Constants.limelight.constants));
+        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
 
         break;
 
@@ -119,6 +120,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
   }
+
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
