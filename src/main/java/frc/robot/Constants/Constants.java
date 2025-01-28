@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot;
+package frc.robot.Constants;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;

@@ -6,7 +6,8 @@ package frc.robot.subsystems.limelight;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.util.BobcatUtil;
+import frc.robot.util.DSUtil;
+import frc.robot.util.RotationUtil;
 import frc.robot.util.VisionObservation.LLTYPE;
 
 public class VisionIOLimelight implements VisionIO {
@@ -88,8 +89,8 @@ public class VisionIOLimelight implements VisionIO {
 
   @Override
   public void setRobotOrientationMG2(Rotation2d gyro) {
-    gyro = BobcatUtil.isBlue() ? gyro : gyro.rotateBy(Rotation2d.fromDegrees(180));
-    double gyroval = BobcatUtil.wrapRot2d(gyro).getDegrees();
+    gyro = DSUtil.isBlue() ? gyro : gyro.rotateBy(Rotation2d.fromDegrees(180));
+    double gyroval = RotationUtil.wrapRot2d(gyro).getDegrees();
 
     LimelightHelpers.SetRobotOrientation(name, gyroval, 0, 0, 0, 0, 0);
   }

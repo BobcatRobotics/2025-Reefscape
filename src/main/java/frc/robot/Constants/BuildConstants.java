@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.Constants;
 
 /** Automatically generated file containing build version information. */
 public final class BuildConstants {
