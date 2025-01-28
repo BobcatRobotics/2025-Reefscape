@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
-public class Logitech {
-  private final CommandJoystick gp;
+public class LogitechGamepad extends CommandJoystick {
   public Trigger a;
   public Trigger b;
   public Trigger x;
@@ -42,40 +41,40 @@ public class Logitech {
    *
    * <p>Axis indices start at 0, button indices start at one -_-
    */
-  public Logitech(int port) {
-    gp = new CommandJoystick(port);
+  public LogitechGamepad(int port) {
+    super(port);
     configureTriggers();
     configureAxes();
   }
 
   private void configureTriggers() {
-    a = gp.button(2);
-    b = gp.button(3);
-    x = gp.button(1);
-    y = gp.button(4);
-    lb = gp.button(5);
-    rb = gp.button(6);
-    back = gp.button(9);
-    start = gp.button(10);
-    leftStick = gp.button(11);
-    rightStick = gp.button(12);
-    povUp = gp.povUp();
-    povDown = gp.povDown();
-    povLeft = gp.povLeft();
-    povRight = gp.povRight();
-    povCenter = gp.povCenter();
-    povDownLeft = gp.povDownLeft();
-    povDownRight = gp.povDownRight();
-    povUpLeft = gp.povUpLeft();
-    povUpRight = gp.povUpRight();
+    a = super.button(2);
+    b = super.button(3);
+    x = super.button(1);
+    y = super.button(4);
+    lb = super.button(5);
+    rb = super.button(6);
+    back = super.button(9);
+    start = super.button(10);
+    leftStick = super.button(11);
+    rightStick = super.button(12);
+    povUp = super.povUp();
+    povDown = super.povDown();
+    povLeft = super.povLeft();
+    povRight = super.povRight();
+    povCenter = super.povCenter();
+    povDownLeft = super.povDownLeft();
+    povDownRight = super.povDownRight();
+    povUpLeft = super.povUpLeft();
+    povUpRight = super.povUpRight();
   }
 
   private void configureAxes() {
     // y is up/down
     // x is left/right
-    leftXAxis = () -> gp.getRawAxis(0);
-    leftYAxis = () -> -gp.getRawAxis(1);
-    rightXAxis = () -> gp.getRawAxis(2);
-    rightYAxis = () -> -gp.getRawAxis(3);
+    leftXAxis = () -> super.getRawAxis(0);
+    leftYAxis = () -> -super.getRawAxis(1);
+    rightXAxis = () -> super.getRawAxis(2);
+    rightYAxis = () -> -super.getRawAxis(3);
   }
 }

@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.Logitech;
+import frc.robot.AidenGamepads.EightBitDo;
+import frc.robot.AidenGamepads.LogitechJoystick;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
@@ -48,8 +49,8 @@ public class RobotContainer {
   public final Vision limelight;
 
   // Controller
-  private final Logitech controller = new Logitech(0);
-
+  private final EightBitDo controller = new EightBitDo(0);
+  private LogitechJoystick logitech = new LogitechJoystick(1);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -128,15 +129,22 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
             controller.leftXAxis,
             controller.leftYAxis,
-            () -> 0.5 * controller.rightXAxis.getAsDouble(),
-            controller.a,
-            () -> new Rotation2d())); // TODO, the rotation2d here is the aim assist rotation
+            () -> 0.5 * controller.rightXAxis.getAsDouble()));
+
+    controller.a.whileTrue(
+        DriveCommands.joystickDriveAndAlign(
+            drive,
+            controller.leftXAxis,
+            controller.leftYAxis,
+            () -> limelight.txToYaw(drive.getRotation()),
+            () -> limelight.targetPoseCameraSpace()));
 
     // Switch to X pattern when X button is pressed
     controller.x.onTrue(Commands.runOnce(drive::stopWithX, drive));

@@ -8,6 +8,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.Constants.FieldConstants;
 // import frc.robot.Constants.VisionConstants;
@@ -107,7 +108,18 @@ public class Vision extends SubsystemBase {
    * @return the angle of the focused apriltag relative to the robot
    */
   public Rotation2d txToYaw(Rotation2d yaw) {
-    return yaw.plus(Rotation2d.fromDegrees(180)).minus(getTX());
+    Rotation2d output = yaw.minus(getTX());
+    Logger.recordOutput("Vision/TXtoYaw", output);
+    return output;
+  }
+
+  /**
+   * @return the translation between the primary in view apriltag and the camera
+   */
+  public Translation2d targetPoseCameraSpace() {
+    return new Translation2d(
+        LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
+        LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
   }
 
   /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */

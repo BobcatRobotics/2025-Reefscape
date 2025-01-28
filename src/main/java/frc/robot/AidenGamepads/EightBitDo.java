@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
-public class EightBitDo {
-  private final CommandJoystick gp;
+public class EightBitDo extends CommandJoystick {
   public Trigger a;
   public Trigger b;
   public Trigger x;
@@ -40,30 +39,31 @@ public class EightBitDo {
    * <p>Axis indices start at 0, button indices start at one -_-
    */
   public EightBitDo(int port) {
-    gp = new CommandJoystick(port);
-    a = gp.button(2);
-    b = gp.button(1);
-    x = gp.button(4);
-    y = gp.button(3);
-    lb = gp.button(5);
-    rb = gp.button(6);
-    select = gp.button(7);
-    start = gp.button(8);
-    leftPaddle = gp.button(9);
-    rightPaddle = gp.button(10);
-    povUp = gp.povUp();
-    povDown = gp.povDown();
-    povLeft = gp.povLeft();
-    povRight = gp.povRight();
-    povCenter = gp.povCenter();
-    povDownLeft = gp.povDownLeft();
-    povDownRight = gp.povDownRight();
-    povUpLeft = gp.povUpLeft();
-    povUpRight = gp.povUpRight();
 
-    leftXAxis = () -> gp.getRawAxis(0);
-    leftYAxis = () -> gp.getRawAxis(1);
-    rightXAxis = () -> gp.getRawAxis(4);
-    rightYAxis = () -> gp.getRawAxis(3);
+    super(port);
+    a = super.button(2);
+    b = super.button(1);
+    x = super.button(4);
+    y = super.button(3);
+    lb = super.button(5);
+    rb = super.button(6);
+    select = super.button(7);
+    start = super.button(8);
+    leftPaddle = super.button(9);
+    rightPaddle = super.button(10);
+    povUp = super.povUp();
+    povDown = super.povDown();
+    povLeft = super.povLeft();
+    povRight = super.povRight();
+    povCenter = super.povCenter();
+    povDownLeft = super.povDownLeft();
+    povDownRight = super.povDownRight();
+    povUpLeft = super.povUpLeft();
+    povUpRight = super.povUpRight();
+
+    leftXAxis = () -> super.getRawAxis(0);
+    leftYAxis = () -> -super.getRawAxis(1);
+    rightXAxis = () -> super.getRawAxis(4);
+    rightYAxis = () -> -super.getRawAxis(3);
   }
 }

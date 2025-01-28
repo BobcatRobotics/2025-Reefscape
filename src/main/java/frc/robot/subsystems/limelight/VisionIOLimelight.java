@@ -32,7 +32,7 @@ public class VisionIOLimelight implements VisionIO {
     inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(name);
     inputs.ta = LimelightHelpers.getTA(name);
     inputs.tv = LimelightHelpers.getTV(name);
-    inputs.tx = LimelightHelpers.getTX(name);
+    inputs.tx = LimelightHelpers.getTX(name); // TODO add limelight disconnect alert
     inputs.ty = LimelightHelpers.getTY(name);
     inputs.fiducialID = LimelightHelpers.getFiducialID(name);
     String llClass = LimelightHelpers.getNeuralClassID(name);
