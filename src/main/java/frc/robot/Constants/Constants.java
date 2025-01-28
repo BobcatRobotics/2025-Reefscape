@@ -13,10 +13,15 @@
 
 package frc.robot.Constants;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.limelight.limelightConstants;
 import frc.robot.util.VisionObservation;
@@ -78,5 +83,20 @@ public final class Constants {
             visionMeasurementStdDevs);
 
     public static final String ip = "10.1.77.11";
+  }
+
+  public static final class ElevatorConstants {
+    public static final Distance elevatorMinHeight = Meters.of(0);
+    public static final Distance elevatorMaxHeight = Meters.of(0);
+    public static final Distance elevatorLength = Meters.of(0);
+    public static final int maxEncoderRevolutions = 0; // number of revolutions when the elevator is at the top 
+  }
+  public static final class ArmConstants{
+    public static final Angle armMinAngle = Radians.of(0);
+    public static final Angle armMaxAngle = Radians.of(0);
+    public static final Distance armLength = Meters.of(0);
+  }
+  public static final class IntakeConstants{
+    public static final Distance distanceToCenter = Meters.of(0);
   }
 }
