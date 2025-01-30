@@ -1,4 +1,4 @@
-package frc.robot.subsystems.limelight;
+package frc.robot.subsystems.Limelight;
 
 public enum CamMode {
   VISION,

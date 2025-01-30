@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.drive;
+package frc.robot.subsystems.Drive;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -48,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.Mode;
+import frc.robot.subsystems.drive.GyroIOInputsAutoLogged;
 import frc.robot.Constants.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VisionObservation;

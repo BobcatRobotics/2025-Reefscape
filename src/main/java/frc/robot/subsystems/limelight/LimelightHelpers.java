@@ -1,6 +1,6 @@
 // LimelightHelpers v1.11 (REQUIRES LLOS 2025.0 OR LATER)
 
-package frc.robot.subsystems.limelight;
+package frc.robot.subsystems.Limelight;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -20,8 +20,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import frc.robot.subsystems.limelight.LimelightHelpers.LimelightResults;
-import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
+import frc.robot.subsystems.Limelight.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.Limelight.LimelightHelpers.PoseEstimate;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

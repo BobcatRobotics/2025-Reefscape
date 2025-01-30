@@ -1,4 +1,4 @@
-package frc.robot.subsystems.limelight;
+package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
