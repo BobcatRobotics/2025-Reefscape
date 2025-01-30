@@ -21,12 +21,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.EightBitDo;
 import frc.robot.AidenGamepads.LogitechJoystick;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants;
-import frc.robot.Constants.Constants.LimelightConstants;
-import frc.robot.Constants.FieldConstants.ReefHeight;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -34,9 +31,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.limelight.Vision;
-import frc.robot.subsystems.limelight.VisionIO;
-import frc.robot.subsystems.limelight.VisionIOLimelight;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -48,11 +42,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  public final Vision limelight;
+  // public final Vision limelight;
 
   // Controller
-  private final EightBitDo controller = new EightBitDo(0);
-  private LogitechJoystick logitech = new LogitechJoystick(1);
+  private LogitechJoystick logitech = new LogitechJoystick(0);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -68,7 +61,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+        // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
 
         break;
 
@@ -81,7 +74,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        limelight = new Vision(drive, new VisionIO() {});
+        // limelight = new Vision(drive, new VisionIO() {});
 
         break;
 
@@ -94,7 +87,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        limelight = new Vision(drive, new VisionIO() {});
+        // limelight = new Vision(drive, new VisionIO() {});
         break;
     }
 
@@ -131,28 +124,21 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
-            drive,
-            controller.leftXAxis,
-            controller.leftYAxis,
-            () -> 0.5 * controller.rightXAxis.getAsDouble()));
+            drive, () -> -logitech.xAxis.getAsDouble(), logitech.yAxis, () -> -0.5 * logitech.zAxis.getAsDouble()));
 
-    controller.a.whileTrue(
-        DriveCommands.joystickDriveAndAlign(
-            drive,
-            controller.leftXAxis,
-            controller.leftYAxis,
-            () -> limelight.txToYaw(drive.getRotation()),
-            () -> limelight.targetPoseCameraSpace()));
+    logitech.thumb.whileTrue(
+        DriveCommands.robotCentricJoystickDrive(
+            drive, () -> -logitech.xAxis.getAsDouble(), logitech.yAxis, () -> -0.5 * logitech.zAxis.getAsDouble()));
 
     // Switch to X pattern when X button is pressed
-    controller.x.onTrue(Commands.runOnce(drive::stopWithX, drive));
+    logitech.topLeft.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
-    controller.b.onTrue(
+    logitech.topRight.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
