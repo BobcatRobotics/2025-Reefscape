@@ -41,7 +41,7 @@ public class LogitechJoystick extends CommandJoystick {
     xAxis = () -> super.getRawAxis(0);
     yAxis = () -> super.getRawAxis(1);
     zAxis = () -> super.getRawAxis(2);
-    throttle = () -> -super.getRawAxis(3);
+    throttle = () -> (-super.getRawAxis(3) + 1) / 2; // wrapped from 0 - 1
 
     bottom7 = super.button(7);
     bottom8 = super.button(8);
