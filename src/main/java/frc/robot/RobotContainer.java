@@ -128,11 +128,17 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
-            drive, () -> -logitech.xAxis.getAsDouble(), logitech.yAxis, () -> -0.5 * logitech.zAxis.getAsDouble()));
+            drive,
+            () -> -logitech.xAxis.getAsDouble(),
+            logitech.yAxis,
+            () -> -0.5 * logitech.zAxis.getAsDouble()));
 
     logitech.thumb.whileTrue(
         DriveCommands.robotCentricJoystickDrive(
-            drive, () -> -logitech.xAxis.getAsDouble(), logitech.yAxis, () -> -0.5 * logitech.zAxis.getAsDouble()));
+            drive,
+            () -> -logitech.xAxis.getAsDouble(),
+            logitech.yAxis,
+            () -> -0.5 * logitech.zAxis.getAsDouble()));
 
     // Switch to X pattern when X button is pressed
     logitech.topLeft.onTrue(Commands.runOnce(drive::stopWithX, drive));
