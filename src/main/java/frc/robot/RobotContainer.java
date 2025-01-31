@@ -141,11 +141,12 @@ public class RobotContainer {
         DriveCommands.alignToTag(
             drive,
             () -> limelight.getTX().unaryMinus(),
+            () -> limelight.targetPoseCameraSpace().getX(),
             () -> limelight.targetPoseCameraSpace().getY()));
     // Switch to X pattern when X button is pressed
     logitech.x.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0 deg when B button is pressed
     logitech.b.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),

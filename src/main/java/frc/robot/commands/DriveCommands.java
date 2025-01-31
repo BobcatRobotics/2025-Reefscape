@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -21,8 +22,10 @@ public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double ANGLE_KP = 7.0;
   private static final double ANGLE_KD = 0;
-  private static final double DRIVE_KP = 1.2;
-  private static final double DRIVE_KD = 0.6;
+  private static final double DRIVE_KPY = 1.2;
+  private static final double DRIVE_KDY = 0.6;
+  private static final double DRIVE_KPX = 4;
+  private static final double DRIVE_KDX = 0.6;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
 
@@ -167,7 +170,7 @@ public class DriveCommands {
   }
 
   public static Command alignToTag(
-      Drive drive, Supplier<Rotation2d> tx, DoubleSupplier distanceToTag) {
+      Drive drive, Supplier<Rotation2d> tx, DoubleSupplier ty, DoubleSupplier distanceToTag) {
 
     // Create PID controller
     ProfiledPIDController angleController =
@@ -178,14 +181,35 @@ public class DriveCommands {
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-    ProfiledPIDController distanceController =
+    ProfiledPIDController xController =
         new ProfiledPIDController(
-            DRIVE_KP, 0.0, DRIVE_KD, new TrapezoidProfile.Constraints(1, 2.0));
+            DRIVE_KPX, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(1, 2.0));
+    LinearFilter xFilter = LinearFilter.movingAverage(50);
+
+    ProfiledPIDController yController =
+        new ProfiledPIDController(
+            DRIVE_KPY, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(1, 2.0));
+    LinearFilter yFilter = LinearFilter.movingAverage(50);
 
     // Construct command
     return Commands.run(
             () -> {
-              Logger.recordOutput("DistToTag", -distanceToTag.getAsDouble());
+              double distToTag = -distanceToTag.getAsDouble();
+              double yDist = ty.getAsDouble();
+              double filteredDistance = 0;
+              double filteredY = 0;
+
+              if (distToTag != 0) {
+                filteredDistance = xFilter.calculate(distToTag);
+              }
+              if (ty.getAsDouble() != 0) {
+                filteredY = yFilter.calculate(yDist);
+              }
+
+              Logger.recordOutput("FilteredX", filteredDistance);
+              Logger.recordOutput("FilteredY", filteredY);
+
+              Logger.recordOutput("DistToTag", filteredDistance);
               // Calculate angular speed
               double omega =
                   tx.get().getRadians() == 0
@@ -194,9 +218,9 @@ public class DriveCommands {
                           drive.getRotation().getRadians(), tx.get().getRadians());
 
               double distanceOutput =
-                  distanceToTag.getAsDouble() == 0
-                      ? 0
-                      : distanceController.calculate(-distanceToTag.getAsDouble(), 1);
+                  distanceToTag.getAsDouble() == 0 ? 0 : xController.calculate(distToTag, 1);
+
+              double yOutput = yController.calculate(yDist, 0);
 
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
@@ -205,8 +229,8 @@ public class DriveCommands {
                           ? distanceOutput * (1 / omega)
                           : distanceOutput, // get to within 1 meter of the tag, output scales as
                       // angular error decreases
-                      0,
-                      omega);
+                      yOutput,
+                      0);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
                       && DriverStation.getAlliance().get() == Alliance.Red;
