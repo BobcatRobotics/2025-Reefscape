@@ -48,7 +48,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.Mode;
-import frc.robot.subsystems.drive.GyroIOInputsAutoLogged;
 import frc.robot.Constants.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VisionObservation;

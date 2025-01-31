@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -13,9 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.TunerConstants;
 import frc.robot.subsystems.Drive.Drive;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -23,9 +20,9 @@ import org.littletonrobotics.junction.Logger;
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double ANGLE_KP = 7.0;
-  private static final double ANGLE_KD = 0.4;
-  private static final double DRIVE_KP = 0.01;
-  private static final double DRIVE_KD = 0.4;
+  private static final double ANGLE_KD = 0;
+  private static final double DRIVE_KP = 1.2;
+  private static final double DRIVE_KD = 0.6;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
 
@@ -121,9 +118,8 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      Supplier<Rotation2d> rotationSupplier,
-      Supplier<Translation2d> targetSupplier) {
-    // TODO translation is broken
+      Supplier<Rotation2d> rotationSupplier) {
+
     // Create PID controller
     ProfiledPIDController angleController =
         new ProfiledPIDController(
@@ -133,42 +129,13 @@ public class DriveCommands {
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-    ProfiledPIDController driveXController =
-        new ProfiledPIDController(
-            DRIVE_KP,
-            0.0,
-            DRIVE_KD,
-            new TrapezoidProfile.Constraints(TunerConstants.kSpeedAt12Volts.magnitude(), 5));
-    ProfiledPIDController driveYController =
-        new ProfiledPIDController(
-            DRIVE_KP,
-            0.0,
-            DRIVE_KD,
-            new TrapezoidProfile.Constraints(TunerConstants.kSpeedAt12Volts.magnitude(), 5));
-
-    LinearFilter xFilter = LinearFilter.movingAverage(20);
-    LinearFilter zFilter = LinearFilter.movingAverage(20);
-
     // Construct command
     return Commands.run(
             () -> {
-              Logger.recordOutput("TargetPose", targetSupplier.get());
               // Get linear velocity
               Translation2d linearVelocity =
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-              Translation2d translationToTarget = targetSupplier.get();
-
-              double xAvg = xFilter.calculate(translationToTarget.getX());
-              double zAvg = zFilter.calculate(translationToTarget.getY());
-
-              linearVelocity =
-                  linearVelocity.plus(
-                      new Translation2d(
-                          driveXController.calculate(xAvg, 0),
-                          driveYController.calculate(zAvg, 2)));
-              Logger.recordOutput("Filter/xavg", xAvg);
-              Logger.recordOutput("Filter/zavg", zAvg);
               // Calculate angular speed
               double omega =
                   angleController.calculate(
@@ -179,6 +146,66 @@ public class DriveCommands {
                   new ChassisSpeeds(
                       linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                       linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      omega);
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+
+        // Reset PID controller when command starts
+        .beforeStarting(
+            () -> {
+              angleController.reset(drive.getRotation().getRadians());
+            });
+  }
+
+  public static Command alignToTag(
+      Drive drive, Supplier<Rotation2d> tx, DoubleSupplier distanceToTag) {
+
+    // Create PID controller
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    ProfiledPIDController distanceController =
+        new ProfiledPIDController(
+            DRIVE_KP, 0.0, DRIVE_KD, new TrapezoidProfile.Constraints(1, 2.0));
+
+    // Construct command
+    return Commands.run(
+            () -> {
+              Logger.recordOutput("DistToTag", -distanceToTag.getAsDouble());
+              // Calculate angular speed
+              double omega =
+                  tx.get().getRadians() == 0
+                      ? 0
+                      : angleController.calculate(
+                          drive.getRotation().getRadians(), tx.get().getRadians());
+
+              double distanceOutput =
+                  distanceToTag.getAsDouble() == 0
+                      ? 0
+                      : distanceController.calculate(-distanceToTag.getAsDouble(), 1);
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      omega == 0
+                          ? distanceOutput * (1 / omega)
+                          : distanceOutput, // get to within 1 meter of the tag, output scales as
+                      // angular error decreases
+                      0,
                       omega);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()

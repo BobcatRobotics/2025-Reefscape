@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.LogitechJoystick;
+import frc.robot.AidenGamepads.LogitechGamepad;
 import frc.robot.Constants.Constants;
+import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Drive.Drive;
@@ -31,7 +32,9 @@ import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
-
+import frc.robot.subsystems.Limelight.Vision;
+import frc.robot.subsystems.Limelight.VisionIO;
+import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -43,10 +46,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  // public final Vision limelight;
+  public final Vision limelight;
 
   // Controller
-  private LogitechJoystick logitech = new LogitechJoystick(0);
+  private LogitechGamepad logitech = new LogitechGamepad(0);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -62,7 +65,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
 
         break;
 
@@ -75,7 +78,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        // limelight = new Vision(drive, new VisionIO() {});
+        limelight = new Vision(drive, new VisionIO() {});
 
         break;
 
@@ -88,7 +91,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        // limelight = new Vision(drive, new VisionIO() {});
+        limelight = new Vision(drive, new VisionIO() {});
         break;
     }
 
@@ -130,22 +133,20 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
-            () -> -logitech.xAxis.getAsDouble(),
-            logitech.yAxis,
-            () -> logitech.throttle.getAsDouble() * logitech.zAxis.getAsDouble()));
+            logitech.leftXAxis,
+            logitech.leftYAxis,
+            () -> 0.5 * logitech.rightXAxis.getAsDouble()));
 
-    logitech.thumb.whileTrue(
-        DriveCommands.robotCentricJoystickDrive(
+    logitech.a.whileTrue(
+        DriveCommands.alignToTag(
             drive,
-            () -> -logitech.xAxis.getAsDouble(),
-            logitech.yAxis,
-            () -> logitech.throttle.getAsDouble() * logitech.zAxis.getAsDouble()));
-
+            () -> limelight.getTX().unaryMinus(),
+            () -> limelight.targetPoseCameraSpace().getY()));
     // Switch to X pattern when X button is pressed
-    logitech.topLeft.onTrue(Commands.runOnce(drive::stopWithX, drive));
+    logitech.x.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
-    logitech.topRight.onTrue(
+    logitech.b.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)

@@ -48,11 +48,11 @@ public class LogitechGamepad extends CommandJoystick {
   }
 
   private void configureTriggers() {
-    a = super.button(2);
-    b = super.button(3);
-    x = super.button(1);
+    a = super.button(1);
+    b = super.button(2);
+    x = super.button(3);
     y = super.button(4);
-    lb = super.button(5);
+    lb = super.button(5); // TODO check
     rb = super.button(6);
     back = super.button(9);
     start = super.button(10);
@@ -74,7 +74,7 @@ public class LogitechGamepad extends CommandJoystick {
     // x is left/right
     leftXAxis = () -> super.getRawAxis(0);
     leftYAxis = () -> -super.getRawAxis(1);
-    rightXAxis = () -> super.getRawAxis(2);
-    rightYAxis = () -> -super.getRawAxis(3);
+    rightXAxis = () -> super.getRawAxis(4);
+    rightYAxis = () -> -super.getRawAxis(5);
   }
 }
