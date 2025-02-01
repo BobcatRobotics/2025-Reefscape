@@ -1,66 +1,95 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.Arm;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
+import frc.robot.subsystems.StateMachine.StateObserver;
+import frc.robot.subsystems.StateMachine.SuperstructureGoal;
+
+import static edu.wpi.first.units.Units.Meters;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.StateMachine.SuperstructureGoal;
+public class Arm extends SubsystemBase {
+  // see Assets\Docs\TopUpperLimit.png
+  public static final Rotation2d TOP_UPPER_LIMIT = Rotation2d.fromDegrees(0);
+  public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
+  public static final Rotation2d BOTTOM_UPPER_LIMIT = Rotation2d.fromDegrees(0);
+  public static final Rotation2d BOTTOM_LOWER_LIMIT = Rotation2d.fromDegrees(0);
+  public static final Distance ARM_LENGTH = Meters.of(0);
 
-public class Arm {
+  private StateObserver observer;
 
-    // see Assets\Docs\TopUpperLimit.png
-    public static final Rotation2d TOP_UPPER_LIMIT = Rotation2d.fromDegrees(0);
-    public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
-    public static final Rotation2d BOTTOM_UPPER_LIMIT = Rotation2d.fromDegrees(0);
-    public static final Rotation2d BOTTOM_LOWER_LIMIT = Rotation2d.fromDegrees(0);
+  
 
-    Rotation2d pos;
+  ArmIO io;
+  ArmIOInputs inputs = new ArmIOInputsAutoLogged();
 
-    public Arm() {
+  /** Creates a new Arm. */
+  public Arm(ArmIO io, StateObserver observer) {
+    this.io = io;
+    this.observer = observer;
+  }
+
+  @Override
+  public void periodic() {
+    io.updateInputs(null);
+    observer.updateArm(inputs.state, inputs.position);
+
+  }
+
+  public static ArmZone getArmZone(ArmState state) {
+    return getArmZone(Rotation2d.fromDegrees(state.degrees));
+  }
+
+  public static ArmZone getArmZone(SuperstructureGoal goal) {
+    return getArmZone(goal.armState);
+  }
+  /** see Assets\Docs\TopUpperLimit.png */
+  @AutoLogOutput(key = "StateObserver/ArmZone")
+  public static ArmZone getArmZone(Rotation2d position) {
+    double deg = position.getDegrees();
+    if (deg >= TOP_LOWER_LIMIT.getDegrees() && deg <= TOP_UPPER_LIMIT.getDegrees()) {
+      return ArmZone.TOP_ZONE;
+    } else if (deg > TOP_UPPER_LIMIT.getDegrees() && deg < BOTTOM_LOWER_LIMIT.getDegrees()) {
+      return ArmZone.LEFT_INTAKE;
+    } else if (deg > BOTTOM_LOWER_LIMIT.getDegrees() && deg < BOTTOM_UPPER_LIMIT.getDegrees()) {
+      return ArmZone.BOTTOM_ZONE;
+    } else {
+      return ArmZone.RIGHT_INTAKE;
     }
+  }
 
-    public static ArmZone getArmZone(ArmState state){
-        return getArmZone(Rotation2d.fromDegrees(state.degrees));
-    }
-    public static ArmZone getArmZone(SuperstructureGoal goal){
-        return getArmZone(goal.armState);
-    }
-    /**
-     * see Assets\Docs\TopUpperLimit.png
-     */
-    @AutoLogOutput(key = "StateObserver/ArmZone")
-    public static ArmZone getArmZone(Rotation2d position) {
-        double deg = position.getDegrees();
-        if (deg >= TOP_LOWER_LIMIT.getDegrees() && deg <= TOP_UPPER_LIMIT.getDegrees()) {
-            return ArmZone.TOP_ZONE;
-        } else if (deg > TOP_UPPER_LIMIT.getDegrees() && deg < BOTTOM_LOWER_LIMIT.getDegrees()) {
-            return ArmZone.LEFT_INTAKE;
-        } else if (deg > BOTTOM_LOWER_LIMIT.getDegrees() && deg < BOTTOM_UPPER_LIMIT.getDegrees()) {
-            return ArmZone.BOTTOM_ZONE;
-        } else {
-            return ArmZone.RIGHT_INTAKE;
-        }
+  public ArmZone getArmZone() {
+    return getArmZone(inputs.position);
+  }
 
-    }
+  public boolean isInIntakeZone() {
+    return StateObserver.isInIntakeZone(getArmZone());
+  }
 
-    public ArmZone getArmZone(){
-        return getArmZone(pos);
-    }
-    public boolean isInIntakeZone(){
-        return isInIntakeZone(getArmZone());
-    }
-    public static boolean isInIntakeZone(ArmZone zone){
-        return zone == ArmZone.LEFT_INTAKE || zone == ArmZone.RIGHT_INTAKE;
-    }
 
-    /**
-     * @return {@code false} if the the arm has to go through potential collision zones to get 
-     * to the desired state from its current state, {@code true} if the current state and desired state are in the same zone. 
-     * 
-     * note that if the elevator is high enough, this wont matter, since it will be out of the range of the intake and bellypan
-     */
-    public boolean willStayInZone(ArmState desiredState) {
-        return getArmZone() == getArmZone(Rotation2d.fromDegrees(desiredState.degrees));
-    }
+  /**
+   * @return {@code false} if the the arm has to go through potential collision zones to get to the
+   *     desired state from its current state, {@code true} if the current state and desired state
+   *     are in the same zone.
+   *     <p>note that if the elevator is high enough, this wont matter, since it will be out of the
+   *     range of the intake and bellypan
+   */
+  public boolean willStayInZone(ArmState desiredState) {
+    return getArmZone() == getArmZone(Rotation2d.fromDegrees(desiredState.degrees));
+  }
 
+  public void setState(ArmState state) {
+    io.setState(state);
+  }
+
+  public ArmState getState() {
+    return inputs.state;
+  }
 }
-
