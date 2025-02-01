@@ -49,7 +49,7 @@ public class CollisionDetector {
         };
 
         //if the arm swings down before the elevator raises, will it hit?
-        if() 
+        if(Elevator.checkForArmCollision(goal.armZone, null)) 
 
         
 
