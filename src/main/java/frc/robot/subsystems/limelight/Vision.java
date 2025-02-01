@@ -115,6 +115,9 @@ public class Vision extends SubsystemBase {
    * @return the translation between the primary in view apriltag and the camera
    */
   public Translation2d targetPoseCameraSpace() {
+    Logger.recordOutput(
+        "limelight/singletagdist", LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
+
     return new Translation2d(
         LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
         LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);

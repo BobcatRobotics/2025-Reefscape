@@ -133,16 +133,16 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
+            () -> -logitech.leftYAxis.getAsDouble(),
             logitech.leftXAxis,
-            logitech.leftYAxis,
-            () -> 0.5 * logitech.rightXAxis.getAsDouble()));
+            () -> -0.5 * logitech.rightXAxis.getAsDouble()));
 
-    logitech.a.whileTrue(
-        DriveCommands.alignToTag(
-            drive,
-            () -> limelight.getTX().unaryMinus(),
-            () -> limelight.targetPoseCameraSpace().getX(),
-            () -> limelight.targetPoseCameraSpace().getY()));
+    // logitech.a.whileTrue(
+    //     DriveCommands.alignToTag(
+    //         drive,
+    //         () -> Rotation2d.fromDegrees(0), // limelight.getTX().unaryMinus(),
+    //         () -> 0, // limelight.targetPoseCameraSpace().getY(),
+    //         () -> -limelight.targetPoseCameraSpace().getX()));
     // Switch to X pattern when X button is pressed
     logitech.x.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -152,6 +152,13 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
             .ignoringDisable(true));
+
+    logitech.a.whileTrue(
+        DriveCommands.singleTagAlign(
+            drive,
+            () -> limelight.targetPoseCameraSpace().getX(),
+            () -> 0,
+            () -> Rotation2d.fromDegrees(0)));
   }
 
   /**
