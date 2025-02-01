@@ -44,7 +44,7 @@ public class CollisionDetector {
         
         // make sure state is valid
         // will the arm hit the intake or floor of the robot?
-        if(!Elevator.armWontCollideWithBottom(goal.armZone, goal.elevatorState)){
+        if(Elevator.checkForArmCollision(goal.armZone, goal.elevatorState)){
             return false;
         };
 
