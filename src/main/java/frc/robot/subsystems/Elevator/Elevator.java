@@ -31,16 +31,16 @@ public class Elevator {
     }
 
     /**
-     * @return {@code true} if the elevator is high enough where the arm can't
+     * @return {@code False} if the elevator is high enough where the arm can't
      * collide with the intake
      */
-    public static boolean armWontCollideWithBottom(ArmZone zone, ElevatorState elevatorState) {
+    public static boolean checkForArmCollision(ArmZone zone, ElevatorState elevatorState) {
         if (Arm.isInIntakeZone(zone)) {
-            return elevatorState.heightMeters > MIN_HEIGHT_INTAKE_AVOIDANCE.in(Meters);
+            return elevatorState.heightMeters < MIN_HEIGHT_INTAKE_AVOIDANCE.in(Meters);
         } else if (zone == ArmZone.BOTTOM_ZONE) {
-            return elevatorState.heightMeters > MIN_HEIGHT_BOTTOM_AVOIDANCE.in(Meters);
+            return elevatorState.heightMeters < MIN_HEIGHT_BOTTOM_AVOIDANCE.in(Meters);
         } else {
-            return true;
+            return false;
         }
     }
 

@@ -38,7 +38,6 @@ public class CollisionDetector {
     public SuperstructureGoal[] getSafeState(SuperstructureGoal goal, SuperstructureGoal current) {
         desiredState = goal;
         currentState = current;
-
     }
 
     public boolean isTransitionSafe(SuperstructureGoal goal) {
@@ -48,6 +47,9 @@ public class CollisionDetector {
         if(!Elevator.armWontCollideWithBottom(goal.armZone, goal.elevatorState)){
             return false;
         };
+
+        //if the arm swings down before the elevator raises, will it hit?
+        if() 
 
         
 
