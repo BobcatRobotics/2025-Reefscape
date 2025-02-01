@@ -4,22 +4,36 @@ import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Elevator.Elevator;
 
 public class Superstructure {
-  private SuperstructureState currentState = SuperstructureState.IDLE;
+  private SuperstructureGoal currentState = SuperstructureGoal.IN_BOX;
+  private SuperstructureGoal desiredState = SuperstructureGoal.IN_BOX;
   private Arm arm;
   private Elevator elevator;
+
 
   public Superstructure(Arm arm, Elevator elevator) {
     this.arm = arm;
     this.elevator = elevator;
   }
 
-  public void setState(SuperstructureState state) {
-    currentState = state;
+  public void setState(SuperstructureGoal desiredState) {
+    if(transitionValid(desiredState)) {
+      currentState = desiredState;
+    }else {
+      //TODO create updated state
+    }
+
   }
 
-  public SuperstructureState getState() {
+  public SuperstructureGoal getState() {
     return currentState;
   }
 
-  public void update() {}
+  public boolean transitionValid(SuperstructureGoal desiredState) {
+    switch (desiredState.armState){
+      case PICKUP_ALGAE:
+        if(elevator.)
+    } 
+  }
+
+
 }
