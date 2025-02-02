@@ -3,8 +3,8 @@ package frc.robot.subsystems.Elevator;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.ArmZone;
+import frc.robot.subsystems.StateMachine.StateObserver;
 
 public class Elevator {
 
@@ -42,7 +42,7 @@ public class Elevator {
    *     intake
    */
   public static boolean checkForArmCollision(ArmZone zone, ElevatorState elevatorState) {
-    if (Arm.isInIntakeZone(zone)) {
+    if (StateObserver.isInIntakeZone(zone)) {
       return elevatorState.heightMeters < MIN_HEIGHT_INTAKE_AVOIDANCE.in(Meters);
     } else if (zone == ArmZone.BOTTOM_ZONE) {
       return elevatorState.heightMeters < MIN_HEIGHT_BOTTOM_AVOIDANCE.in(Meters);

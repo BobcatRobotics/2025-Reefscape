@@ -1,5 +1,10 @@
 package frc.robot.subsystems.Arm;
 
+import org.opencv.core.RotatedRect;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+
 public enum ArmState {
   IDLE_NO_PIECE(0, ArmZone.BOTTOM_ZONE),
   IDLE_PIECE(0, ArmZone.TOP_ZONE),
@@ -14,8 +19,15 @@ public enum ArmState {
 
   ArmState(int degrees, ArmZone zone) {
     this.degrees = degrees;
+    this.rotations = degrees/360;
+    this.zone = zone;
+    this.radians = Units.degreesToRadians(degrees);
+    this.rot2d = Rotation2d.fromDegrees(degrees);
   }
 
   public double degrees;
-  public double zone;
+  public ArmZone zone;
+  public double rotations;
+  public double radians;
+  public Rotation2d rot2d;
 }

@@ -21,14 +21,15 @@ public class Arm extends SubsystemBase {
   public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
   public static final Rotation2d BOTTOM_UPPER_LIMIT = Rotation2d.fromDegrees(0);
   public static final Rotation2d BOTTOM_LOWER_LIMIT = Rotation2d.fromDegrees(0);
-  public static final Distance ARM_LENGTH = Meters.of(0);
+  //the total length of the arm + end effector from the rotational joint, for kinematic use
+  public static final Distance LENGTH_TO_END_EFFECTOR = Meters.of(0);
+  
 
   private StateObserver observer;
 
-  
-
   ArmIO io;
   ArmIOInputs inputs = new ArmIOInputsAutoLogged();
+  private ArmState desiredState = ArmState.NO_OP;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io, StateObserver observer) {
@@ -38,9 +39,9 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(null);
+    io.updateInputs(inputs);
     observer.updateArm(inputs.state, inputs.position);
-
+    io.setDesiredState(desiredState);
   }
 
   public static ArmZone getArmZone(ArmState state) {
@@ -57,11 +58,11 @@ public class Arm extends SubsystemBase {
     if (deg >= TOP_LOWER_LIMIT.getDegrees() && deg <= TOP_UPPER_LIMIT.getDegrees()) {
       return ArmZone.TOP_ZONE;
     } else if (deg > TOP_UPPER_LIMIT.getDegrees() && deg < BOTTOM_LOWER_LIMIT.getDegrees()) {
-      return ArmZone.LEFT_INTAKE;
+      return ArmZone.CORAL_INTAKE;
     } else if (deg > BOTTOM_LOWER_LIMIT.getDegrees() && deg < BOTTOM_UPPER_LIMIT.getDegrees()) {
       return ArmZone.BOTTOM_ZONE;
     } else {
-      return ArmZone.RIGHT_INTAKE;
+      return ArmZone.ALGAE_INTAKE;
     }
   }
 
@@ -82,11 +83,11 @@ public class Arm extends SubsystemBase {
    *     range of the intake and bellypan
    */
   public boolean willStayInZone(ArmState desiredState) {
-    return getArmZone() == getArmZone(Rotation2d.fromDegrees(desiredState.degrees));
+    return getArmZone() == desiredState.zone;
   }
 
   public void setState(ArmState state) {
-    io.setState(state);
+    desiredState = state;
   }
 
   public ArmState getState() {

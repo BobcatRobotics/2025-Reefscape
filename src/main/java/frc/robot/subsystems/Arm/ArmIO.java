@@ -7,13 +7,14 @@ public interface ArmIO {
 
   @AutoLog
   public static class ArmIOInputs {
-    Rotation2d position = new Rotation2d();
-    ArmState state = ArmState.NO_OP;
-    ArmZone zone = ArmZone.BOTTOM_ZONE;
+    public Rotation2d position = new Rotation2d();
+    public Rotation2d absolutePosition = new Rotation2d();
+    public ArmState state = ArmState.NO_OP;
+    public ArmZone zone = ArmZone.BOTTOM_ZONE;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ArmIOInputs inputs) {}
 
-  public default void setState(ArmState state){}
+  public default void setDesiredState(ArmState state){}
 }
