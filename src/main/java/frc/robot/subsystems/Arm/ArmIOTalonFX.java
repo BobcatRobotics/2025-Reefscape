@@ -39,9 +39,6 @@ public class ArmIOTalonFX implements ArmIO {
   private CANcoder encoder;
   private StateObserver observer;
 
-  private Alert stateRequiresElevatorTravel = new Alert(
-      "Arm waiting for elevator movement",
-      AlertType.kInfo);
 
   public ArmIOTalonFX(int falconID, int encoderID, StateObserver observer) {
     this.observer = observer;
@@ -141,7 +138,6 @@ public class ArmIOTalonFX implements ArmIO {
       if (((state.zone == ArmZone.BOTTOM_ZONE && getArmZone() != ArmZone.BOTTOM_ZONE)
           || (StateObserver.isInIntakeZone(state.zone)))
           && !observer.elevatorAboveIntakeMinimum()) {
-        stateRequiresElevatorTravel.set(true);
 
         double elevatorIntakeDelta =
             // if we're rotating ccw, then we'll going through the coral intake, //TODO check this once architecture is finalized

@@ -39,3 +39,34 @@ Tune high-level controls like setpoints and sequencing logic.
 
 For mechanisms with a chance of breaking themselves, we also rely on additional measures like the automatic E-stop on our 2023 arm. That feature was critical to bringing up that mechanism without causing damage.
 
+
+Constants to find (NOT gains):
+algae intake:
+ALGAE_INTAKE_HEIGHT
+
+coral intake:
+CORAL_INTAKE_HEIGHT
+
+
+arm:
+TOP_UPPER_LIMIT
+TOP_LOWER_LIMIT
+BOTTOM_UPPER_LIMIT
+BOTTOM_LOWER_LIMIT
+ARM_MOTOR_INVERTED
+LENGTH_TO_END_EFFECTOR
+
+Elevator:
+MIN_HEIGHT_INTAKE_AVOIDANCE
+MIN_HEIGHT_BOTTOM_AVOIDANCE
+
+
+
+ARM TUNING:
+Verify inputs in disable,
+
+tune kg
+arm should be able to just barely hold itself up while horizontal
+verify at other points
+
+
