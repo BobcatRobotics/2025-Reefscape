@@ -1,6 +1,7 @@
 package frc.robot.subsystems.StateMachine;
 
 import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
@@ -12,17 +13,17 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
 public class StateObserver {
-    public ArmState armstate;
-    public ArmZone armZone;
-    public Rotation2d armPos;
+    public ArmState armstate = ArmState.NO_OP;
+    public ArmZone armZone = ArmZone.TOP_ZONE;
+    public Rotation2d armPos = new Rotation2d();
 
-    public ElevatorState elevatorState;
-    public Distance elevatorHeight;
+    public ElevatorState elevatorState = ElevatorState.NO_OP;
+    public Distance elevatorHeight = Meters.of(0);
 
-    public IntakeState coralIntakeState;
-    public IntakeState algaeIntakeState;
+    public IntakeState coralIntakeState = IntakeState.RETRACT;
+    public IntakeState algaeIntakeState = IntakeState.RETRACT;
 
-    public StateObserver(Superstructure superstructure) {
+    public StateObserver() {
     }
 
     public void updateArm(ArmState armState, Rotation2d armPos) {
@@ -56,7 +57,20 @@ public class StateObserver {
 
 
 
+    /**
+     * 
+     * @param zone
+     * @return {@code true} if the given armzone is the coral or algae zone
+     */
+    public boolean isInIntakeZone() {
+        return armZone == ArmZone.CORAL_INTAKE || armZone == ArmZone.ALGAE_INTAKE;
+    }
 
+    /**
+     * 
+     * @param zone
+     * @return {@code true} if the given armzone is the coral or algae zone
+     */
     public static boolean isInIntakeZone(ArmZone zone) {
         return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
     }

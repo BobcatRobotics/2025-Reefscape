@@ -6,6 +6,8 @@ package frc.robot.subsystems.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.StateMachine.StateObserver;
@@ -26,6 +28,9 @@ public class Arm extends SubsystemBase {
   
 
   private StateObserver observer;
+  private Alert motorDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);
+  private Alert encoderDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);
+
 
   ArmIO io;
   ArmIOInputs inputs = new ArmIOInputsAutoLogged();
@@ -42,6 +47,8 @@ public class Arm extends SubsystemBase {
     io.updateInputs(inputs);
     observer.updateArm(inputs.state, inputs.position);
     io.setDesiredState(desiredState);
+    motorDisconnected.set(!inputs.motorConnected);
+    encoderDisconnected.set(!inputs.encoderConnected);
   }
 
   public static ArmZone getArmZone(ArmState state) {

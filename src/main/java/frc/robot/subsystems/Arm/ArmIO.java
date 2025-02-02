@@ -11,6 +11,8 @@ public interface ArmIO {
     public Rotation2d absolutePosition = new Rotation2d();
     public ArmState state = ArmState.NO_OP;
     public ArmZone zone = ArmZone.BOTTOM_ZONE;
+    public boolean motorConnected = false;
+    public boolean encoderConnected = false;
   }
 
   /** Updates the set of loggable inputs. */
