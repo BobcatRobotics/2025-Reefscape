@@ -7,7 +7,7 @@ import frc.robot.subsystems.Climber.ClimberState;
 import frc.robot.subsystems.CoralIntake.IntakeState;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
-public class SuperstructureGoal {
+public class SuperstructureState {
   public ElevatorState elevatorState;
   public ArmState armState;
   public IntakeState coralIntakeState;
@@ -15,7 +15,7 @@ public class SuperstructureGoal {
   public ArmZone armZone;
   public ClimberState climberState;
 
-  public SuperstructureGoal(
+  public SuperstructureState(
       ElevatorState elevatorState,
       ArmState armState,
       IntakeState coralIntakeState,
@@ -29,104 +29,104 @@ public class SuperstructureGoal {
     this.armZone = Arm.getArmZone(armState);
   }
 
-  public static SuperstructureGoal IDLE_NO_PIECE =
-      new SuperstructureGoal(
+  public static SuperstructureState IDLE_NO_PIECE =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal IDLE_PIECE =
-      new SuperstructureGoal(
+  public static SuperstructureState IDLE_PIECE =
+      new SuperstructureState(
           ElevatorState.IDLE_PIECE,
           ArmState.IDLE_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal IN_BOX =
-      new SuperstructureGoal(
+  public static SuperstructureState IN_BOX = //TODO update all of these
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal SCOREL1 =
-      new SuperstructureGoal(
+  public static SuperstructureState SCOREL1 =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal SCOREL3 =
-      new SuperstructureGoal(
+  public static SuperstructureState SCOREL3 =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal SCOREL4 =
-      new SuperstructureGoal(
+  public static SuperstructureState SCOREL4 =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal INTAKE_ALGAE =
-      new SuperstructureGoal(
+  public static SuperstructureState INTAKE_ALGAE =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW); // intake
 
-  public static SuperstructureGoal PICKUP_ALGAE =
-      new SuperstructureGoal(
+  public static SuperstructureState PICKUP_ALGAE =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal INTAKE_CORAL =
-      new SuperstructureGoal(
+  public static SuperstructureState INTAKE_CORAL =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal INTAKE_CORAL_HUMAN =
-      new SuperstructureGoal(
+  public static SuperstructureState INTAKE_CORAL_HUMAN =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal PICKUP_CORAL =
-      new SuperstructureGoal(
+  public static SuperstructureState PICKUP_CORAL =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW); // transfer to end effector
 
-  public static SuperstructureGoal CLIMB_DEPLOY =
-      new SuperstructureGoal(
+  public static SuperstructureState CLIMB_DEPLOY =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureGoal CLIMB_RETRACT =
-      new SuperstructureGoal(
+  public static SuperstructureState CLIMB_RETRACT =
+      new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,
           IntakeState.RETRACT,

@@ -8,7 +8,7 @@ import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.Elevator.Elevator;
 
 public class Superstructure {
-  private SuperstructureGoal currentState = SuperstructureGoal.IN_BOX;
+  private SuperstructureState currentState = SuperstructureState.IN_BOX;
   private Arm arm;
   private Elevator elevator;
   private CoralIntake coralIntake;
@@ -28,7 +28,7 @@ public class Superstructure {
    * @param desiredState the state we want to set the robot to
    * @return {@code true} if the state was set, {@code false} if the state was invalid
    */
-  public boolean setState(SuperstructureGoal desiredState) {
+  public boolean setState(SuperstructureState desiredState) {
     // make sure state is valid
     // will the arm hit the intake or floor of the robot in its final state?
     if (Elevator.checkForArmCollision(desiredState.armZone, desiredState.elevatorState)) {
@@ -46,7 +46,7 @@ public class Superstructure {
     return true;
   }
 
-  public SuperstructureGoal getState() {
+  public SuperstructureState getState() {
     return currentState;
   }
 
@@ -54,7 +54,7 @@ public class Superstructure {
    * @param goal the desired state
    * @return whether or not the elevator will have to move before the arm swings fully down
    */
-  public boolean isTransitionSafe(SuperstructureGoal goal) {
+  public boolean isTransitionSafe(SuperstructureState goal) {
     // make sure state is valid
     // will the arm hit the intake or floor of the robot in its final state?
     if (Elevator.checkForArmCollision(goal.armZone, goal.elevatorState)) {

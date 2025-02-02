@@ -9,7 +9,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.StateMachine.StateObserver;
-import frc.robot.subsystems.StateMachine.SuperstructureGoal;
+import frc.robot.subsystems.StateMachine.SuperstructureState;
 
 import static edu.wpi.first.units.Units.Meters;
 
@@ -48,7 +48,7 @@ public class Arm extends SubsystemBase {
     return getArmZone(Rotation2d.fromDegrees(state.degrees));
   }
 
-  public static ArmZone getArmZone(SuperstructureGoal goal) {
+  public static ArmZone getArmZone(SuperstructureState goal) {
     return getArmZone(goal.armState);
   }
   /** see Assets\Docs\TopUpperLimit.png */
