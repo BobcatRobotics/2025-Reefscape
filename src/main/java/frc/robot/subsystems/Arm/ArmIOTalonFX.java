@@ -25,7 +25,7 @@ import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.StateMachine.StateObserver;
 
-public class ArmIOFalcon implements ArmIO {
+public class ArmIOTalonFX implements ArmIO {
   private MotionMagicExpoTorqueCurrentFOC angleRequest;
   public static final InvertedValue ARM_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive; // TODO find this
   public static final double ARM_ROTOR_TO_SENSOR_RATIO = 1; // TODO find this
@@ -48,7 +48,7 @@ public class ArmIOFalcon implements ArmIO {
       "The requested position requires elevator movement, arm will wait until elevator is moved fully!",
       AlertType.kInfo);
 
-  public ArmIOFalcon(int falconID, int encoderID, StateObserver observer) {
+  public ArmIOTalonFX(int falconID, int encoderID, StateObserver observer) {
     this.observer = observer;
 
     motor = new TalonFX(falconID);
