@@ -9,6 +9,8 @@ public interface PhotonIO {
   public static class PhotonIOInputs {
     public String name = "Sim";
     public boolean hasTargets = false;
+    public boolean hasCoral = false;
+    public boolean hasAlgae = false;
     // public Array[] targets;
     // public List<PhotonTrackedTarget> target = new ArrayList<PhotonTrackedTarget>();
     // public int classID;

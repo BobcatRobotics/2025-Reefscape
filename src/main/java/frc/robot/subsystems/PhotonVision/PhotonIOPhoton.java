@@ -3,6 +3,7 @@ package frc.robot.subsystems.PhotonVision;
 import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonIOPhoton implements PhotonIO {
 
@@ -21,6 +22,8 @@ public class PhotonIOPhoton implements PhotonIO {
 
     inputs.name = name;
     inputs.hasTargets = result.get(0).hasTargets();
+    inputs.hasCoral = hasCoral();
+    inputs.hasAlgae = hasAlgae();
     // inputs.target = result.getTargets();
     // public boolean hasTargets = false;
     // public int classID;
@@ -35,4 +38,29 @@ public class PhotonIOPhoton implements PhotonIO {
     // public List<TargetCorner> detectedCorners;
 
   }
+
+public boolean hasCoral(){
+            
+        for (PhotonTrackedTarget target : result.get(0).getTargets()) {
+            if (target.objDetectId == 1) {
+              return true;
+            } 
+          }
+        return false;
+
+}
+
+
+public boolean hasAlgae(){
+            
+    for (PhotonTrackedTarget target : result.get(1).getTargets()) {
+        if (target.objDetectId == 1) {
+          return true;
+        } 
+      }
+    return false;
+
+}
+
+
 }

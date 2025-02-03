@@ -338,7 +338,7 @@ public class DriveCommands {
   }
 
   public static Command driveToCoral(
-      Drive drive, Photon photon, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+      Drive drive, Photon photon, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier angleSupplier) {
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
@@ -349,11 +349,11 @@ public class DriveCommands {
     angleController.enableContinuousInput(-Math.PI, Math.PI);
     LinearFilter omegaFilter = LinearFilter.movingAverage(50);
 
-    ProfiledPIDController distanceController =
-        new ProfiledPIDController(
-            DRIVE_KPX, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(1, 1.0));
-    LinearFilter xFilter = LinearFilter.movingAverage(50);
-
+    // ProfiledPIDController distanceController =
+    //     new ProfiledPIDController(
+    //         DRIVE_KPX, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(1, 1.0));
+    // LinearFilter xFilter = LinearFilter.movingAverage(50);
+    if(photon.hasTarget() && photon.hasCoral()){
     return Commands.run(
         () -> {
           Translation2d linearVelocity =
@@ -423,5 +423,8 @@ public class DriveCommands {
           drive.runVelocity(speeds);
         },
         drive);
+    } else{
+        return Commands.run(() -> fieldRelativeJoystickDrive(drive, xSupplier, ySupplier, angleSupplier), drive);
+    }
   }
 }
