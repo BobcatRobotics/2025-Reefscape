@@ -18,5 +18,5 @@ public interface ArmIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ArmIOInputs inputs) {}
 
-  public default void setDesiredState(ArmState state){}
+  public default void setDesiredState(ArmState state) {}
 }

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Arm;
 
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -18,7 +17,7 @@ public enum ArmState {
 
   ArmState(int degrees) {
     this.degrees = degrees;
-    this.rotations = degrees/360;
+    this.rotations = degrees / 360;
     this.radians = Units.degreesToRadians(degrees);
     this.rot2d = Rotation2d.fromDegrees(degrees);
     this.zone = Arm.getArmZone(rot2d);

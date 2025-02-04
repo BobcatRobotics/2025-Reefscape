@@ -1,7 +1,5 @@
 package frc.robot.subsystems.Arm;
 
-import java.lang.Thread.State;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
@@ -12,17 +10,15 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.StateMachine.StateObserver;
 
 public class ArmIOTalonFX implements ArmIO {
   private MotionMagicExpoTorqueCurrentFOC angleRequest;
-  public static final InvertedValue ARM_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive; // TODO find this
+  public static final InvertedValue ARM_MOTOR_INVERTED =
+      InvertedValue.CounterClockwise_Positive; // TODO find this
   public static final double ARM_ROTOR_TO_SENSOR_RATIO = 1; // TODO find this
   public static final double MM_ACCELERATION = 0;
   public static final double MM_CRUISE_VELOCITY = 0;
@@ -39,9 +35,8 @@ public class ArmIOTalonFX implements ArmIO {
   private CANcoder encoder;
   private StateObserver observer;
 
-
-  public ArmIOTalonFX(int falconID, int encoderID, StateObserver observer) {
-    this.observer = observer;
+  public ArmIOTalonFX(int falconID, int encoderID) {
+    this.observer = StateObserver.getInstance();
 
     motor = new TalonFX(falconID);
     TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
@@ -53,8 +48,6 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.MotionMagic.MotionMagicExpo_kA = 0.0;
     angleConfigs.MotionMagic.MotionMagicExpo_kV = 0;
     angleConfigs.MotionMagic.MotionMagicJerk = 0;
-
-
 
     angleConfigs.Slot0.kG = 0;
     angleConfigs.Slot0.kS = 0;
@@ -85,9 +78,10 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void updateInputs(ArmIOInputs inputs) {
     // (-0.5, 0.5) rotations
-    inputs.absolutePosition = Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
+    inputs.absolutePosition =
+        Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
     // technically (-infinity, infinity),
-    // however, the arm can only rotate from (-1,1) rotations
+    // however, the arm can only rotate from (-1,1) rotations //TODO check with electrical once this is wired
     inputs.position = getPosition();
     inputs.zone = getArmZone();
   }
@@ -101,9 +95,8 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   /**
-   * should be called every cycle, so that the arm collision avoidance gets
-   * updated
-   * 
+   * should be called every cycle, so that the arm collision avoidance gets updated
+   *
    * @param state the desired state
    */
   @Override
@@ -136,70 +129,66 @@ public class ArmIOTalonFX implements ArmIO {
       // go as far down as possible without hitting the intake
 
       if (((state.zone == ArmZone.BOTTOM_ZONE && getArmZone() != ArmZone.BOTTOM_ZONE)
-          || (StateObserver.isInIntakeZone(state.zone)))
+              || (StateObserver.isInIntakeZone(state.zone)))
           && !observer.elevatorAboveIntakeMinimum()) {
 
         double elevatorIntakeDelta =
-            // if we're rotating ccw, then we'll going through the coral intake, //TODO check this once architecture is finalized
+            // if we're rotating ccw, then we'll going through the coral intake, //TODO check this
+            // once architecture is finalized
             // so to get the height between the elevator and the intake,
             // we take the difference between the intake height and the elevator height
-            optimalAngle.isCCW ? CoralIntake.CORAL_INTAKE_HEIGHT.baseUnitMagnitude() - elevatorHeight
+            optimalAngle.isCCW
+                ? CoralIntake.CORAL_INTAKE_HEIGHT.baseUnitMagnitude() - elevatorHeight
                 : AlgaeIntake.ALGAE_INTAKE_HEIGHT.baseUnitMagnitude() - elevatorHeight;
 
         // angle between elevator at its current height and intake
-        Rotation2d theta = Rotation2d
-            .fromRadians(
+        Rotation2d theta =
+            Rotation2d.fromRadians(
                 Math.asin(elevatorIntakeDelta / Arm.LENGTH_TO_END_EFFECTOR.baseUnitMagnitude()));
 
         // this is the max angle the arm can go to without hitting the intake
-        Rotation2d maxSafeAngle = optimalAngle.isCCW ? Rotation2d.kPi.minus(theta).minus(ANGLE_BUFFER) 
-            : theta.plus(ANGLE_BUFFER);
+        Rotation2d maxSafeAngle =
+            optimalAngle.isCCW
+                ? Rotation2d.kPi.minus(theta).minus(ANGLE_BUFFER)
+                : theta.plus(ANGLE_BUFFER);
 
         motor.setControl(angleRequest.withPosition(maxSafeAngle.getRotations()));
       }
-      // if we arent switching zones, 
-      //or we are clear of the intake,
-      //or we are going from an intake zone to the top
-      //set arm to the given state
-      //assumes that if you are already in a zone it is safe to travel
-      //within it
+      // if we arent switching zones,
+      // or we are clear of the intake,
+      // or we are going from an intake zone to the top
+      // set arm to the given state
+      // assumes that if you are already in a zone it is safe to travel
+      // within it
       else if (state.zone == getArmZone()
           || observer.elevatorAboveIntakeMinimum()
-          || (observer.isInIntakeZone() && state.zone==ArmZone.TOP_ZONE)) {
+          || (observer.isInIntakeZone() && state.zone == ArmZone.TOP_ZONE)) {
         motor.setControl(angleRequest.withPosition(optimalAngle.angle.getRotations()));
       }
     }
   }
 
   /**
-   * <p>
    * Returns the best angle to go to given a desired angle within (0, 360)
-   * 
-   * <p>
-   * the arm has a range of (-360,360), we need a way to calculate the shortest
-   * angle to go to without overextending.
-   * 
-   * <p>
-   * if both paths are valid and equal length, the ccw path will be returned
-   * (i.e. 90 -> 270 can either go to -90 or 270, 270 will be returned)
-   * 
-   * <p>
-   * for example:
-   * if current = 360 and desired = 10
-   * <p>
-   * output is 10
-   * 
-   * <p>
-   * if current = -360 and desired = 10
-   * <p>
-   * output is -350
-   * 
-   * <p>
-   * if current = -270 and desired = 90
-   * <p>
-   * output is 0
-   * 
-   * 
+   *
+   * <p>the arm has a range of (-360,360), we need a way to calculate the shortest angle to go to
+   * without overextending.
+   *
+   * <p>if both paths are valid and equal length, the ccw path will be returned (i.e. 90 -> 270 can
+   * either go to -90 or 270, 270 will be returned)
+   *
+   * <p>for example: if current = 360 and desired = 10
+   *
+   * <p>output is 10
+   *
+   * <p>if current = -360 and desired = 10
+   *
+   * <p>output is -350
+   *
+   * <p>if current = -270 and desired = 90
+   *
+   * <p>output is 0
+   *
    * @param desiredAngle
    * @return
    */
@@ -240,7 +229,6 @@ public class ArmIOTalonFX implements ArmIO {
 
     return new ArmMovement(isCCW, desiredAngle);
   }
-
 }
 
 class ArmMovement {

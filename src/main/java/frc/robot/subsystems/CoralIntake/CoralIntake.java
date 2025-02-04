@@ -7,9 +7,7 @@ import edu.wpi.first.units.measure.Distance;
 public class CoralIntake {
   private boolean deployed;
 
-  /**
-   * Distance between minimum elevator position and top of the coral intake
-   */
+  /** Distance between minimum elevator position and top of the coral intake */
   public static final Distance CORAL_INTAKE_HEIGHT = Meters.of(0);
 
   public CoralIntake() {}

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Arm;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
@@ -12,9 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.StateMachine.StateObserver;
 import frc.robot.subsystems.StateMachine.SuperstructureState;
-
-import static edu.wpi.first.units.Units.Meters;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Arm extends SubsystemBase {
@@ -23,29 +22,25 @@ public class Arm extends SubsystemBase {
   public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
   public static final Rotation2d BOTTOM_UPPER_LIMIT = Rotation2d.fromDegrees(0);
   public static final Rotation2d BOTTOM_LOWER_LIMIT = Rotation2d.fromDegrees(0);
-  //the total length of the arm + end effector from the rotational joint, for kinematic use
+  // the total length of the arm + end effector from the rotational joint, for kinematic use
   public static final Distance LENGTH_TO_END_EFFECTOR = Meters.of(0);
-  
 
-  private StateObserver observer;
   private Alert motorDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);
   private Alert encoderDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);
-
 
   ArmIO io;
   ArmIOInputs inputs = new ArmIOInputsAutoLogged();
   private ArmState desiredState = ArmState.NO_OP;
 
   /** Creates a new Arm. */
-  public Arm(ArmIO io, StateObserver observer) {
+  public Arm(ArmIO io) {
     this.io = io;
-    this.observer = observer;
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    observer.updateArm(inputs.state, inputs.position);
+    StateObserver.getInstance().updateArm(inputs.state, inputs.position);
     io.setDesiredState(desiredState);
     motorDisconnected.set(!inputs.motorConnected);
     encoderDisconnected.set(!inputs.encoderConnected);
@@ -59,7 +54,6 @@ public class Arm extends SubsystemBase {
     return getArmZone(goal.armState);
   }
   /** see Assets\Docs\TopUpperLimit.png */
-  @AutoLogOutput(key = "StateObserver/ArmZone")
   public static ArmZone getArmZone(Rotation2d position) {
     double deg = position.getDegrees();
     if (deg >= TOP_LOWER_LIMIT.getDegrees() && deg <= TOP_UPPER_LIMIT.getDegrees()) {
@@ -80,7 +74,6 @@ public class Arm extends SubsystemBase {
   public boolean isInIntakeZone() {
     return StateObserver.isInIntakeZone(getArmZone());
   }
-
 
   /**
    * @return {@code false} if the the arm has to go through potential collision zones to get to the

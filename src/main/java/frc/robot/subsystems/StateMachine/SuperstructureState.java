@@ -29,6 +29,8 @@ public class SuperstructureState {
     this.armZone = Arm.getArmZone(armState);
   }
 
+  //TODO im an idiot this should be an enum
+
   public static SuperstructureState IDLE_NO_PIECE =
       new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
@@ -45,7 +47,7 @@ public class SuperstructureState {
           IntakeState.RETRACT,
           ClimberState.STOW);
 
-  public static SuperstructureState IN_BOX = //TODO update all of these
+  public static SuperstructureState IN_BOX = // TODO update all of these
       new SuperstructureState(
           ElevatorState.IDLE_NO_PIECE,
           ArmState.IDLE_NO_PIECE,

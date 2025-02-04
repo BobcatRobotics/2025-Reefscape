@@ -86,9 +86,6 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants {
-    public static final Distance elevatorMinHeight = Meters.of(0);
-    public static final Distance elevatorMaxHeight = Meters.of(0);
-    public static final Distance elevatorLength = Meters.of(0);
     public static final int maxEncoderRevolutions =
         0; // number of revolutions when the elevator is at the top
   }

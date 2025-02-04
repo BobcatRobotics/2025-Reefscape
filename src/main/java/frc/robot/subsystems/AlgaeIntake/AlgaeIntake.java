@@ -7,9 +7,7 @@ import frc.robot.subsystems.CoralIntake.IntakeState;
 
 public class AlgaeIntake {
   private boolean deployed;
-  /**
-   * Distance between minimum elevator position and top of the coral intake
-   */  
+  /** Distance between minimum elevator position and top of the coral intake */
   public static final Distance ALGAE_INTAKE_HEIGHT = Meters.of(0);
 
   public AlgaeIntake() {}

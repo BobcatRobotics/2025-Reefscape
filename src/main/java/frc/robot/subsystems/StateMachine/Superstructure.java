@@ -34,8 +34,7 @@ public class Superstructure {
     if (Elevator.checkForArmCollision(desiredState.armZone, desiredState.elevatorState)) {
       stateAlert.set(true);
       return false; // dont set the arm to the invalid state
-    }
-    ;
+    };
 
     currentState = desiredState;
 
