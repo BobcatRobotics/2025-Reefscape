@@ -1,6 +1,6 @@
 package frc.robot.subsystems.CoralIntake;
 
 public enum IntakeState {
-  DEPLOYED,
+  DEPLOY,
   RETRACT
 }

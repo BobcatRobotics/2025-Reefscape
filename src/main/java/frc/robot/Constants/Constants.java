@@ -84,19 +84,4 @@ public final class Constants {
 
     public static final String ip = "10.1.77.11";
   }
-
-  public static final class ElevatorConstants {
-    public static final int maxEncoderRevolutions =
-        0; // number of revolutions when the elevator is at the top
-  }
-
-  public static final class ArmConstants {
-    public static final Angle armMinAngle = Radians.of(0);
-    public static final Angle armMaxAngle = Radians.of(0);
-    public static final Distance armLength = Meters.of(0);
-  }
-
-  public static final class IntakeConstants {
-    public static final Distance distanceToCenter = Meters.of(0);
-  }
 }

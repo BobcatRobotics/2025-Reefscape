@@ -12,6 +12,8 @@ public enum ElevatorState {
   SCOREL4(0),
   PICKUP_ALGAE(0), // algae handoff
   PICKUP_CORAL(0), // coral handoff
+  HUMAN_INTAKE(0),
+  CLIMB(0),
   NO_OP(0); // maintain current position
 
   ElevatorState(double heightMeters) {

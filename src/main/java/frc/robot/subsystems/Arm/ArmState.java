@@ -13,7 +13,10 @@ public enum ArmState {
   SCOREL4(0),
   PICKUP_ALGAE(0),
   PICKUP_CORAL(0),
+  CLIMB(0),
+  HUMAN_INTAKE(0),
   NO_OP(-1);
+
 
   ArmState(int degrees) {
     this.degrees = degrees;
