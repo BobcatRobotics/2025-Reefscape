@@ -139,6 +139,7 @@ public class RobotContainer {
     //        () -> limelight.getTX().unaryMinus(),
     //        () -> limelight.targetPoseCameraSpace().getX(),
     //        () -> limelight.targetPoseCameraSpace().getY()));
+
     // Switch to X pattern when X button is pressed
     rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -148,6 +149,13 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
             .ignoringDisable(true));
+
+    logitech.a.whileTrue(
+        DriveCommands.singleTagAlign(
+            drive,
+            () -> limelight.targetPoseCameraSpace().getX(),
+            () -> 0,
+            () -> Rotation2d.fromDegrees(0)));
   }
 
   /**
