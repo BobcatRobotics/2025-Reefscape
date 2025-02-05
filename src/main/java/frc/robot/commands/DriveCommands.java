@@ -377,18 +377,18 @@ public class DriveCommands {
           Translation2d linearVelocity =
               getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-          // Apply rotation deadband
-          // double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+        //   Apply rotation deadband
+          double omegaOverride = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), DEADBAND);
 
-          // Square rotation value for more precise control
-          // omega = Math.copySign(omega * omega, omega);
+        //   Square rotation value for more precise control
+          omegaOverride = Math.copySign(omegaOverride * omegaOverride, omegaOverride);
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(
                   linearVelocity.getX() + xOutput * drive.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() + yOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                  omegaOutput * drive.getMaxAngularSpeedRadPerSec());
+                  (omegaOutput+omegaOverride) * drive.getMaxAngularSpeedRadPerSec());
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
