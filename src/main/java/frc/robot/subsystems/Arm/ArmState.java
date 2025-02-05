@@ -17,7 +17,6 @@ public enum ArmState {
   HUMAN_INTAKE(0),
   NO_OP(-1);
 
-
   ArmState(int degrees) {
     this.degrees = degrees;
     this.rotations = degrees / 360;

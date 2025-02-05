@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.StateMachine.StateObserver;
 import frc.robot.subsystems.StateMachine.SuperstructureState;
-import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Arm extends SubsystemBase {
   // see Assets\Docs\TopUpperLimit.png

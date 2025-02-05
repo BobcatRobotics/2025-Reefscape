@@ -10,8 +10,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-  
-  public static final InvertedValue ELEVATOR_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive;
+
+  public static final InvertedValue ELEVATOR_MOTOR_INVERTED =
+      InvertedValue.CounterClockwise_Positive;
   public static final double ELEVATOR_ROTOR_TO_SENSOR_RATIO = 1;
 
   public static final double MM_ACCELERATION = 0;
@@ -21,18 +22,18 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public static final double MM_JERK = 0;
 
   /**
-   * note that kG is different from ks, even they are both static forces, ks always opposes the direction of motion,
-   * kg is always in the same direction, regardless of which way the elevator is moving
+   * note that kG is different from ks, even they are both static forces, ks always opposes the
+   * direction of motion, kg is always in the same direction, regardless of which way the elevator
+   * is moving
    */
   public static final double kG = 0;
+
   public static final double kS = 0;
   public static final double kV = 0;
   public static final double kA = 0;
   public static final double kP = 0;
   public static final double kD = 0;
 
-
-  
   private TalonFX motor;
   private CANcoder encoder;
   private MotionMagicExpoTorqueCurrentFOC positionRequest = new MotionMagicExpoTorqueCurrentFOC(0);
@@ -40,7 +41,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public ElevatorIOTalonFX(int motorID, int encoderID) {
     motor = new TalonFX(motorID);
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motor.getConfigurator().apply(motorConfig); //reset to factory default
+    motor.getConfigurator().apply(motorConfig); // reset to factory default
 
     motorConfig.MotorOutput.Inverted = ELEVATOR_MOTOR_INVERTED;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;

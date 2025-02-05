@@ -22,8 +22,8 @@ public class ArmIOTalonFX implements ArmIO {
   public static final double MM_CRUISE_VELOCITY = 0; // TODO find this
   public static final double MM_EXPO_KA = 0; // TODO find this
   public static final double MM_EXPO_KV = 0; // TODO find this
-  public static final Rotation2d ARM_MIN_ANGLE = Rotation2d.fromDegrees(-360); //TODO find this
-  public static final Rotation2d ARM_MAX_ANGLE = Rotation2d.fromDegrees(360); //TODO find this
+  public static final Rotation2d ARM_MIN_ANGLE = Rotation2d.fromDegrees(-360); // TODO find this
+  public static final Rotation2d ARM_MAX_ANGLE = Rotation2d.fromDegrees(360); // TODO find this
   // how far away to stay from the intake
   // TODO tune this to be as small as safely possible
   public static final Rotation2d ANGLE_BUFFER = Rotation2d.fromDegrees(10);
@@ -32,7 +32,6 @@ public class ArmIOTalonFX implements ArmIO {
   private CANcoder encoder;
   private StateObserver observer;
   private MotionMagicExpoTorqueCurrentFOC angleRequest;
-
 
   public ArmIOTalonFX(int falconID, int encoderID) {
     this.observer = StateObserver.getInstance();
@@ -79,7 +78,8 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.absolutePosition =
         Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
     // technically (-infinity, infinity),
-    // however, the arm can only rotate from (-1,1) rotations //TODO check with electrical once this is wired
+    // however, the arm can only rotate from (-1,1) rotations //TODO check with electrical once this
+    // is wired
     inputs.position = getPosition();
     inputs.zone = getArmZone();
   }
@@ -166,61 +166,59 @@ public class ArmIOTalonFX implements ArmIO {
     }
   }
 
+  /**
+   * Returns the best angle to go to, given a desired angle (in [0,360)) and an arbitrary allowed
+   * range [minAngle, maxAngle].
+   *
+   * <p>The arm’s allowed range may be, for example, [-270,270] or [-180,180]. The desired angle is
+   * given as a Rotation2d (which should represent an angle in [0,360)).
+   *
+   * <p>The algorithm adjusts the desired angle by adding or subtracting multiples of 360° so that
+   * the target is as close as possible to the current position (i.e. the difference is no more than
+   * 180°) and ensures that the result is within the allowed range.
+   *
+   * <p>If both paths (clockwise or counterclockwise) are valid and equal in magnitude, the
+   * counterclockwise path is chosen.
+   *
+   * @param desiredAngle the desired angle (interpreted modulo 360°)
+   * @param minAngle the minimum allowed angle (in degrees)
+   * @param maxAngle the maximum allowed angle (in degrees)
+   * @return an ArmMovement containing the target angle (as a Rotation2d) and the direction
+   */
+  public ArmMovement optimalAngle(Rotation2d desiredAngle) {
+    // current position in degrees (assuming encoder returns revolutions that are then scaled)
+    double current = encoder.getPosition().getValueAsDouble() * 360;
 
-/**
- * Returns the best angle to go to, given a desired angle (in [0,360)) 
- * and an arbitrary allowed range [minAngle, maxAngle].  
- *
- * <p>The arm’s allowed range may be, for example, [-270,270] or [-180,180].
- * The desired angle is given as a Rotation2d (which should represent an angle in [0,360)).
- * 
- * <p>The algorithm adjusts the desired angle by adding or subtracting multiples of 360°
- * so that the target is as close as possible to the current position (i.e. the difference
- * is no more than 180°) and ensures that the result is within the allowed range.
- * 
- * <p>If both paths (clockwise or counterclockwise) are valid and equal in magnitude,
- * the counterclockwise path is chosen.
- *
- * @param desiredAngle the desired angle (interpreted modulo 360°)
- * @param minAngle the minimum allowed angle (in degrees)
- * @param maxAngle the maximum allowed angle (in degrees)
- * @return an ArmMovement containing the target angle (as a Rotation2d) and the direction
- */
-public ArmMovement optimalAngle(Rotation2d desiredAngle) {
-  // current position in degrees (assuming encoder returns revolutions that are then scaled)
-  double current = encoder.getPosition().getValueAsDouble() * 360;
-  
-  // normalize the desired angle to [0, 360)
-  double candidate = desiredAngle.getDegrees() % 360;
-  if (candidate < 0) {
+    // normalize the desired angle to [0, 360)
+    double candidate = desiredAngle.getDegrees() % 360;
+    if (candidate < 0) {
       candidate += 360;
-  }
-  
-  // Adjust candidate by adding/subtracting multiples of 360 so that 
-  // the difference (candidate - current) lies in [-180, 180]
-  while (candidate - current > 180) {
+    }
+
+    // Adjust candidate by adding/subtracting multiples of 360 so that
+    // the difference (candidate - current) lies in [-180, 180]
+    while (candidate - current > 180) {
       candidate -= 360;
-  }
-  while (candidate - current < -180) {
+    }
+    while (candidate - current < -180) {
       candidate += 360;
-  }
-  
-  // Now ensure that candidate is within the allowed range.
-  // If it is outside, adjust by a full rotation until it is.
-  while (candidate > ARM_MAX_ANGLE.getDegrees()) {
+    }
+
+    // Now ensure that candidate is within the allowed range.
+    // If it is outside, adjust by a full rotation until it is.
+    while (candidate > ARM_MAX_ANGLE.getDegrees()) {
       candidate -= 360;
-  }
-  while (candidate < ARM_MIN_ANGLE.getDegrees()) {
+    }
+    while (candidate < ARM_MIN_ANGLE.getDegrees()) {
       candidate += 360;
+    }
+
+    // Compute the rotation direction: if the delta is positive, move CCW.
+    double delta = candidate - current;
+    boolean isCCW = delta > 0;
+
+    return new ArmMovement(isCCW, Rotation2d.fromDegrees(candidate));
   }
-  
-  
-  // Compute the rotation direction: if the delta is positive, move CCW.
-  double delta = candidate - current;
-  boolean isCCW = delta > 0;
-  
-  return new ArmMovement(isCCW, Rotation2d.fromDegrees(candidate));
-}
 }
 
 class ArmMovement {

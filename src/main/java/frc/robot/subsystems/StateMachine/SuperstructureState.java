@@ -1,9 +1,6 @@
 package frc.robot.subsystems.StateMachine;
 
-import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.ArmState;
-import frc.robot.subsystems.Arm.ArmZone;
-import frc.robot.subsystems.Climber.ClimberState;
 import frc.robot.subsystems.CoralIntake.IntakeState;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
@@ -88,60 +85,37 @@ import frc.robot.subsystems.Elevator.ElevatorState;
 //           ClimberState.STOW); // intake
 
 public enum SuperstructureState {
-    INTAKE_ALGAE(
-            ElevatorState.IDLE_NO_PIECE,
-            ArmState.IDLE_NO_PIECE,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT),
-    PICKUP_ALGAE(
-            ElevatorState.PICKUP_ALGAE,
-            ArmState.PICKUP_ALGAE,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT),
-    CORAL_HANDOFF(
-            ElevatorState.PICKUP_CORAL,
-            ArmState.PICKUP_CORAL,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT),
-    INTAKE_CORAL(
-            ElevatorState.IDLE_NO_PIECE,
-            ArmState.IDLE_NO_PIECE,
-            IntakeState.DEPLOY,
-            IntakeState.RETRACT),
-    INTAKE_CORAL_HUMAN(
-            ElevatorState.HUMAN_INTAKE,
-            ArmState.PICKUP_CORAL,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT),
-    PICKUP_CORAL(
-            ElevatorState.PICKUP_CORAL,
-            ArmState.PICKUP_CORAL,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT),
-    CLIMB_DEPLOY(
-            ElevatorState.CLIMB,
-            ArmState.CLIMB,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT),
-    CLIMB_RETRACT(
-            ElevatorState.CLIMB,
-            ArmState.CLIMB,
-            IntakeState.RETRACT,
-            IntakeState.RETRACT);
+  INTAKE_ALGAE(
+      ElevatorState.IDLE_NO_PIECE,
+      ArmState.IDLE_NO_PIECE,
+      IntakeState.RETRACT,
+      IntakeState.RETRACT),
+  PICKUP_ALGAE(
+      ElevatorState.PICKUP_ALGAE, ArmState.PICKUP_ALGAE, IntakeState.RETRACT, IntakeState.RETRACT),
+  CORAL_HANDOFF(
+      ElevatorState.PICKUP_CORAL, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
+  INTAKE_CORAL(
+      ElevatorState.IDLE_NO_PIECE, ArmState.IDLE_NO_PIECE, IntakeState.DEPLOY, IntakeState.RETRACT),
+  INTAKE_CORAL_HUMAN(
+      ElevatorState.HUMAN_INTAKE, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
+  PICKUP_CORAL(
+      ElevatorState.PICKUP_CORAL, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
+  CLIMB_DEPLOY(ElevatorState.CLIMB, ArmState.CLIMB, IntakeState.RETRACT, IntakeState.RETRACT),
+  CLIMB_RETRACT(ElevatorState.CLIMB, ArmState.CLIMB, IntakeState.RETRACT, IntakeState.RETRACT);
 
-    SuperstructureState(
-            ElevatorState elevatorState,
-            ArmState armState,
-            IntakeState coralIntakeState,
-            IntakeState algaeIntakeState) {
-        this.armState = armState;
-        this.elevatorState = elevatorState;
-        this.coralIntakeState = coralIntakeState;
-        this.algaeIntakeState = algaeIntakeState;
-    }
+  SuperstructureState(
+      ElevatorState elevatorState,
+      ArmState armState,
+      IntakeState coralIntakeState,
+      IntakeState algaeIntakeState) {
+    this.armState = armState;
+    this.elevatorState = elevatorState;
+    this.coralIntakeState = coralIntakeState;
+    this.algaeIntakeState = algaeIntakeState;
+  }
 
-    public ArmState armState;
-    public ElevatorState elevatorState;
-    public IntakeState coralIntakeState;
-    public IntakeState algaeIntakeState;
+  public ArmState armState;
+  public ElevatorState elevatorState;
+  public IntakeState coralIntakeState;
+  public IntakeState algaeIntakeState;
 }

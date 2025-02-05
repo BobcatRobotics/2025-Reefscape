@@ -37,8 +37,8 @@ public class StateObserver {
     this.elevatorState = elevatorState;
   }
 
-  public static StateObserver getInstance(){
-    if(instance == null){
+  public static StateObserver getInstance() {
+    if (instance == null) {
       instance = new StateObserver();
     }
     return instance;
