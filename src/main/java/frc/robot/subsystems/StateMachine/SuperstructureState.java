@@ -1,100 +1,121 @@
 package frc.robot.subsystems.StateMachine;
 
-public class SuperstructureState {
-  private ArmState armState;
-  private IntakeState intakeState;
-  private EndEffectorState endEffectorState;
+import frc.robot.subsystems.Arm.ArmState;
+import frc.robot.subsystems.CoralIntake.IntakeState;
+import frc.robot.subsystems.Elevator.ElevatorState;
 
-  public SuperstructureState(
-      ArmState armState, IntakeState intakeState, EndEffectorState endEffectorState) {
+// public class SuperstructureState {
+//   public ElevatorState elevatorState;
+//   public ArmState armState;
+//   public IntakeState coralIntakeState;
+//   public IntakeState algaeIntakeState;
+//   public ArmZone armZone;
+//   public ClimberState climberState;
+
+//   public SuperstructureState(
+//       ElevatorState elevatorState,
+//       ArmState armState,
+//       IntakeState coralIntakeState,
+//       IntakeState algaeIntakeState,
+//       ClimberState climberState) {
+//     this.armState = armState;
+//     this.elevatorState = elevatorState;
+//     this.coralIntakeState = coralIntakeState;
+//     this.algaeIntakeState = algaeIntakeState;
+//     this.climberState = climberState;
+//     this.armZone = Arm.getArmZone(armState);
+//   }
+
+//   //TODO im an idiot this should be an enum
+
+//   public static SuperstructureState IDLE_NO_PIECE =
+//       new SuperstructureState(
+//           ElevatorState.IDLE_NO_PIECE,
+//           ArmState.IDLE_NO_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW);
+
+//   public static SuperstructureState IDLE_PIECE =
+//       new SuperstructureState(
+//           ElevatorState.IDLE_PIECE,
+//           ArmState.IDLE_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW);
+
+//   public static SuperstructureState IN_BOX = // TODO update all of these
+//       new SuperstructureState(
+//           ElevatorState.IDLE_NO_PIECE,
+//           ArmState.IDLE_NO_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW);
+
+//   public static SuperstructureState SCOREL1 =
+//       new SuperstructureState(
+//           ElevatorState.IDLE_NO_PIECE,
+//           ArmState.IDLE_NO_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW);
+
+//   public static SuperstructureState SCOREL3 =
+//       new SuperstructureState(
+//           ElevatorState.IDLE_NO_PIECE,
+//           ArmState.IDLE_NO_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW);
+
+//   public static SuperstructureState SCOREL4 =
+//       new SuperstructureState(
+//           ElevatorState.IDLE_NO_PIECE,
+//           ArmState.IDLE_NO_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW);
+
+//   public static SuperstructureState INTAKE_ALGAE =
+//       new SuperstructureState(
+//           ElevatorState.IDLE_NO_PIECE,
+//           ArmState.IDLE_NO_PIECE,
+//           IntakeState.RETRACT,
+//           IntakeState.RETRACT,
+//           ClimberState.STOW); // intake
+
+public enum SuperstructureState {
+  INTAKE_ALGAE(
+      ElevatorState.IDLE_NO_PIECE,
+      ArmState.IDLE_NO_PIECE,
+      IntakeState.RETRACT,
+      IntakeState.RETRACT),
+  PICKUP_ALGAE(
+      ElevatorState.PICKUP_ALGAE, ArmState.PICKUP_ALGAE, IntakeState.RETRACT, IntakeState.RETRACT),
+  CORAL_HANDOFF(
+      ElevatorState.PICKUP_CORAL, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
+  INTAKE_CORAL(
+      ElevatorState.IDLE_NO_PIECE, ArmState.IDLE_NO_PIECE, IntakeState.DEPLOY, IntakeState.RETRACT),
+  INTAKE_CORAL_HUMAN(
+      ElevatorState.HUMAN_INTAKE, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
+  PICKUP_CORAL(
+      ElevatorState.PICKUP_CORAL, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
+  CLIMB_DEPLOY(ElevatorState.CLIMB, ArmState.CLIMB, IntakeState.RETRACT, IntakeState.RETRACT),
+  CLIMB_RETRACT(ElevatorState.CLIMB, ArmState.CLIMB, IntakeState.RETRACT, IntakeState.RETRACT);
+
+  SuperstructureState(
+      ElevatorState elevatorState,
+      ArmState armState,
+      IntakeState coralIntakeState,
+      IntakeState algaeIntakeState) {
     this.armState = armState;
-    this.intakeState = intakeState;
-    this.endEffectorState = endEffectorState;
+    this.elevatorState = elevatorState;
+    this.coralIntakeState = coralIntakeState;
+    this.algaeIntakeState = algaeIntakeState;
   }
 
-  public SuperstructureState(ArmState armState, IntakeState intakeState) {
-    this.armState = armState;
-    this.intakeState = intakeState;
-    this.endEffectorState = EndEffectorState.NO_OP;
-  }
-
-  public SuperstructureState(ArmState armState, EndEffectorState endEffectorState) {
-    this.armState = armState;
-    this.intakeState = IntakeState.NO_OP;
-    this.endEffectorState = endEffectorState;
-  }
-
-  public SuperstructureState(IntakeState intakeState, EndEffectorState endEffectorState) {
-    this.armState = ArmState.NO_OP;
-    this.intakeState = intakeState;
-    this.endEffectorState = endEffectorState;
-  }
-
-  public SuperstructureState(ArmState armState) {
-    this.armState = armState;
-    this.intakeState = IntakeState.NO_OP;
-    this.endEffectorState = EndEffectorState.NO_OP;
-  }
-
-  public SuperstructureState(IntakeState intakeState) {
-    this.armState = ArmState.NO_OP;
-    this.intakeState = intakeState;
-    this.endEffectorState = EndEffectorState.NO_OP;
-  }
-
-  public SuperstructureState(EndEffectorState endEffectorState) {
-    this.armState = ArmState.NO_OP;
-    this.intakeState = IntakeState.NO_OP;
-    this.endEffectorState = endEffectorState;
-  }
-
-  public SuperstructureState() {
-    this.armState = ArmState.NO_OP;
-    this.intakeState = IntakeState.NO_OP;
-    this.endEffectorState = EndEffectorState.NO_OP;
-  }
-
-  public ArmState getArmState() {
-    return armState;
-  }
-
-  public IntakeState getIntakeState() {
-    return intakeState;
-  }
-
-  public EndEffectorState getEndEffectorState() {
-    return endEffectorState;
-  }
-
-  public static SuperstructureState IDLE =
-      new SuperstructureState(ArmState.IDLE, IntakeState.IDLE, EndEffectorState.IDLE);
-  public static SuperstructureState INTAKE =
-      new SuperstructureState(ArmState.INTAKE, IntakeState.INTAKE, EndEffectorState.NO_OP);
-}
-
-enum ArmState {
-  IDLE,
-  INTAKE,
-  SCOREL1,
-  SCOREL2,
-  SCOREL3,
-  SCOREL4,
-  LOW_AlGAE,
-  HIGH_AlGAE,
-  PICKUP,
-  NO_OP
-}
-
-enum EndEffectorState {
-  IDLE,
-  PICKUP,
-  OUTTAKE,
-  NO_OP
-}
-
-enum IntakeState {
-  IDLE,
-  INTAKE,
-  OUTTAKE,
-  NO_OP
+  public ArmState armState;
+  public ElevatorState elevatorState;
+  public IntakeState coralIntakeState;
+  public IntakeState algaeIntakeState;
 }

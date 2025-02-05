@@ -21,10 +21,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.LogitechGamepad;
+import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
-import frc.robot.Constants.Constants.LimelightConstants;
-import frc.robot.Constants.TunerConstants;
+import frc.robot.Constants.TunerConstants24;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
@@ -32,9 +31,6 @@ import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
-import frc.robot.subsystems.Limelight.Vision;
-import frc.robot.subsystems.Limelight.VisionIO;
-import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -46,10 +42,13 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  public final Vision limelight;
+  // public final Vision limelight;
 
   // Controller
-  private LogitechGamepad logitech = new LogitechGamepad(0);
+  // private LogitechGamepad logitech = new LogitechGamepad(0);
+  private Ruffy leftStick = new Ruffy(0);
+  private Ruffy rightStick = new Ruffy(1);
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -61,11 +60,11 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
-        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+                new ModuleIOTalonFX(TunerConstants24.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants24.FrontRight),
+                new ModuleIOTalonFX(TunerConstants24.BackLeft),
+                new ModuleIOTalonFX(TunerConstants24.BackRight));
+        // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
 
         break;
 
@@ -74,11 +73,11 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
-        limelight = new Vision(drive, new VisionIO() {});
+                new ModuleIOSim(TunerConstants24.FrontLeft),
+                new ModuleIOSim(TunerConstants24.FrontRight),
+                new ModuleIOSim(TunerConstants24.BackLeft),
+                new ModuleIOSim(TunerConstants24.BackRight));
+        // limelight = new Vision(drive, new VisionIO() {});
 
         break;
 
@@ -91,7 +90,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        limelight = new Vision(drive, new VisionIO() {});
+        // limelight = new Vision(drive, new VisionIO() {});
         break;
     }
 
@@ -132,22 +131,20 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
-            drive,
-            () -> -logitech.leftYAxis.getAsDouble(),
-            logitech.leftXAxis,
-            () -> -0.5 * logitech.rightXAxis.getAsDouble()));
+            drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
 
-    // logitech.a.whileTrue(
-    //     DriveCommands.alignToTag(
-    //         drive,
-    //         () -> Rotation2d.fromDegrees(0), // limelight.getTX().unaryMinus(),
-    //         () -> 0, // limelight.targetPoseCameraSpace().getY(),
-    //         () -> -limelight.targetPoseCameraSpace().getX()));
+    // rightStick.button.whileTrue(
+    //    DriveCommands.alignToTag(
+    //        drive,
+    //        () -> limelight.getTX().unaryMinus(),
+    //        () -> limelight.targetPoseCameraSpace().getX(),
+    //        () -> limelight.targetPoseCameraSpace().getY()));
+
     // Switch to X pattern when X button is pressed
-    logitech.x.onTrue(Commands.runOnce(drive::stopWithX, drive));
+    rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0 deg when B button is pressed
-    logitech.b.onTrue(
+    leftStick.button.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
