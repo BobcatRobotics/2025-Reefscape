@@ -372,7 +372,7 @@ public class DriveCommands {
                     Pose2d poseDirection = new Pose2d(FieldConstants.Reef.center,
                             Rotation2d.fromDegrees(180 - (60 * faceIndex)));
 
-                    double adjustX = 2.5;
+                    double adjustX = ALIGN_DISTANCE.baseUnitMagnitude()+FieldConstants.Reef.faceToCenter;
                     double adjustY = Units.inchesToMeters(0);
 
                     Pose2d offsetFace = new Pose2d(
