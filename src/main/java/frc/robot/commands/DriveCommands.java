@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -16,9 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
-
-import static edu.wpi.first.units.Units.Meters;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -30,7 +30,7 @@ public class DriveCommands {
   private static final double ANGLE_KP = 7.0;
   private static final double ANGLE_KD = 0;
   private static final double DRIVE_KPY = 1.2;
-  private static final double DRIVE_KDY = 0.6;
+  private static final double DRIVE_KDY = 0;
   private static final double DRIVE_KPX = 4;
   private static final double DRIVE_KDX = 0;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -365,17 +365,28 @@ public class DriveCommands {
 
     ProfiledPIDController yController =
         new ProfiledPIDController(
-            DRIVE_KPY, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(1, 1.0));
+            DRIVE_KPY, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
 
     return Commands.run(
             () -> {
               Pose2d nearestFace = drive.getPose().nearest(faces);
-              Logger.recordOutput("reef_face", nearestFace);
-             Transform2d reefOffset = nearestFace.minus(drive.getPose());
-             
-             double theta = Math.atan(reefOffset.getY()/reefOffset.getX());
-             double xGoal = Math.cos(theta)*ALIGN_DISTANCE.baseUnitMagnitude();
-             double yGoal = Math.sin(theta)*ALIGN_DISTANCE.baseUnitMagnitude();
+              Logger.recordOutput("reef_face/raw", nearestFace);
+              Transform2d reefOffset = nearestFace.minus(drive.getPose());
+
+            //   double theta = Math.atan(reefOffset.getY() / reefOffset.getX());
+            //   double xGoal = Math.cos(theta) * ALIGN_DISTANCE.baseUnitMagnitude();
+            //   double yGoal = Math.sin(theta) * ALIGN_DISTANCE.baseUnitMagnitude();
+
+            //   Pose2d calculatedReef =
+            //       nearestFace.transformBy(new Transform2d(xGoal, yGoal, new Rotation2d(theta)));
+
+            //   Logger.recordOutput("reef_face/reefOffset", reefOffset);
+            //   Logger.recordOutput("reef_face/calculatedReef", calculatedReef);
+
+              Pose2d poseDirection = new Pose2d(FieldConstants.Reef.center, Rotation2d.fromDegrees(180 - (60 * face)));
+              double adjustX = Units.inchesToMeters(30.738);
+
+
 
               double yOutput = yController.calculate(drive.getPose().getY(), yGoal);
               double xOutput = xController.calculate(drive.getPose().getX(), xGoal);
@@ -383,7 +394,6 @@ public class DriveCommands {
               Logger.recordOutput("driveToReef/xPID", xOutput);
               Logger.recordOutput("driveToReef/yError", yController.getPositionError());
               Logger.recordOutput("driveToReef/yPID", yOutput);
-
 
               //   double omegaOutput =
               //       angleController.calculate(
@@ -423,6 +433,8 @@ public class DriveCommands {
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
+              yController.reset(drive.getPose().getY());
+              angleController.reset(drive.getPose().getRotation().getRadians());
             });
   }
 }
