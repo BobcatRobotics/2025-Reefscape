@@ -61,8 +61,7 @@ public class FieldConstants {
     public static final List<Map<ReefHeight, Pose3d>> branchPositions =
         new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
 
-    public static final List<Map<ReefHeight, Pose3d>> offsetPositions = 
-        new ArrayList<>();
+    public static final List<Map<ReefHeight, Pose3d>> offsetPositions = new ArrayList<>();
 
     static {
       // Initialize faces
@@ -141,33 +140,33 @@ public class FieldConstants {
         branchPositions.add(fillLeft);
       }
 
-    //   for (int face = 0; face < 6; face++) {
-    //     Map<ReefHeight, Pose3d> offset = new HashMap<>();
-    //     for (var level : ReefHeight.values()) {
-    //       Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
-    //       double adjustX = 2.5; //meters
-    //       double adjustY = Units.inchesToMeters(0);
+      //   for (int face = 0; face < 6; face++) {
+      //     Map<ReefHeight, Pose3d> offset = new HashMap<>();
+      //     for (var level : ReefHeight.values()) {
+      //       Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
+      //       double adjustX = 2.5; //meters
+      //       double adjustY = Units.inchesToMeters(0);
 
-    //       offset.put(
-    //           level,
-    //           new Pose3d(
-    //               new Translation3d(
-    //                   poseDirection
-    //                       .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
-    //                       .getX(),
-    //                   poseDirection
-    //                       .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
-    //                       .getY(),
-    //                   level.height),
-    //               new Rotation3d(
-    //                   0,
-    //                   Units.degreesToRadians(level.pitch),
-    //                   poseDirection.getRotation().getRadians())));
-    //     offsetPositions.add(offset);
-    //   }
-    // }
+      //       offset.put(
+      //           level,
+      //           new Pose3d(
+      //               new Translation3d(
+      //                   poseDirection
+      //                       .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+      //                       .getX(),
+      //                   poseDirection
+      //                       .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+      //                       .getY(),
+      //                   level.height),
+      //               new Rotation3d(
+      //                   0,
+      //                   Units.degreesToRadians(level.pitch),
+      //                   poseDirection.getRotation().getRadians())));
+      //     offsetPositions.add(offset);
+      //   }
+      // }
 
-     }
+    }
   }
 
   public static class StagingPositions {

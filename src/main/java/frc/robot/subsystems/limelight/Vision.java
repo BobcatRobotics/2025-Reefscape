@@ -9,6 +9,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.util.VisionObservation;
@@ -40,7 +43,7 @@ public class Vision extends SubsystemBase {
   }
 
   // public void setCamMode(CamMode mode) {
-  //   io.setCamMode(mode);
+  // io.setCamMode(mode);
   // }
 
   public double getTClass() {
@@ -94,13 +97,23 @@ public class Vision extends SubsystemBase {
   }
 
   public void resetGyroLL4() {
-    LimelightHelpers.SetIMUMode(inputs.name, 1);
-    io.setRobotOrientationMG2(swerve.getRotation());
-    LimelightHelpers.SetIMUMode(inputs.name, 2);
+    if (DriverStation.isDSAttached()) {
+      LimelightHelpers.SetIMUMode(inputs.name, 1);
+      if (DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+        io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+      } else {
+        io.setRobotOrientationMG2(swerve.getRotation());
+      }
+
+      LimelightHelpers.SetIMUMode(inputs.name, 2);
+    }
+    ;
   }
 
   /**
-   * TODO fix mount angle, this assumes the limelight is mounted at the back of the robot
+   * TODO fix mount angle, this assumes the limelight is mounted at the back of
+   * the robot
    *
    * @param yaw current yaw of the robot
    * @return the angle of the focused apriltag relative to the robot
@@ -123,7 +136,10 @@ public class Vision extends SubsystemBase {
         LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
   }
 
-  /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
+  /**
+   * tells the limelight what the rotation of the gyro is, for determining pose
+   * ambiguity stuff
+   */
   public void SetRobotOrientation(Rotation2d gyro) {
     io.setRobotOrientationMG2(gyro);
   }
@@ -158,7 +174,8 @@ public class Vision extends SubsystemBase {
     Logger.recordOutput("LLDebug/" + inputs.name + " rdiff", diff);
 
     // this determines if the raw data from the limelight is valid
-    // sometimes the limelight will give really bad data, so we want to throw this out
+    // sometimes the limelight will give really bad data, so we want to throw this
+    // out
     // and not use it in our pose estimation.
     // to check for this, we check to see if the rotation from the pose matches
     // the rotation that the gyro is reporting
@@ -186,12 +203,13 @@ public class Vision extends SubsystemBase {
   }
 
   // public double getDistToTag() {
-  //   //indicies don't match documentation with targetpose_robotspace
-  //   Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot",
+  // //indicies don't match documentation with targetpose_robotspace
+  // Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot",
   // Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
   // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
-  //   return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
-  // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is z
+  // return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
+  // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is
+  // z
 
   // }
 
