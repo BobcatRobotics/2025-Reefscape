@@ -2,6 +2,8 @@ package frc.robot.subsystems.StateMachine;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystems.Arm.Arm;
@@ -14,11 +16,11 @@ import frc.robot.subsystems.Elevator.ElevatorState;
 public class StateObserver {
   private static StateObserver instance;
 
-  public ArmState armstate = ArmState.NO_OP;
-  public ArmZone armZone = ArmZone.TOP_ZONE;
+  public ArmState armstate = ArmState.IDLE_NO_PIECE;
+  public ArmZone armZone = ArmZone.BOTTOM_ZONE;
   public Rotation2d armPos = new Rotation2d();
 
-  public ElevatorState elevatorState = ElevatorState.NO_OP;
+  public ElevatorState elevatorState = ElevatorState.IDLE_NO_PIECE;
   public Distance elevatorHeight = Meters.of(0);
 
   public IntakeState coralIntakeState = IntakeState.RETRACT;
@@ -78,4 +80,5 @@ public class StateObserver {
   public static boolean isInIntakeZone(ArmZone zone) {
     return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
   }
+
 }

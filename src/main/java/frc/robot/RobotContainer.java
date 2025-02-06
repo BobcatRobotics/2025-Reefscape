@@ -149,13 +149,6 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
             .ignoringDisable(true));
-
-    logitech.a.whileTrue(
-        DriveCommands.singleTagAlign(
-            drive,
-            () -> limelight.targetPoseCameraSpace().getX(),
-            () -> 0,
-            () -> Rotation2d.fromDegrees(0)));
   }
 
   /**

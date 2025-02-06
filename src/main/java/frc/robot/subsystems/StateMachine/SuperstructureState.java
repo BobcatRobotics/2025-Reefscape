@@ -4,118 +4,40 @@ import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.CoralIntake.IntakeState;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
-// public class SuperstructureState {
-//   public ElevatorState elevatorState;
-//   public ArmState armState;
-//   public IntakeState coralIntakeState;
-//   public IntakeState algaeIntakeState;
-//   public ArmZone armZone;
-//   public ClimberState climberState;
-
-//   public SuperstructureState(
-//       ElevatorState elevatorState,
-//       ArmState armState,
-//       IntakeState coralIntakeState,
-//       IntakeState algaeIntakeState,
-//       ClimberState climberState) {
-//     this.armState = armState;
-//     this.elevatorState = elevatorState;
-//     this.coralIntakeState = coralIntakeState;
-//     this.algaeIntakeState = algaeIntakeState;
-//     this.climberState = climberState;
-//     this.armZone = Arm.getArmZone(armState);
-//   }
 
 //   //TODO im an idiot this should be an enum
 
-//   public static SuperstructureState IDLE_NO_PIECE =
-//       new SuperstructureState(
-//           ElevatorState.IDLE_NO_PIECE,
-//           ArmState.IDLE_NO_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW);
-
-//   public static SuperstructureState IDLE_PIECE =
-//       new SuperstructureState(
-//           ElevatorState.IDLE_PIECE,
-//           ArmState.IDLE_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW);
-
-//   public static SuperstructureState IN_BOX = // TODO update all of these
-//       new SuperstructureState(
-//           ElevatorState.IDLE_NO_PIECE,
-//           ArmState.IDLE_NO_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW);
-
-//   public static SuperstructureState SCOREL1 =
-//       new SuperstructureState(
-//           ElevatorState.IDLE_NO_PIECE,
-//           ArmState.IDLE_NO_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW);
-
-//   public static SuperstructureState SCOREL3 =
-//       new SuperstructureState(
-//           ElevatorState.IDLE_NO_PIECE,
-//           ArmState.IDLE_NO_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW);
-
-//   public static SuperstructureState SCOREL4 =
-//       new SuperstructureState(
-//           ElevatorState.IDLE_NO_PIECE,
-//           ArmState.IDLE_NO_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW);
-
-//   public static SuperstructureState INTAKE_ALGAE =
-//       new SuperstructureState(
-//           ElevatorState.IDLE_NO_PIECE,
-//           ArmState.IDLE_NO_PIECE,
-//           IntakeState.RETRACT,
-//           IntakeState.RETRACT,
-//           ClimberState.STOW); // intake
-
 public enum SuperstructureState {
-  INTAKE_ALGAE(
-      ElevatorState.IDLE_NO_PIECE,
-      ArmState.IDLE_NO_PIECE,
-      IntakeState.RETRACT,
-      IntakeState.RETRACT),
-  PICKUP_ALGAE(
-      ElevatorState.PICKUP_ALGAE, ArmState.PICKUP_ALGAE, IntakeState.RETRACT, IntakeState.RETRACT),
-  CORAL_HANDOFF(
-      ElevatorState.PICKUP_CORAL, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
-  INTAKE_CORAL(
-      ElevatorState.IDLE_NO_PIECE, ArmState.IDLE_NO_PIECE, IntakeState.DEPLOY, IntakeState.RETRACT),
-  INTAKE_CORAL_HUMAN(
-      ElevatorState.HUMAN_INTAKE, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
-  PICKUP_CORAL(
-      ElevatorState.PICKUP_CORAL, ArmState.PICKUP_CORAL, IntakeState.RETRACT, IntakeState.RETRACT),
-  CLIMB_DEPLOY(ElevatorState.CLIMB, ArmState.CLIMB, IntakeState.RETRACT, IntakeState.RETRACT),
-  CLIMB_RETRACT(ElevatorState.CLIMB, ArmState.CLIMB, IntakeState.RETRACT, IntakeState.RETRACT);
+  
+  IDLE_NO_PIECE(ElevatorState.IDLE_NO_PIECE, ArmState.IDLE_NO_PIECE),
+  CORAL_HANDOFF(ElevatorState.CORAL_HANDOFF, ArmState.IDLE_NO_PIECE),
+  //Intermediate state between coral handoff and idle w/ coral, prevents collision
+  ELEVATOR_SAFE_ZONE(ElevatorState.INTAKE_SAFE_ZONE, ArmState.IDLE_NO_PIECE),
+  IDLE_CORAL(ElevatorState.IDLE_CORAL, ArmState.IDLE_CORAL),
+  //waiting for operator to confirm alignment, then bring arm down and outtake
+  CORAL_PREP_L1(ElevatorState.CORAL_L1, ArmState.CORAL_PREP_L1), 
+  CORAL_PREP_L2(ElevatorState.CORAL_L2, ArmState.CORAL_PREP_L2),
+  CORAL_PREP_L3(ElevatorState.CORAL_L3, ArmState.CORAL_PREP_L3),
+  CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.CORAL_PREP_L4),
+  CORAL_SCORE_L1(ElevatorState.CORAL_L1, ArmState.CORAL_SCORE_L1),
+  CORAL_SCORE_L2(ElevatorState.CORAL_L2, ArmState.CORAL_SCORE_L2),
+  CORAL_SCORE_L3(ElevatorState.CORAL_L3, ArmState.CORAL_SCORE_L3),
+  CORAL_SCORE_L4(ElevatorState.CORAL_L4, ArmState.CORAL_SCORE_L4),
+  IDLE_ALGAE(ElevatorState.IDLE_ALGAE, ArmState.IDLE_ALGAE),
+  ALGAE_SCORE_PROCESSOR(ElevatorState.ALGAE_SCORE_PROCESSOR, ArmState.ALGAE_SCORE_PROCESSOR),
+  INTAKE_ALGAE_GROUND(ElevatorState.ALGAE_GROUND, ArmState.ALGAE_GROUND),
+  ALGAE_PREP_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L2),
+  ALGAE_PREP_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L3), //TODO is this neccesary? should we have a algae retract state instead?
+  ALGAE_SCORE_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L2),
+  ALGAE_SCORE_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L3);
 
   SuperstructureState(
       ElevatorState elevatorState,
-      ArmState armState,
-      IntakeState coralIntakeState,
-      IntakeState algaeIntakeState) {
+      ArmState armState) {
     this.armState = armState;
     this.elevatorState = elevatorState;
-    this.coralIntakeState = coralIntakeState;
-    this.algaeIntakeState = algaeIntakeState;
   }
 
   public ArmState armState;
   public ElevatorState elevatorState;
-  public IntakeState coralIntakeState;
-  public IntakeState algaeIntakeState;
 }
