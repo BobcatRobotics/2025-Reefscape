@@ -1,11 +1,9 @@
 package frc.robot.subsystems.StateMachine;
 
 import frc.robot.subsystems.Arm.ArmState;
-import frc.robot.subsystems.CoralIntake.IntakeState;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
 
-//   //TODO im an idiot this should be an enum
 
 public enum SuperstructureState {
   
