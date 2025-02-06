@@ -30,6 +30,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -334,6 +335,14 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
+  }
+
+  public Rotation3d getRotation3d() {
+    return new Rotation3d(gyroInputs.pitch.getRadians(), gyroInputs.roll.getRadians(), gyroInputs.yaw.getRadians());
+  }
+
+  public Rotation3d getRotationRate() {
+    return new Rotation3d(gyroInputs.rollVelocityRadPerSec, gyroInputs.pitchVelocityRadPerSec, gyroInputs.yawVelocityRadPerSec);
   }
 
   /** Resets the current odometry pose. */

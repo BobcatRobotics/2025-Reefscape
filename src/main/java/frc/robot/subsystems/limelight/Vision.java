@@ -10,6 +10,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -80,8 +81,17 @@ public class Vision extends SubsystemBase {
 
     apriltagPipeline = inputs.pipelineID == 0;
 
-    if (inputs.limelightType != LLTYPE.LL4) {
-      SetRobotOrientation(swerve.getRotation());
+    if (inputs.limelightType != LLTYPE.LL4 && DriverStation.isDSAttached()) {
+      if (DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+        // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+          Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0,0,Math.PI));
+          io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
+          
+      } else {
+        // io.setRobotOrientationMG2(swerve.getRotation());
+        io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
+      }
     }
 
     if (inputs.tagCount >= 2) {
@@ -121,19 +131,22 @@ public class Vision extends SubsystemBase {
     return inputs.botPoseMG2;
   }
 
-  public void resetGyroLL4() {
+  public void resetGyroLL4(Drive drive) {
     if (DriverStation.isDSAttached()) {
       LimelightHelpers.SetIMUMode(inputs.name, 1);
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
-        io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+        // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+          Rotation3d gyro = drive.getRotation3d().rotateBy(new Rotation3d(0,0,Math.PI));
+          io.setRobotOrientationMG2(gyro, drive.getRotationRate());
+          
       } else {
-        io.setRobotOrientationMG2(swerve.getRotation());
+        // io.setRobotOrientationMG2(swerve.getRotation());
+        io.setRobotOrientationMG2(drive.getRotation3d(), drive.getRotationRate());
       }
 
       LimelightHelpers.SetIMUMode(inputs.name, 2);
     }
-    ;
   }
 
   /**
@@ -165,9 +178,9 @@ public class Vision extends SubsystemBase {
    * tells the limelight what the rotation of the gyro is, for determining pose
    * ambiguity stuff
    */
-  public void SetRobotOrientation(Rotation2d gyro) {
-    io.setRobotOrientationMG2(gyro);
-  }
+  // public void SetRobotOrientation(Rotation2d gyro) {
+  //   io.setRobotOrientationMG2(gyro);
+  // }
 
   /**
    * @param tags anything NOT in here will be thrownOut

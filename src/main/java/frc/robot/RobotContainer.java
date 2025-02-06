@@ -45,7 +45,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
+  public final Drive drive;
   public final Vision limelight;
 
   // Controller
@@ -152,7 +152,7 @@ public class RobotContainer {
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
-            .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4()))
+            .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
     //   rightStick.button.whileTrue(
