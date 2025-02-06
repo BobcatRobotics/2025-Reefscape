@@ -31,6 +31,8 @@ import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
+import frc.robot.subsystems.Elevator.Elevator;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -43,6 +45,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   // public final Vision limelight;
+  private final Elevator elevator;
 
   // Controller
   // private LogitechGamepad logitech = new LogitechGamepad(0);
@@ -64,6 +67,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants24.FrontRight),
                 new ModuleIOTalonFX(TunerConstants24.BackLeft),
                 new ModuleIOTalonFX(TunerConstants24.BackRight));
+        elevator = new Elevator();
         // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
 
         break;

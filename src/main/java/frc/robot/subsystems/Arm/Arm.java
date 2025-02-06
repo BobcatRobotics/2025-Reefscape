@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
-import frc.robot.subsystems.StateMachine.StateObserver;
-import frc.robot.subsystems.StateMachine.SuperstructureState;
+import frc.robot.subsystems.Superstructure.StateObserver;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 public class Arm extends SubsystemBase {
   // see Assets\Docs\TopUpperLimit.png
@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase {
 
   ArmIO io;
   ArmIOInputs inputs = new ArmIOInputsAutoLogged();
-  private ArmState desiredState = ArmState.NO_OP;
+  private ArmState desiredState = ArmState.IDLE_NO_PIECE;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {

@@ -1,8 +1,6 @@
-package frc.robot.subsystems.StateMachine;
+package frc.robot.subsystems.Superstructure;
 
 import static edu.wpi.first.units.Units.Meters;
-
-import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
@@ -80,5 +78,4 @@ public class StateObserver {
   public static boolean isInIntakeZone(ArmZone zone) {
     return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
   }
-
 }

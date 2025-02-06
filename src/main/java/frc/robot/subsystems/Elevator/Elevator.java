@@ -4,10 +4,11 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmZone;
-import frc.robot.subsystems.StateMachine.StateObserver;
+import frc.robot.subsystems.Superstructure.StateObserver;
 
-public class Elevator {
+public class Elevator extends SubsystemBase {
   /** the minimum height where the arm can swing freely without hitting an intake */
   public static final Distance MIN_HEIGHT_INTAKE_AVOIDANCE = Meters.of(0);
   /**
@@ -23,13 +24,23 @@ public class Elevator {
   public static final Rotation2d ELEVATOR_MAX_ROTATIONS = new Rotation2d();
 
   private Distance height;
-  private ElevatorState currentState = ElevatorState.IN_BOX;
+  private ElevatorState currentState = ElevatorState.IDLE_NO_PIECE;
 
-  public Elevator() {}
+  private ElevatorIO io;
+  private ElevatorIOInputsAutoLogged inputs;
+
+  public Elevator(ElevatorIO io) {
+    this.io = io;
+  }
+
+
+  public void periodic(){
+    io.updateInputs(inputs);
+  }
 
   public void setState(ElevatorState desiredState) {
     currentState = desiredState;
-    // io.setstate(desiredstate)
+    io.setDesiredState(desiredState);
   }
 
   public ElevatorState getState() {

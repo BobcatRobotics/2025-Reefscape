@@ -13,7 +13,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.AlgaeIntake.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
-import frc.robot.subsystems.StateMachine.StateObserver;
+import frc.robot.subsystems.Superstructure.StateObserver;
 
 public class ArmIOTalonFX implements ArmIO {
   public static final InvertedValue ARM_MOTOR_INVERTED =
@@ -100,7 +100,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setDesiredState(ArmState state) {
     // NO_OP = No Operation, do nothing
-    if (!(state == ArmState.NO_OP)) {
+    if (!(state == ArmState.IDLE_NO_PIECE)) {
 
       // calculate the optimal path to the desired angle
       // this will give us the shortest path to the desired position

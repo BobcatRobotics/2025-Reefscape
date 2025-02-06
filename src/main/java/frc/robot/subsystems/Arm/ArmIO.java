@@ -9,7 +9,7 @@ public interface ArmIO {
   public static class ArmIOInputs {
     public Rotation2d position = new Rotation2d();
     public Rotation2d absolutePosition = new Rotation2d();
-    public ArmState state = ArmState.NO_OP;
+    public ArmState state = ArmState.IDLE_NO_PIECE;
     public ArmZone zone = ArmZone.BOTTOM_ZONE;
     public boolean motorConnected = false;
     public boolean encoderConnected = false;
