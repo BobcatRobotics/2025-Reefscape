@@ -8,12 +8,20 @@ import java.util.Map;
 public class StateGraph {
     private final Map<SuperstructureState, List<SuperstructureState>> adjacencyList = new HashMap<>();
 
-    // Add a state to the graph
+    /**
+     * Add a state to the graph, if it isnt already there
+     * @param state node to add
+     */ 
     public void addState(SuperstructureState state) {
         adjacencyList.putIfAbsent(state, new ArrayList<>());
     }
 
-    // Add a valid transition between two states
+    /**
+     * adds a valid transition between two states to the graph
+     * note that this is NOT two directional
+     * @param from parent state
+     * @param to child state
+     */
     public void addTransition(SuperstructureState from, SuperstructureState to) {
         adjacencyList.get(from).add(to);
     }
