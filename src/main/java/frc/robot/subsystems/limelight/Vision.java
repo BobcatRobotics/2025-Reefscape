@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Limelight;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -13,9 +15,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.util.VisionObservation;
 import frc.robot.util.VisionObservation.LLTYPE;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -29,6 +36,8 @@ public class Vision extends SubsystemBase {
   public boolean apriltagPipeline;
   private double xyStdDev;
   private double thetaStdDev;
+  private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+
 
   public Vision(Drive swerve, VisionIO io) {
     this.io = io;
@@ -90,6 +99,22 @@ public class Vision extends SubsystemBase {
               getPoseTimestampMG2(),
               VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
     }
+
+    LimelightHelpers.RawFiducial[] rawTrackedTags = LimelightHelpers
+        .getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
+    List<Integer> trackedTagID = new ArrayList<Integer>();
+
+    for (int i = 0; i < rawTrackedTags.length; i++) {
+        trackedTagID.add(rawTrackedTags[i].id);
+    }
+
+    Pose2d[] trackedTagPoses = new Pose2d[rawTrackedTags.length];
+    for (int i = 0; i<trackedTagID.size(); i++){
+      trackedTagPoses[i]=aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
+    }
+
+    Logger.recordOutput("limlight" + inputs.name +"/visionTargets", trackedTagPoses);
+
   }
 
   public Pose2d getBotPoseMG2() {
