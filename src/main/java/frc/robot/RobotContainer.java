@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
+import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Drive.Drive;
@@ -31,6 +32,9 @@ import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
+import frc.robot.subsystems.Limelight.Vision;
+import frc.robot.subsystems.Limelight.VisionIO;
+import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,7 +46,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  // public final Vision limelight;
+  public final Vision limelight;
 
   // Controller
   // private LogitechGamepad logitech = new LogitechGamepad(0);
@@ -64,7 +68,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants24.FrontRight),
                 new ModuleIOTalonFX(TunerConstants24.BackLeft),
                 new ModuleIOTalonFX(TunerConstants24.BackRight));
-        // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
 
         break;
 
@@ -77,7 +81,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants24.FrontRight),
                 new ModuleIOSim(TunerConstants24.BackLeft),
                 new ModuleIOSim(TunerConstants24.BackRight));
-        // limelight = new Vision(drive, new VisionIO() {});
+        limelight = new Vision(drive, new VisionIO() {});
 
         break;
 
@@ -90,7 +94,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        // limelight = new Vision(drive, new VisionIO() {});
+        limelight = new Vision(drive, new VisionIO() {});
         break;
     }
 
@@ -148,14 +152,22 @@ public class RobotContainer {
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
+            .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4()))
             .ignoringDisable(true));
 
-    logitech.a.whileTrue(
-        DriveCommands.singleTagAlign(
-            drive,
-            () -> limelight.targetPoseCameraSpace().getX(),
-            () -> 0,
-            () -> Rotation2d.fromDegrees(0)));
+    //   rightStick.button.whileTrue(
+    //       DriveCommands.singleTagAlign(
+    //           drive,
+    //           () -> limelight.targetPoseCameraSpace().getX(),
+    //           () -> 0,
+    //           () -> Rotation2d.fromDegrees(0)));
+    // }
+
+    //   rightStick.button.whileTrue(
+    //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));
+    // }
+
+    rightStick.button.whileTrue(DriveCommands.driveToReef(drive, () -> 0, () -> 0, () -> 0));
   }
 
   /**
