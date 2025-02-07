@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -102,12 +103,21 @@ public class Vision extends SubsystemBase {
       thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
     }
 
+    if (inputs.limelightType == LLTYPE.LL4) {
     if (getPoseValidMG2(swerve.getRotation())) {
       swerve.updatePose(
           new VisionObservation(
               getBotPoseMG2(),
               getPoseTimestampMG2(),
               VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+    }} else {
+      if(swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)){
+        swerve.updatePose(
+          new VisionObservation(
+              getBotPoseMG2(),
+              getPoseTimestampMG2(),
+              VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+      }
     }
 
     LimelightHelpers.RawFiducial[] rawTrackedTags = LimelightHelpers
