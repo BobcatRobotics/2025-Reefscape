@@ -13,7 +13,8 @@ public enum ElevatorState {
   ALGAE_L3(0),
   ALGAE_GROUND(0), // pickup algae from ground
   ALGAE_SCORE_PROCESSOR(0), // pickup algae from processor
-  IDLE_ALGAE(0); // hold a algae
+  IDLE_ALGAE(0), // hold a algae
+  UNKNOWN(0); // elevator isnt at a predefined state
 
   ElevatorState(double heightMeters) {
     this.heightMeters = heightMeters;

@@ -11,9 +11,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.AlgaeIntake.AlgaeIntake;
-import frc.robot.subsystems.CoralIntake.CoralIntake;
-import frc.robot.subsystems.Superstructure.StateObserver;
+import frc.robot.subsystems.Superstructure.Superstructure;
 
 public class ArmIOTalonFX implements ArmIO {
   public static final InvertedValue ARM_MOTOR_INVERTED =
@@ -30,11 +28,9 @@ public class ArmIOTalonFX implements ArmIO {
 
   private TalonFX motor;
   private CANcoder encoder;
-  private StateObserver observer;
   private MotionMagicExpoTorqueCurrentFOC angleRequest;
 
   public ArmIOTalonFX(int falconID, int encoderID) {
-    this.observer = StateObserver.getInstance();
 
     motor = new TalonFX(falconID);
     TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
@@ -85,7 +81,7 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   private ArmZone getArmZone() {
-    return Arm.getArmZone(getPosition());
+    return Superstructure.getArmZone(getPosition());
   }
 
   private Rotation2d getPosition() {
@@ -99,73 +95,21 @@ public class ArmIOTalonFX implements ArmIO {
    */
   @Override
   public void setDesiredState(ArmState state) {
-    // NO_OP = No Operation, do nothing
-    if (!(state == ArmState.IDLE_NO_PIECE)) {
 
-      // calculate the optimal path to the desired angle
-      // this will give us the shortest path to the desired position
-      // that doesnt overextend
-      ArmMovement optimalAngle = optimalAngle(state.rot2d);
+    // angle between elevator at its current height and intake
+    // Rotation2d theta =
+    //     Rotation2d.fromRadians(
+    //         Math.asin(elevatorIntakeDelta / Arm.LENGTH_TO_END_EFFECTOR.baseUnitMagnitude()));
 
-      // height between the top of the intake and the bottom elevator
-      double elevatorHeight = observer.elevatorHeight.baseUnitMagnitude();
+    // // this is the max angle the arm can go to without hitting the intake
+    // Rotation2d maxSafeAngle =
+    //     optimalAngle.isCCW
+    //         ? Rotation2d.kPi.minus(theta).minus(ANGLE_BUFFER)
+    //         : theta.plus(ANGLE_BUFFER);
 
-      // if we want to go to the bottom, then we have to wait for
-      // the elevator to raise so we dont hit the intake
-      // we will set the arm as low as it can go (with a buffer)
-      // without hitting the intake in the meantime
-      // this makes it so that by the time the elevator is high enough
-      // the arm only has to travel a small distance
+    // motor.setControl(angleRequest.withPosition(maxSafeAngle.getRotations()));
 
-      // note that the more we raise the elevator, the more we can
-      // lower the arm, which is why we have to call this every cycle,
-      // so that the arm setpoint gets updated
-
-      // if we want to go to the bottom zone and we arent already in it,
-      // or we want to go to one of the intake zones
-      // and the elevator isnt past its clearance point yet
-      // go as far down as possible without hitting the intake
-
-      if (((state.zone == ArmZone.BOTTOM_ZONE && getArmZone() != ArmZone.BOTTOM_ZONE)
-              || (StateObserver.isInIntakeZone(state.zone)))
-          && !observer.elevatorAboveIntakeMinimum()) {
-
-        double elevatorIntakeDelta =
-            // if we're rotating ccw, then we'll going through the coral intake, //TODO check this
-            // once architecture is finalized
-            // so to get the height between the elevator and the intake,
-            // we take the difference between the intake height and the elevator height
-            optimalAngle.isCCW
-                ? CoralIntake.CORAL_INTAKE_HEIGHT.baseUnitMagnitude() - elevatorHeight
-                : AlgaeIntake.ALGAE_INTAKE_HEIGHT.baseUnitMagnitude() - elevatorHeight;
-
-        // angle between elevator at its current height and intake
-        Rotation2d theta =
-            Rotation2d.fromRadians(
-                Math.asin(elevatorIntakeDelta / Arm.LENGTH_TO_END_EFFECTOR.baseUnitMagnitude()));
-
-        // this is the max angle the arm can go to without hitting the intake
-        Rotation2d maxSafeAngle =
-            optimalAngle.isCCW
-                ? Rotation2d.kPi.minus(theta).minus(ANGLE_BUFFER)
-                : theta.plus(ANGLE_BUFFER);
-
-        motor.setControl(angleRequest.withPosition(maxSafeAngle.getRotations()));
-      }
-      // if we arent switching zones,
-      // or we are clear of the intake,
-      // or we are going from an intake zone to the top
-      // set arm to the given state
-      // assumes that if you are already in a zone it is safe to travel
-      // within it
-      else if (state.zone == getArmZone()
-          || observer.elevatorAboveIntakeMinimum()
-          || (observer.isInIntakeZone() && state.zone == ArmZone.TOP_ZONE)) {
-        motor.setControl(angleRequest.withPosition(optimalAngle.angle.getRotations()));
-      }
-    }
   }
-
   /**
    * Returns the best angle to go to, given a desired angle (in [0,360)) and an arbitrary allowed
    * range [minAngle, maxAngle].

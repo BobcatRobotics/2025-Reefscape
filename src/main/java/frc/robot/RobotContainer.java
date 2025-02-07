@@ -21,10 +21,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants24;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Arm.Arm;
+import frc.robot.subsystems.Arm.ArmIO;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
@@ -32,7 +35,10 @@ import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
 import frc.robot.subsystems.Elevator.Elevator;
-
+import frc.robot.subsystems.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.RobotVisualizer;
+import frc.robot.subsystems.Superstructure.Superstructure;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -45,7 +51,9 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   // public final Vision limelight;
-  private final Elevator elevator;
+  // private final Elevator elevator;
+  private RobotVisualizer robotVisualizer = new RobotVisualizer();
+  private Superstructure superstructure;
 
   // Controller
   // private LogitechGamepad logitech = new LogitechGamepad(0);
@@ -67,8 +75,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants24.FrontRight),
                 new ModuleIOTalonFX(TunerConstants24.BackLeft),
                 new ModuleIOTalonFX(TunerConstants24.BackRight));
-        elevator = new Elevator();
-        // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+        // elevator = new Elevator();
+        // limelight = new Vision(drive, new
+        // VisionIOLimelight(LimelightConstants.constants));
 
         break;
 
@@ -82,7 +91,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants24.BackLeft),
                 new ModuleIOSim(TunerConstants24.BackRight));
         // limelight = new Vision(drive, new VisionIO() {});
-
+        superstructure =
+            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
         break;
 
       default:
@@ -106,19 +116,23 @@ public class RobotContainer {
 
     // Set up SysId routines
     // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // "Drive Wheel Radius Characterization",
+    // DriveCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // "Drive Simple FF Characterization",
+    // DriveCommands.feedforwardCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // "Drive SysId (Quasistatic Forward)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // "Drive SysId (Quasistatic Reverse)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // "Drive SysId (Dynamic Forward)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // "Drive SysId (Dynamic Reverse)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -138,11 +152,11 @@ public class RobotContainer {
             drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
 
     // rightStick.button.whileTrue(
-    //    DriveCommands.alignToTag(
-    //        drive,
-    //        () -> limelight.getTX().unaryMinus(),
-    //        () -> limelight.targetPoseCameraSpace().getX(),
-    //        () -> limelight.targetPoseCameraSpace().getY()));
+    // DriveCommands.alignToTag(
+    // drive,
+    // () -> limelight.getTX().unaryMinus(),
+    // () -> limelight.targetPoseCameraSpace().getX(),
+    // () -> limelight.targetPoseCameraSpace().getY()));
 
     // Switch to X pattern when X button is pressed
     rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));

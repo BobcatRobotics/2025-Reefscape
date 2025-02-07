@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Arm.ArmZone;
-import frc.robot.subsystems.Superstructure.StateObserver;
 
 public class Elevator extends SubsystemBase {
   /** the minimum height where the arm can swing freely without hitting an intake */
@@ -33,14 +31,17 @@ public class Elevator extends SubsystemBase {
     this.io = io;
   }
 
-
-  public void periodic(){
+  public void periodic() {
     io.updateInputs(inputs);
+    io.setDesiredState(currentState);
+  }
+
+  public Distance getPos() {
+    return inputs.position;
   }
 
   public void setState(ElevatorState desiredState) {
     currentState = desiredState;
-    io.setDesiredState(desiredState);
   }
 
   public ElevatorState getState() {
@@ -53,19 +54,5 @@ public class Elevator extends SubsystemBase {
 
   public double getHeightMeters() {
     return getHeight().in(Meters);
-  }
-
-  /**
-   * @return {@code False} if the elevator is high enough where the arm can't collide with the
-   *     intake
-   */
-  public static boolean checkForArmCollision(ArmZone zone, ElevatorState elevatorState) {
-    if (StateObserver.isInIntakeZone(zone)) {
-      return elevatorState.heightMeters < MIN_HEIGHT_INTAKE_AVOIDANCE.in(Meters);
-    } else if (zone == ArmZone.BOTTOM_ZONE) {
-      return elevatorState.heightMeters < MIN_HEIGHT_BOTTOM_AVOIDANCE.in(Meters);
-    } else {
-      return false;
-    }
   }
 }

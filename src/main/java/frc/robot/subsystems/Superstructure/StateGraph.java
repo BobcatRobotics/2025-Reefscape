@@ -6,7 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 public class StateGraph {
+  private static StateGraph instance;
+
   private final Map<SuperstructureState, List<SuperstructureState>> adjacencyList = new HashMap<>();
+
+  public static StateGraph getInstance() {
+    if (instance == null) {
+      instance = initializeGraph();
+    }
+    return instance;
+  }
 
   /**
    * Add a state to the graph, if it isnt already there

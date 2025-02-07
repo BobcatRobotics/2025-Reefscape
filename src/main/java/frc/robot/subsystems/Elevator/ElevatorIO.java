@@ -19,14 +19,4 @@ public interface ElevatorIO {
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void setDesiredState(ElevatorState state) {}
-
-  public default void runOpenLoop(double output) {}
-
-  public default void runVolts(double volts) {}
-
-  public default void stop() {}
-
-  public default void runPosition(double positionRad, double feedforward) {}
-
-  public default void setPID(double kP, double kI, double kD) {}
 }

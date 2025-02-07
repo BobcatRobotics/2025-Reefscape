@@ -4,6 +4,7 @@ import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
 public enum SuperstructureState {
+  UNKNOWN(ElevatorState.UNKNOWN, ArmState.UNKOWN),
   IDLE_NO_PIECE(ElevatorState.IDLE_NO_PIECE, ArmState.IDLE_NO_PIECE),
   CORAL_HANDOFF(ElevatorState.CORAL_HANDOFF, ArmState.IDLE_NO_PIECE),
   // Intermediate state between coral handoff and idle w/ coral, prevents collision

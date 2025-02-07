@@ -12,8 +12,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmIO.ArmIOInputs;
-import frc.robot.subsystems.Superstructure.StateObserver;
-import frc.robot.subsystems.Superstructure.SuperstructureState;
+import frc.robot.subsystems.Superstructure.Superstructure;
 
 public class Arm extends SubsystemBase {
   // see Assets\Docs\TopUpperLimit.png
@@ -39,39 +38,21 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    StateObserver.getInstance().updateArm(inputs.state, inputs.position);
     io.setDesiredState(desiredState);
     motorDisconnected.set(!inputs.motorConnected);
     encoderDisconnected.set(!inputs.encoderConnected);
   }
 
-  public static ArmZone getArmZone(ArmState state) {
-    return getArmZone(Rotation2d.fromDegrees(state.degrees));
-  }
-
-  public static ArmZone getArmZone(SuperstructureState goal) {
-    return getArmZone(goal.armState);
-  }
-  /** see Assets\Docs\TopUpperLimit.png */
-  public static ArmZone getArmZone(Rotation2d position) {
-    double deg = position.getDegrees();
-    if (deg >= TOP_LOWER_LIMIT.getDegrees() && deg <= TOP_UPPER_LIMIT.getDegrees()) {
-      return ArmZone.TOP_ZONE;
-    } else if (deg > TOP_UPPER_LIMIT.getDegrees() && deg < BOTTOM_LOWER_LIMIT.getDegrees()) {
-      return ArmZone.CORAL_INTAKE;
-    } else if (deg > BOTTOM_LOWER_LIMIT.getDegrees() && deg < BOTTOM_UPPER_LIMIT.getDegrees()) {
-      return ArmZone.BOTTOM_ZONE;
-    } else {
-      return ArmZone.ALGAE_INTAKE;
-    }
+  public Rotation2d getPos() {
+    return inputs.position;
   }
 
   public ArmZone getArmZone() {
-    return getArmZone(inputs.position);
+    return inputs.zone;
   }
 
   public boolean isInIntakeZone() {
-    return StateObserver.isInIntakeZone(getArmZone());
+    return Superstructure.isInIntakeZone(inputs.zone);
   }
 
   /**
@@ -82,7 +63,7 @@ public class Arm extends SubsystemBase {
    *     range of the intake and bellypan
    */
   public boolean willStayInZone(ArmState desiredState) {
-    return getArmZone() == desiredState.zone;
+    return inputs.zone == desiredState.zone;
   }
 
   public void setState(ArmState state) {
