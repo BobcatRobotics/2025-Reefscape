@@ -133,7 +133,7 @@ public class Vision extends SubsystemBase {
       trackedTagPoses[i]=aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
     }
 
-    Logger.recordOutput("limlight" + inputs.name +"/visionTargets", trackedTagPoses);
+    Logger.recordOutput("limelight" + inputs.name +"/visionTargets", trackedTagPoses);
 
   }
 
