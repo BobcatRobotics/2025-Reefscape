@@ -56,6 +56,9 @@ public class FieldConstants {
     public static final double faceToZoneLine =
         Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
+    public static final double reefToBranchY = Units.inchesToMeters(6.469); //Y offset of branches from reef
+
+
     public static final double faceToCenter =
         Units.inchesToMeters(65.491090) / 2; // Side of reef to center of reef
 

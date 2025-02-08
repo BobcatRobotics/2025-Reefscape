@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.Ruffy;
+import frc.robot.AidenGamepads.EightBitDo;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
@@ -50,8 +50,9 @@ public class RobotContainer {
 
   // Controller
   // private LogitechGamepad logitech = new LogitechGamepad(0);
-  private Ruffy leftStick = new Ruffy(0);
-  private Ruffy rightStick = new Ruffy(1);
+  // private Ruffy leftStick = new Ruffy(0);
+  // private Ruffy rightStick = new Ruffy(1);
+  private EightBitDo gp = new EightBitDo(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -132,10 +133,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // Default command, normal field-relative drive
+    // // Default command, normal field-relative drive
+    // drive.setDefaultCommand(
+    //     DriveCommands.fieldRelativeJoystickDrive(
+    //         drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
+
     drive.setDefaultCommand(
-        DriveCommands.fieldRelativeJoystickDrive(
-            drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
+        DriveCommands.fieldRelativeJoystickDrive(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
 
     // rightStick.button.whileTrue(
     //    DriveCommands.alignToTag(
@@ -148,7 +152,7 @@ public class RobotContainer {
     // rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0 deg when B button is pressed
-    rightStick.button.onTrue(
+    gp.a.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
@@ -167,7 +171,7 @@ public class RobotContainer {
     //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));
     // }
 
-    leftStick.button.whileTrue(DriveCommands.driveToReef(drive, () -> 0, () -> 0, () -> 0));
+    // gp.b.whileTrue(DriveCommands.driveToReef(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
   }
 
   /**

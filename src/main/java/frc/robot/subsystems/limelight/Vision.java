@@ -117,20 +117,22 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    LimelightHelpers.RawFiducial[] rawTrackedTags =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
-    List<Integer> trackedTagID = new ArrayList<Integer>();
+    if (inputs.name != "sim") {
+      LimelightHelpers.RawFiducial[] rawTrackedTags =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
+      List<Integer> trackedTagID = new ArrayList<Integer>();
 
-    for (int i = 0; i < rawTrackedTags.length; i++) {
-      trackedTagID.add(rawTrackedTags[i].id);
+      for (int i = 0; i < rawTrackedTags.length; i++) {
+        trackedTagID.add(rawTrackedTags[i].id);
+      }
+
+      Pose2d[] trackedTagPoses = new Pose2d[rawTrackedTags.length];
+      for (int i = 0; i < trackedTagID.size(); i++) {
+        trackedTagPoses[i] = aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
+      }
+
+      Logger.recordOutput("limelight" + inputs.name + "/visionTargets", trackedTagPoses);
     }
-
-    Pose2d[] trackedTagPoses = new Pose2d[rawTrackedTags.length];
-    for (int i = 0; i < trackedTagID.size(); i++) {
-      trackedTagPoses[i] = aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
-    }
-
-    Logger.recordOutput("limelight" + inputs.name + "/visionTargets", trackedTagPoses);
   }
 
   public Pose2d getBotPoseMG2() {

@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,9 +19,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.FieldConstants.ReefHeight;
 import frc.robot.subsystems.Drive.Drive;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -347,7 +351,9 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier rotationSupplier) {
+      DoubleSupplier rotationSupplier,
+      BooleanSupplier clockwiseSupplier,
+      BooleanSupplier counterclockwiseSupplier) {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 
@@ -371,6 +377,16 @@ public class DriveCommands {
             () -> {
               Pose2d nearestFace = drive.getPose().nearest(faces);
               Logger.recordOutput("reef_face/raw", nearestFace);
+              double adjustY = 0;
+
+              if (clockwiseSupplier.getAsBoolean()) {
+                adjustY = -FieldConstants.Reef.reefToBranchY;
+            } else if (counterclockwiseSupplier.getAsBoolean()) {
+                adjustY = FieldConstants.Reef.reefToBranchY;
+            }
+
+            //   List<Map<ReefHeight, Pose3d>> offsetPositions = FieldConstants.Reef.branchPositions;
+
               // double xOffset =
               // ALIGN_DISTANCE.baseUnitMagnitude()
               // * Math.cos(nearestFace.getRotation().getRadians());
@@ -389,13 +405,14 @@ public class DriveCommands {
                 }
               }
 
+
               Pose2d poseDirection =
                   new Pose2d(
                       FieldConstants.Reef.center, Rotation2d.fromDegrees(180 - (60 * faceIndex)));
 
               double adjustX =
                   ALIGN_DISTANCE.baseUnitMagnitude() + FieldConstants.Reef.faceToCenter;
-              double adjustY = Units.inchesToMeters(0);
+            //   double adjustY = Units.inchesToMeters(0);
 
               Pose2d offsetFace =
                   new Pose2d(

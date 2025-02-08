@@ -24,7 +24,7 @@ public interface VisionIO {
     public double ty = -1;
     public double fiducialID = -1;
     public double tClass = -1;
-    public String name = "something is very wrong if you're seeing this";
+    public String name = "sim";
     // public CamMode camMode = CamMode.VISION;
     public Pose2d botPoseMG2 = new Pose2d();
     public int tagCount = -1;
