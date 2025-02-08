@@ -100,10 +100,16 @@ public class VisionIOLimelight implements VisionIO {
     gyro = DSUtil.isBlue() ? gyro : gyro.rotateBy(new Rotation3d(new Rotation2d(Math.PI)));
     Rotation3d gyroval = RotationUtil.wrapRot3d(gyro);
     Rotation3d rateval = RotationUtil.wrapRot3d(rate);
-    
-    LimelightHelpers.SetRobotOrientation(name, gyroval.getZ(), rateval.getZ(), gyroval.getY(), rateval.getY(), gyroval.getX(), rateval.getX());
-  }
 
+    LimelightHelpers.SetRobotOrientation(
+        name,
+        gyroval.getZ(),
+        rateval.getZ(),
+        gyroval.getY(),
+        rateval.getY(),
+        gyroval.getX(),
+        rateval.getX());
+  }
 
   @Override
   public void setPermittedTags(int[] tags) {

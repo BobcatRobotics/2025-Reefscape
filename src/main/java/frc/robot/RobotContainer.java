@@ -145,10 +145,10 @@ public class RobotContainer {
     //        () -> limelight.targetPoseCameraSpace().getY()));
 
     // Switch to X pattern when X button is pressed
-    rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0 deg when B button is pressed
-    leftStick.button.onTrue(
+    rightStick.button.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
@@ -167,7 +167,7 @@ public class RobotContainer {
     //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));
     // }
 
-    rightStick.button.whileTrue(DriveCommands.driveToReef(drive, () -> 0, () -> 0, () -> 0));
+    leftStick.button.whileTrue(DriveCommands.driveToReef(drive, () -> 0, () -> 0, () -> 0));
   }
 
   /**

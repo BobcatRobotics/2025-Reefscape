@@ -12,19 +12,15 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.util.VisionObservation;
 import frc.robot.util.VisionObservation.LLTYPE;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -38,8 +34,8 @@ public class Vision extends SubsystemBase {
   public boolean apriltagPipeline;
   private double xyStdDev;
   private double thetaStdDev;
-  private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
-
+  private AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
 
   public Vision(Drive swerve, VisionIO io) {
     this.io = io;
@@ -86,16 +82,16 @@ public class Vision extends SubsystemBase {
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
         // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
-          Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0,0,Math.PI));
-          io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
-          
+        Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
+        io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
+
       } else {
         // io.setRobotOrientationMG2(swerve.getRotation());
         io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
       }
     }
 
-    if (inputs.tagCount >= 2) {
+    if (inputs.tagCount < 2) {
       xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
       thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
     } else {
@@ -104,37 +100,37 @@ public class Vision extends SubsystemBase {
     }
 
     if (inputs.limelightType == LLTYPE.LL4) {
-    if (getPoseValidMG2(swerve.getRotation())) {
-      swerve.updatePose(
-          new VisionObservation(
-              getBotPoseMG2(),
-              getPoseTimestampMG2(),
-              VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
-    }} else {
-      if(swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)){
+      if (getPoseValidMG2(swerve.getRotation())) {
         swerve.updatePose(
-          new VisionObservation(
-              getBotPoseMG2(),
-              getPoseTimestampMG2(),
-              VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+            new VisionObservation(
+                getBotPoseMG2(),
+                getPoseTimestampMG2(),
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+      }
+    } else {
+      if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
+        swerve.updatePose(
+            new VisionObservation(
+                getBotPoseMG2(),
+                getPoseTimestampMG2(),
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
       }
     }
 
-    LimelightHelpers.RawFiducial[] rawTrackedTags = LimelightHelpers
-        .getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
+    LimelightHelpers.RawFiducial[] rawTrackedTags =
+        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
     List<Integer> trackedTagID = new ArrayList<Integer>();
 
     for (int i = 0; i < rawTrackedTags.length; i++) {
-        trackedTagID.add(rawTrackedTags[i].id);
+      trackedTagID.add(rawTrackedTags[i].id);
     }
 
     Pose2d[] trackedTagPoses = new Pose2d[rawTrackedTags.length];
-    for (int i = 0; i<trackedTagID.size(); i++){
-      trackedTagPoses[i]=aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
+    for (int i = 0; i < trackedTagID.size(); i++) {
+      trackedTagPoses[i] = aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
     }
 
-    Logger.recordOutput("limelight" + inputs.name +"/visionTargets", trackedTagPoses);
-
+    Logger.recordOutput("limelight" + inputs.name + "/visionTargets", trackedTagPoses);
   }
 
   public Pose2d getBotPoseMG2() {
@@ -147,9 +143,9 @@ public class Vision extends SubsystemBase {
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
         // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
-          Rotation3d gyro = drive.getRotation3d().rotateBy(new Rotation3d(0,0,Math.PI));
-          io.setRobotOrientationMG2(gyro, drive.getRotationRate());
-          
+        Rotation3d gyro = drive.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
+        io.setRobotOrientationMG2(gyro, drive.getRotationRate());
+
       } else {
         // io.setRobotOrientationMG2(swerve.getRotation());
         io.setRobotOrientationMG2(drive.getRotation3d(), drive.getRotationRate());
@@ -160,8 +156,7 @@ public class Vision extends SubsystemBase {
   }
 
   /**
-   * TODO fix mount angle, this assumes the limelight is mounted at the back of
-   * the robot
+   * TODO fix mount angle, this assumes the limelight is mounted at the back of the robot
    *
    * @param yaw current yaw of the robot
    * @return the angle of the focused apriltag relative to the robot
@@ -184,10 +179,7 @@ public class Vision extends SubsystemBase {
         LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
   }
 
-  /**
-   * tells the limelight what the rotation of the gyro is, for determining pose
-   * ambiguity stuff
-   */
+  /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
   // public void SetRobotOrientation(Rotation2d gyro) {
   //   io.setRobotOrientationMG2(gyro);
   // }

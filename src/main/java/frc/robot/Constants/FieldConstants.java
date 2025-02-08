@@ -56,7 +56,8 @@ public class FieldConstants {
     public static final double faceToZoneLine =
         Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
-    public static final double faceToCenter = Units.inchesToMeters(65.491090)/2; // Side of reef to center of reef
+    public static final double faceToCenter =
+        Units.inchesToMeters(65.491090) / 2; // Side of reef to center of reef
 
     public static final Pose2d[] centerFaces =
         new Pose2d[6]; // Starting facing the driver station in clockwise order

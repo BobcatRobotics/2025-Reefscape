@@ -45,7 +45,5 @@ public class RotationUtil {
     double wrappedYaw = wrapRot2d(new Rotation2d(rot.getZ())).getRadians();
 
     return new Rotation3d(wrappedRoll, wrappedPitch, wrappedYaw);
-
   }
- 
 }

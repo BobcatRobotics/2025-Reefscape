@@ -8,12 +8,12 @@
 package frc.robot.subsystems.Limelight;
 
 public class AprilTagVisionConstants {
-  public static final double ambiguityThreshold = 0.4;
-  public static final double targetLogTimeSecs = 0.1;
-  public static final double fieldBorderMargin = 0.5;
-  public static final double zMargin = 0.75;
-  public static final double xyStdDevCoefficient = 0.005;
-  public static final double thetaStdDevCoefficient = 0.01;
+  // public static final double ambiguityThreshold = 0.4;
+  // public static final double targetLogTimeSecs = 0.1;
+  // public static final double fieldBorderMargin = 0.5;
+  // public static final double zMargin = 0.75;
+  // public static final double xyStdDevCoefficient = 0.005;
+  // public static final double thetaStdDevCoefficient = 0.01;
 
   //   public static final double[] stdDevFactors =new double[] {1.0, 1.0};
 
@@ -46,10 +46,10 @@ public class AprilTagVisionConstants {
   public class limelightConstants {
     public static final double rotationTolerance = 100;
     public static final double throwoutDist = 4;
-    public static final double xySingleTagStdDev = 0.2;
-    public static final double thetaSingleTagStdDev = 9999;
-    public static final double xyMultiTagStdDev = 0.1;
-    public static final double thetaMultiTagStdDev = 9999;
+    public static final double xySingleTagStdDev = 0.4;
+    public static final double thetaSingleTagStdDev = 9999999;
+    public static final double xyMultiTagStdDev = 0.3;
+    public static final double thetaMultiTagStdDev = 99999999;
     public static final int[] validTags =
         new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
   }

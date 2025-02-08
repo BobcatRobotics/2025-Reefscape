@@ -338,11 +338,15 @@ public class Drive extends SubsystemBase {
   }
 
   public Rotation3d getRotation3d() {
-    return new Rotation3d(gyroInputs.pitch.getRadians(), gyroInputs.roll.getRadians(), gyroInputs.yaw.getRadians());
+    return new Rotation3d(
+        gyroInputs.pitch.getRadians(), gyroInputs.roll.getRadians(), gyroInputs.yaw.getRadians());
   }
 
   public Rotation3d getRotationRate() {
-    return new Rotation3d(gyroInputs.rollVelocityRadPerSec, gyroInputs.pitchVelocityRadPerSec, gyroInputs.yawVelocityRadPerSec);
+    return new Rotation3d(
+        gyroInputs.rollVelocityRadPerSec,
+        gyroInputs.pitchVelocityRadPerSec,
+        gyroInputs.yawVelocityRadPerSec);
   }
 
   /** Resets the current odometry pose. */
@@ -382,6 +386,10 @@ public class Drive extends SubsystemBase {
 
   public void updatePose(VisionObservation visionObservation) {
     poseEstimator.addVisionMeasurement(
-        visionObservation.getPose(), visionObservation.getTimestamp());
+        visionObservation.getPose(),
+        visionObservation.getTimestamp(),
+        visionObservation.getStdDev());
   }
+  // poseEstimator.addVisionMeasurement(visionObservation.getPose(),
+  // visionObservation.getTimestamp());
 }
