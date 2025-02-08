@@ -170,10 +170,11 @@ public class RobotContainer {
     //   rightStick.button.whileTrue(
     //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));
     // }
-
-    // gp.b.whileTrue(DriveCommands.driveToReef(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
+    gp.b.whileTrue(
+        DriveCommands.driveToReef(
+            drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis, gp.povLeft, gp.povRight));
   }
-
+  ;
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

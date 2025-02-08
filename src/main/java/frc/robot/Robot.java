@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.Constants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TunerConstants24;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -130,7 +129,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     robotContainer.limelight.resetGyroLL4(robotContainer.drive);
-    System.out.println(FieldConstants.Reef.offsetPositions.size());
+    // System.out.println(FieldConstants.Reef.offsetPositions.size());
     // System.out.println(FieldConstants.Reef.centerFaces[0].getX());
   }
 
