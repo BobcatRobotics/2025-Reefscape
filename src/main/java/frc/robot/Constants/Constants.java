@@ -80,4 +80,15 @@ public final class Constants {
 
     public static final String ip = "10.1.77.11";
   }
+
+  public static final class IntakeConstants {
+    public static int topMotorID = 1;
+    public static int bottomMotorID = 2;
+    public static int LaserCanID = 0;
+    public static double intakeThreshhold = 20.0; //millimeters
+    public static double motorCurrentLimit = 20.0; //amps
+    
+    
+    
+  }
 }

@@ -1,222 +1,220 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Limelight;
+// package frc.robot.subsystems.Limelight;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Drive.Drive;
-import frc.robot.util.VisionObservation;
-import frc.robot.util.VisionObservation.LLTYPE;
-import org.littletonrobotics.junction.Logger;
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Pose3d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Translation2d;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.subsystems.limelight.VisionIOInputsAutoLogged;
 
-public class Vision extends SubsystemBase {
-  /** Creates a new Vision. */
-  private final VisionIO io;
+// // import frc.robot.subsystems.Limelight.VisionIOInputsAutoLogged;
+// import org.littletonrobotics.junction.Logger;
 
-  private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
-  // private Supplier<Rotation2d> yaw;
-  private Drive swerve;
+// public class Vision extends SubsystemBase {
+//   /** Creates a new Vision. */
+//   // private final VisionIO io;
 
-  public boolean apriltagPipeline;
-  private double xyStdDev;
-  private double thetaStdDev;
+//   private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+//   // private Supplier<Rotation2d> yaw;
+//   // private Drive swerve;
 
-  public Vision(Drive swerve, VisionIO io) {
-    this.io = io;
-    // this.yaw = yaw;
-    this.swerve = swerve;
+//   public boolean apriltagPipeline;
+//   private double xyStdDev;
+//   private double thetaStdDev;
 
-    io.setLEDS(LEDMode.FORCEOFF);
-  }
+//   // public Vision(Drive swerve, VisionIO io) {
+//   //   this.io = io;
+//   //   // this.yaw = yaw;
+//   //   this.swerve = swerve;
 
-  public void setLEDS(boolean on) {
-    io.setLEDS(on ? LEDMode.FORCEBLINK : LEDMode.PIPELINECONTROL);
-  }
+//   // io.setLEDS(LEDMode.FORCEOFF);
 
-  // public void setCamMode(CamMode mode) {
-  //   io.setCamMode(mode);
-  // }
+//   public void setLEDS(boolean on) {
+//     // io.setLEDS(on ? LEDMode.FORCEBLINK : LEDMode.PIPELINECONTROL);
+//   }
 
-  public double getTClass() {
-    return inputs.tClass;
-  }
+//   // public void setCamMode(CamMode mode) {
+//   //   io.setCamMode(mode);
+//   // }
 
-  public boolean getTV() {
-    return inputs.tv;
-  }
+//   public double getTClass() {
+//     return inputs.tClass;
+//   }
 
-  public double getID() {
-    return inputs.fiducialID;
-  }
+//   public boolean getTV() {
+//     return inputs.tv;
+//   }
 
-  public void setPipeline(int id) {
-    io.setPipeline(inputs.name, id);
-  }
+//   public double getID() {
+//     return inputs.fiducialID;
+//   }
 
-  @Override
-  public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Limelight" + inputs.name, inputs);
-    LimelightHelpers.SetFiducialIDFiltersOverride(
-        inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
+//   public void setPipeline(int id) {
+//     // io.setPipeline(inputs.name, id);
+//   }
 
-    apriltagPipeline = inputs.pipelineID == 0;
+//   // @Override
+//   // public void periodic() {
+//   //   io.updateInputs(inputs);
+//   //   Logger.processInputs("Limelight" + inputs.name, inputs);
+//   //   LimelightHelpers.SetFiducialIDFiltersOverride(
+//   //       inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
-    if (inputs.limelightType != LLTYPE.LL4) {
-      SetRobotOrientation(swerve.getRotation());
-    }
+//   //   apriltagPipeline = inputs.pipelineID == 0;
 
-    if (inputs.tagCount >= 2) {
-      xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
-      thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
-    } else {
-      xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
-      thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
-    }
+//   //   if (inputs.limelightType != LLTYPE.LL4) {
+//   //     SetRobotOrientation(swerve.getRotation());
+//   //   }
 
-    if (getPoseValidMG2(swerve.getRotation())) {
-      swerve.updatePose(
-          new VisionObservation(
-              getBotPoseMG2(),
-              getPoseTimestampMG2(),
-              VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
-    }
-  }
+//   //   if (inputs.tagCount >= 2) {
+//   //     xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
+//   //     thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
+//   //   } else {
+//   //     xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
+//   //     thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
+//   //   }
 
-  public Pose2d getBotPoseMG2() {
-    return inputs.botPoseMG2;
-  }
+//   //   if (getPoseValidMG2(swerve.getRotation())) {
+//   //     swerve.updatePose(
+//   //         new VisionObservation(
+//   //             getBotPoseMG2(),
+//   //             getPoseTimestampMG2(),
+//   //             VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+//   //   }
+//   // }
 
-  public void resetGyroLL4() {
-    LimelightHelpers.SetIMUMode(inputs.name, 1);
-    io.setRobotOrientationMG2(swerve.getRotation());
-    LimelightHelpers.SetIMUMode(inputs.name, 2);
-  }
+//   // public Pose2d getBotPoseMG2() {
+//   //   return inputs.botPoseMG2;
+//   // }
 
-  /**
-   * TODO fix mount angle, this assumes the limelight is mounted at the back of the robot
-   *
-   * @param yaw current yaw of the robot
-   * @return the angle of the focused apriltag relative to the robot
-   */
-  public Rotation2d txToYaw(Rotation2d yaw) {
-    Rotation2d output = yaw.minus(getTX());
-    Logger.recordOutput("Vision/TXtoYaw", output);
-    return output;
-  }
+//   // public void resetGyroLL4() {
+//   //   LimelightHelpers.SetIMUMode(inputs.name, 1);
+//   //   io.setRobotOrientationMG2(swerve.getRotation());
+//   //   LimelightHelpers.SetIMUMode(inputs.name, 2);
+//   // }
 
-  /**
-   * @return the translation between the primary in view apriltag and the camera
-   */
-  public Translation2d targetPoseCameraSpace() {
-    Logger.recordOutput(
-        "limelight/singletagdist", LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
+//   /**
+//    * TODO fix mount angle, this assumes the limelight is mounted at the back of the robot
+//    *
+//    * @param yaw current yaw of the robot
+//    * @return the angle of the focused apriltag relative to the robot
+//    */
+//   public Rotation2d txToYaw(Rotation2d yaw) {
+//     Rotation2d output = yaw.minus(getTX());
+//     Logger.recordOutput("Vision/TXtoYaw", output);
+//     return output;
+//   }
 
-    return new Translation2d(
-        LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
-        LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
-  }
+//   /**
+//    * @return the translation between the primary in view apriltag and the camera
+//    */
+//   public Translation2d targetPoseCameraSpace() {
+//     Logger.recordOutput(
+//         "limelight/singletagdist", LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
 
-  /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
-  public void SetRobotOrientation(Rotation2d gyro) {
-    io.setRobotOrientationMG2(gyro);
-  }
+//     return new Translation2d(
+//         LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
+//         LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]);
+//   }
 
-  /**
-   * @param tags anything NOT in here will be thrownOut
-   */
-  public void setPermittedTags(int[] tags) {
-    io.setPermittedTags(tags);
-  }
+//   /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
+//   public void SetRobotOrientation(Rotation2d gyro) {
+//     // io.setRobotOrientationMG2(gyro);
+//   }
 
-  /** */
-  public boolean getPoseValidMG2(Rotation2d gyro) {
+//   /**
+//    * @param tags anything NOT in here will be thrownOut
+//    */
+//   public void setPermittedTags(int[] tags) {
+//     // io.setPermittedTags(tags);
+//   }
 
-    // get raw data from limelight pose estimator
-    Pose2d botpose = inputs.botPoseMG2;
-    double diff = 0;
+//   /** */
+//   public boolean getPoseValidMG2(Rotation2d gyro) {
 
-    double gyroval = gyro.getDegrees();
-    gyroval = gyroval % (360);
+//     // get raw data from limelight pose estimator
+//     Pose2d botpose = inputs.botPoseMG2;
+//     double diff = 0;
 
-    double x = botpose.getX();
-    double y = botpose.getY();
+//     double gyroval = gyro.getDegrees();
+//     gyroval = gyroval % (360);
 
-    double tagDist = inputs.avgTagDist;
+//     double x = botpose.getX();
+//     double y = botpose.getY();
 
-    // debugging purposes only
-    Logger.recordOutput("LLDebug/" + inputs.name + " avgTagDist", tagDist);
-    Logger.recordOutput("LLDebug/" + inputs.name + " tagCount", inputs.tagCount);
-    Logger.recordOutput("LLDebug/" + inputs.name + " x val", x);
-    Logger.recordOutput("LLDebug/" + inputs.name + " y val", y);
-    Logger.recordOutput("LLDebug/" + inputs.name + " rdiff", diff);
+//     double tagDist = inputs.avgTagDist;
 
-    // this determines if the raw data from the limelight is valid
-    // sometimes the limelight will give really bad data, so we want to throw this out
-    // and not use it in our pose estimation.
-    // to check for this, we check to see if the rotation from the pose matches
-    // the rotation that the gyro is reporting
-    // we then check if the pose is actually within the bounds of the field
-    // if all these requirements are met, then we can trust the measurement
-    // otherwise we ignore it.
+//     // debugging purposes only
+//     Logger.recordOutput("LLDebug/" + inputs.name + " avgTagDist", tagDist);
+//     Logger.recordOutput("LLDebug/" + inputs.name + " tagCount", inputs.tagCount);
+//     Logger.recordOutput("LLDebug/" + inputs.name + " x val", x);
+//     Logger.recordOutput("LLDebug/" + inputs.name + " y val", y);
+//     Logger.recordOutput("LLDebug/" + inputs.name + " rdiff", diff);
 
-    if ((diff < AprilTagVisionConstants.limelightConstants.rotationTolerance)
-        && (tagDist < AprilTagVisionConstants.limelightConstants.throwoutDist)
-        && (botpose.getTranslation().getX() > 0)
-        && (botpose.getTranslation().getX() < AprilTagVisionFieldConstants.fieldLength)
-        && (botpose.getTranslation().getY() > 0)
-        && (botpose.getTranslation().getY() < AprilTagVisionFieldConstants.fieldWidth)) {
+//     // this determines if the raw data from the limelight is valid
+//     // sometimes the limelight will give really bad data, so we want to throw this out
+//     // and not use it in our pose estimation.
+//     // to check for this, we check to see if the rotation from the pose matches
+//     // the rotation that the gyro is reporting
+//     // we then check if the pose is actually within the bounds of the field
+//     // if all these requirements are met, then we can trust the measurement
+//     // otherwise we ignore it.
 
-      return true;
-    } else {
-      return false;
-    }
-  }
+//     if ((diff < AprilTagVisionConstants.limelightConstants.rotationTolerance)
+//         && (tagDist < AprilTagVisionConstants.limelightConstants.throwoutDist)
+//         && (botpose.getTranslation().getX() > 0)
+//         && (botpose.getTranslation().getX() < AprilTagVisionFieldConstants.fieldLength)
+//         && (botpose.getTranslation().getY() > 0)
+//         && (botpose.getTranslation().getY() < AprilTagVisionFieldConstants.fieldWidth)) {
 
-  public Pose3d getBotPose3d() {
-    Pose3d pose = inputs.botPose3d;
-    Logger.recordOutput("Limelight" + inputs.name + "/Pose3d", pose);
-    return pose;
-  }
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
 
-  // public double getDistToTag() {
-  //   //indicies don't match documentation with targetpose_robotspace
-  //   Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot",
-  // Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
-  // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
-  //   return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
-  // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is z
+//   public Pose3d getBotPose3d() {
+//     Pose3d pose = inputs.botPose3d;
+//     Logger.recordOutput("Limelight" + inputs.name + "/Pose3d", pose);
+//     return pose;
+//   }
 
-  // }
+//   // public double getDistToTag() {
+//   //   //indicies don't match documentation with targetpose_robotspace
+//   //   Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot",
+//   // Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
+//   // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
+//   //   return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
+//   // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is z
 
-  public double getPoseTimestampMG2() {
-    return inputs.timestamp;
-  }
+//   // }
 
-  public String getLimelightName() {
-    return inputs.name;
-  }
+//   public double getPoseTimestampMG2() {
+//     return inputs.timestamp;
+//   }
 
-  // angle target is from the center of the limelights crosshair
-  public Rotation2d getTX() {
-    return Rotation2d.fromDegrees(inputs.tx);
-  }
+//   public String getLimelightName() {
+//     return inputs.name;
+//   }
 
-  public double getTA() {
-    return inputs.ta;
-  }
+//   // angle target is from the center of the limelights crosshair
+//   public Rotation2d getTX() {
+//     return Rotation2d.fromDegrees(inputs.tx);
+//   }
 
-  public void setPriorityID(int tagID) {
-    io.setPriorityID(tagID);
-  }
+//   public double getTA() {
+//     return inputs.ta;
+//   }
 
-  public double tagCount() {
-    return inputs.tagCount;
-  }
-}
+//   public void setPriorityID(int tagID) {
+//     // io.setPriorityID(tagID);
+//   }
+
+//   public double tagCount() {
+//     return inputs.tagCount;
+//   }
+// }
