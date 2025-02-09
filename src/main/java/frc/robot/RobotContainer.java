@@ -146,6 +146,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    //TODO decrease speed when CoG really high
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
