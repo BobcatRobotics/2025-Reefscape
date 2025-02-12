@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
   public static final Rotation2d ELEVATOR_MAX_ROTATIONS = new Rotation2d();
 
   private Distance height;
-  private ElevatorState currentState = ElevatorState.IDLE_NO_PIECE;
+  private ElevatorState currentState = ElevatorState.IDLE_RIGHT_SIDE_UP;
 
   private ElevatorIO io;
   private ElevatorIOInputsAutoLogged inputs;

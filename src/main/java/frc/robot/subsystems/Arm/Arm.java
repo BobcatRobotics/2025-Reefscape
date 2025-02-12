@@ -28,7 +28,7 @@ public class Arm extends SubsystemBase {
 
   ArmIO io;
   ArmIOInputs inputs = new ArmIOInputsAutoLogged();
-  private ArmState desiredState = ArmState.IDLE_NO_PIECE;
+  private ArmState desiredState = ArmState.RIGHT_SIDE_UP;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
@@ -38,7 +38,7 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    io.setDesiredState(desiredState);
+    io.setDesiredState(desiredState.rot2d);
     motorDisconnected.set(!inputs.motorConnected);
     encoderDisconnected.set(!inputs.encoderConnected);
   }

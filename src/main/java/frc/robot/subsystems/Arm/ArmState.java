@@ -5,8 +5,9 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.Superstructure.Superstructure;
 
 public enum ArmState {
-  IDLE_NO_PIECE(-90), // upside down, for quick pickup once game piece intook
-  IDLE_CORAL(90), // arm doesnt move from idle to handoff
+  UPSIDE_DOWN(-90), // upside down, for quick pickup once game piece intook
+  RIGHT_SIDE_UP(90), // arm doesnt move from idle to handoff
+  HP_INTAKE(0),
   CORAL_SCORE_L1(0),
   CORAL_SCORE_L2(0),
   CORAL_SCORE_L3(0),

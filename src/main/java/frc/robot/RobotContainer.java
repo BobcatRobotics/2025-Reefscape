@@ -52,7 +52,6 @@ public class RobotContainer {
   private final Drive drive;
   // public final Vision limelight;
   // private final Elevator elevator;
-  private RobotVisualizer robotVisualizer = new RobotVisualizer();
   private Superstructure superstructure;
 
   // Controller
@@ -75,10 +74,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants24.FrontRight),
                 new ModuleIOTalonFX(TunerConstants24.BackLeft),
                 new ModuleIOTalonFX(TunerConstants24.BackRight));
-        // elevator = new Elevator();
-        // limelight = new Vision(drive, new
-        // VisionIOLimelight(LimelightConstants.constants));
-
         break;
 
       case SIM:
@@ -90,7 +85,6 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants24.FrontRight),
                 new ModuleIOSim(TunerConstants24.BackLeft),
                 new ModuleIOSim(TunerConstants24.BackRight));
-        // limelight = new Vision(drive, new VisionIO() {});
         superstructure =
             new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
         break;
@@ -152,12 +146,6 @@ public class RobotContainer {
         DriveCommands.fieldRelativeJoystickDrive(
             drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
 
-    // rightStick.button.whileTrue(
-    // DriveCommands.alignToTag(
-    // drive,
-    // () -> limelight.getTX().unaryMinus(),
-    // () -> limelight.targetPoseCameraSpace().getX(),
-    // () -> limelight.targetPoseCameraSpace().getY()));
 
     // Switch to X pattern when X button is pressed
     rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));

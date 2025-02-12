@@ -1,8 +1,8 @@
 package frc.robot.subsystems.Elevator;
 
 public enum ElevatorState {
-  IDLE_NO_PIECE(0), // upside down, for quick pickup once game piece intook
-  IDLE_CORAL(0), // right side up for quick transition to scoring zone
+  IDLE_UPSIDE_DOWN(0), // upside down, for quick pickup once game piece intook
+  IDLE_RIGHT_SIDE_UP(0), // right side up for quick transition to scoring zone
   CORAL_HANDOFF(0), // picking up coral with the end effector
   CORAL_L1(0), // elevator pos doesnt matter for score or prep
   CORAL_L2(0),

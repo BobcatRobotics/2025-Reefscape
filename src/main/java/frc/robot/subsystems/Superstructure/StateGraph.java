@@ -63,7 +63,7 @@ public class StateGraph {
     List<SuperstructureState[]> transitions =
         List.of(
             new SuperstructureState[] {
-              SuperstructureState.IDLE_NO_PIECE,
+              SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.CORAL_HANDOFF,
               SuperstructureState.INTAKE_ALGAE_GROUND,
               SuperstructureState.ALGAE_PREP_L2,
@@ -71,14 +71,14 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_HANDOFF,
-              SuperstructureState.IDLE_NO_PIECE,
+              SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.ELEVATOR_SAFE_ZONE
             },
             new SuperstructureState[] {
-              SuperstructureState.ELEVATOR_SAFE_ZONE, SuperstructureState.IDLE_CORAL
+              SuperstructureState.ELEVATOR_SAFE_ZONE, SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
-              SuperstructureState.IDLE_CORAL,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
@@ -90,8 +90,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L1,
-              SuperstructureState.IDLE_NO_PIECE,
-              SuperstructureState.IDLE_CORAL
+              SuperstructureState.UPSIDE_DOWN_IDLE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L2,
@@ -99,8 +99,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L2,
-              SuperstructureState.IDLE_NO_PIECE,
-              SuperstructureState.IDLE_CORAL
+              SuperstructureState.UPSIDE_DOWN_IDLE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L3,
@@ -108,8 +108,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L3,
-              SuperstructureState.IDLE_NO_PIECE,
-              SuperstructureState.IDLE_CORAL
+              SuperstructureState.UPSIDE_DOWN_IDLE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L4,
@@ -117,8 +117,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_SCORE_L4,
-              SuperstructureState.IDLE_NO_PIECE,
-              SuperstructureState.IDLE_CORAL
+              SuperstructureState.UPSIDE_DOWN_IDLE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L1, SuperstructureState.CORAL_PREP_L1
@@ -141,7 +141,7 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.INTAKE_ALGAE_GROUND,
               SuperstructureState.IDLE_ALGAE,
-              SuperstructureState.IDLE_NO_PIECE
+              SuperstructureState.UPSIDE_DOWN_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L2,
@@ -163,8 +163,8 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.ELEVATOR_SAFE_ZONE,
-              SuperstructureState.IDLE_CORAL,
-              SuperstructureState.IDLE_NO_PIECE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.UPSIDE_DOWN_IDLE
             });
 
     // for each set of transitions

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Arm.Arm;
+import frc.robot.subsystems.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.Arm.ArmZone;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -26,15 +27,17 @@ public class Superstructure {
   public static final Distance ELEVATOR_TOLERANCE = Inches.of(0.5);
   public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(1.5);
 
-  private SuperstructureState currentState = SuperstructureState.IDLE_NO_PIECE;
+  private SuperstructureState currentState = SuperstructureState.RIGHT_SIDE_UP_IDLE;
   private Arm arm;
   private Elevator elevator;
+
 
   /** A class representing the Arm-Elevator superstructure */
   public Superstructure(Arm arm, Elevator elevator) {
     this.arm = arm;
     this.elevator = elevator;
   }
+
 
   public SuperstructureState getState() {
     return currentState;
