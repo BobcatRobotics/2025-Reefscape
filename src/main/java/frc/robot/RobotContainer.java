@@ -21,9 +21,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.AidenGamepads.EightBitDo;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
+import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Arm.Arm;
@@ -34,6 +36,9 @@ import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
+import frc.robot.subsystems.Limelight.Vision;
+import frc.robot.subsystems.Limelight.VisionIO;
+import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Superstructure;
@@ -47,6 +52,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
+  public final Vision limelight;
   private final Drive drive;
   // public final Vision limelight;
   // private final Elevator elevator;
@@ -54,8 +60,9 @@ public class RobotContainer {
 
   // Controller
   // private LogitechGamepad logitech = new LogitechGamepad(0);
-  private Ruffy leftStick = new Ruffy(0);
-  private Ruffy rightStick = new Ruffy(1);
+  // private Ruffy leftStick = new Ruffy(0);
+  // private Ruffy rightStick = new Ruffy(1);
+  private EightBitDo gp = new EightBitDo(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -72,6 +79,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants24.FrontRight),
                 new ModuleIOTalonFX(TunerConstants24.BackLeft),
                 new ModuleIOTalonFX(TunerConstants24.BackRight));
+        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+
         break;
 
       case SIM:
@@ -83,6 +92,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants24.FrontRight),
                 new ModuleIOSim(TunerConstants24.BackLeft),
                 new ModuleIOSim(TunerConstants24.BackRight));
+        limelight = new Vision(drive, new VisionIO() {});
         superstructure =
             new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
         break;
@@ -96,7 +106,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        // limelight = new Vision(drive, new VisionIO() {});
+        limelight = new Vision(drive, new VisionIO() {});
         break;
     }
 
@@ -141,13 +151,36 @@ public class RobotContainer {
     //TODO decrease speed when CoG really high
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
-        DriveCommands.fieldRelativeJoystickDrive(
-            drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
+        DriveCommands.fieldRelativeJoystickDrive(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
 
 
-  
+    // Switch to X pattern when X button is pressed
+    // rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // Reset gyro to 0 deg when B button is pressed
+    gp.a.onTrue(
+        Commands.runOnce(
+                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                drive)
+            .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
+            .ignoringDisable(true));
+
+    //   rightStick.button.whileTrue(
+    //       DriveCommands.singleTagAlign(
+    //           drive,
+    //           () -> limelight.targetPoseCameraSpace().getX(),
+    //           () -> 0,
+    //           () -> Rotation2d.fromDegrees(0)));
+    // }
+
+    //   rightStick.button.whileTrue(
+    //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));
+    // }
+    gp.b.whileTrue(
+        DriveCommands.driveToReef(
+            drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis, gp.povLeft, gp.povRight));
   }
-
+  ;
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

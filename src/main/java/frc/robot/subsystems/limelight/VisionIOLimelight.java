@@ -5,6 +5,7 @@
 package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.util.DSUtil;
 import frc.robot.util.RotationUtil;
@@ -88,11 +89,26 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   @Override
-  public void setRobotOrientationMG2(Rotation2d gyro) {
-    gyro = DSUtil.isBlue() ? gyro : gyro.rotateBy(Rotation2d.fromDegrees(180));
-    double gyroval = RotationUtil.wrapRot2d(gyro).getDegrees();
+  // public void setRobotOrientationMG2(Rotation2d gyro) {
+  //   gyro = DSUtil.isBlue() ? gyro : gyro.rotateBy(Rotation2d.fromDegrees(180));
+  //   double gyroval = RotationUtil.wrapRot2d(gyro).getDegrees();
 
-    LimelightHelpers.SetRobotOrientation(name, gyroval, 0, 0, 0, 0, 0);
+  //   LimelightHelpers.SetRobotOrientation(name, gyroval, 0, 0, 0, 0, 0);
+  // }
+
+  public void setRobotOrientationMG2(Rotation3d gyro, Rotation3d rate) {
+    gyro = DSUtil.isBlue() ? gyro : gyro.rotateBy(new Rotation3d(new Rotation2d(Math.PI)));
+    Rotation3d gyroval = RotationUtil.wrapRot3d(gyro);
+    Rotation3d rateval = RotationUtil.wrapRot3d(rate);
+
+    LimelightHelpers.SetRobotOrientation(
+        name,
+        gyroval.getZ(),
+        rateval.getZ(),
+        gyroval.getY(),
+        rateval.getY(),
+        gyroval.getX(),
+        rateval.getX());
   }
 
   @Override

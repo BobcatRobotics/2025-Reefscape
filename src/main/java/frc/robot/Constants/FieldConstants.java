@@ -56,10 +56,18 @@ public class FieldConstants {
     public static final double faceToZoneLine =
         Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
+    public static final double reefToBranchY =
+        Units.inchesToMeters(6.469); // Y offset of branches from reef
+
+    public static final double faceToCenter =
+        Units.inchesToMeters(65.491090) / 2; // Side of reef to center of reef
+
     public static final Pose2d[] centerFaces =
         new Pose2d[6]; // Starting facing the driver station in clockwise order
     public static final List<Map<ReefHeight, Pose3d>> branchPositions =
         new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
+
+    public static final List<Map<ReefHeight, Pose3d>> offsetPositions = new ArrayList<>();
 
     static {
       // Initialize faces
@@ -137,6 +145,33 @@ public class FieldConstants {
         branchPositions.add(fillRight);
         branchPositions.add(fillLeft);
       }
+
+      //   for (int face = 0; face < 6; face++) {
+      //     Map<ReefHeight, Pose3d> offset = new HashMap<>();
+      //     for (var level : ReefHeight.values()) {
+      //       Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
+      //       double adjustX = 2.5; //meters
+      //       double adjustY = Units.inchesToMeters(0);
+
+      //       offset.put(
+      //           level,
+      //           new Pose3d(
+      //               new Translation3d(
+      //                   poseDirection
+      //                       .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+      //                       .getX(),
+      //                   poseDirection
+      //                       .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+      //                       .getY(),
+      //                   level.height),
+      //               new Rotation3d(
+      //                   0,
+      //                   Units.degreesToRadians(level.pitch),
+      //                   poseDirection.getRotation().getRadians())));
+      //     offsetPositions.add(offset);
+      //   }
+      // }
+
     }
   }
 

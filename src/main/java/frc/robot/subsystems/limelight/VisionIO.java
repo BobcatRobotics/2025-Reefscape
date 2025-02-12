@@ -6,7 +6,7 @@ package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.util.VisionObservation.LLTYPE;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -24,7 +24,7 @@ public interface VisionIO {
     public double ty = -1;
     public double fiducialID = -1;
     public double tClass = -1;
-    public String name = "something is very wrong if you're seeing this";
+    public String name = "sim";
     // public CamMode camMode = CamMode.VISION;
     public Pose2d botPoseMG2 = new Pose2d();
     public int tagCount = -1;
@@ -47,7 +47,7 @@ public interface VisionIO {
 
   public default void setCamMode(CamMode mode) {}
 
-  public default void setRobotOrientationMG2(Rotation2d gyro) {}
+  public default void setRobotOrientationMG2(Rotation3d gyro, Rotation3d rate) {}
 
   public default void setPermittedTags(int[] tags) {}
 
