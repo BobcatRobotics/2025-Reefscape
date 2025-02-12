@@ -84,7 +84,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.HP_INTAKE
-            }, 
+            },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
@@ -167,9 +167,8 @@ public class StateGraph {
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.UPSIDE_DOWN_IDLE
             },
-            new SuperstructureState[]{
-              SuperstructureState.HP_INTAKE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+            new SuperstructureState[] {
+              SuperstructureState.HP_INTAKE, SuperstructureState.RIGHT_SIDE_UP_IDLE
             });
 
     // for each set of transitions

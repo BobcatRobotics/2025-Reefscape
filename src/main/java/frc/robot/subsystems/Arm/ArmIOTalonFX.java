@@ -41,7 +41,7 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.MotionMagic.MotionMagicExpo_kA = MM_EXPO_KA;
     angleConfigs.MotionMagic.MotionMagicExpo_kV = MM_EXPO_KV;
 
-    angleConfigs.Slot0.kG = 0; //TODO find these
+    angleConfigs.Slot0.kG = 0; // TODO find these
     angleConfigs.Slot0.kS = 0;
     angleConfigs.Slot0.kA = 0;
     angleConfigs.Slot0.kP = 0;
@@ -97,7 +97,4 @@ public class ArmIOTalonFX implements ArmIO {
   public void setDesiredState(Rotation2d rot) {
     motor.setControl(angleRequest.withPosition(rot.getRotations()));
   }
-
-  
 }
-

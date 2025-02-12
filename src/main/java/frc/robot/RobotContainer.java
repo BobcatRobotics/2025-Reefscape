@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AidenGamepads.EightBitDo;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
@@ -36,11 +34,11 @@ import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.Limelight.VisionIOLimelight;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -148,11 +146,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    //TODO decrease speed when CoG really high
+    // TODO decrease speed when CoG really high
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
-
 
     // Switch to X pattern when X button is pressed
     // rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));

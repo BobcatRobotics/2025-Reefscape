@@ -31,13 +31,11 @@ public class Superstructure {
   private Arm arm;
   private Elevator elevator;
 
-
   /** A class representing the Arm-Elevator superstructure */
   public Superstructure(Arm arm, Elevator elevator) {
     this.arm = arm;
     this.elevator = elevator;
   }
-
 
   public SuperstructureState getState() {
     return currentState;
@@ -57,7 +55,6 @@ public class Superstructure {
     return result;
   }
 
-
   /**
    * Performs a breadth-first search of all possible states to find the shortest path from the start
    * state to the goal state.
@@ -69,7 +66,6 @@ public class Superstructure {
    */
   public List<SuperstructureState> findShortestPath(
       SuperstructureState start, SuperstructureState goal) {
-    
 
     // Queue to manage the paths to be explored. Each element in the queue is a list of states
     // representing a path.
