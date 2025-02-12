@@ -22,13 +22,15 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.ArmIO;
-import frc.robot.subsystems.CoralIntake.EndEffector;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
+import frc.robot.subsystems.EndEffector.CloseGripper;
+import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.Superstructure.RobotVisualizer;
 import frc.robot.subsystems.Superstructure.Superstructure;
 
@@ -72,10 +74,10 @@ public class RobotContainer{
   // private final Elevator elevator;
   private RobotVisualizer robotVisualizer = new RobotVisualizer();
   private Superstructure superstructure;
-  private EndEffector m_intake = new EndEffector();
+  private EndEffector m_Effector = new EndEffector();
 
   // Controller
-  private XboxController m_Controller = new XboxController(0);
+  private CommandXboxController m_Controller = new CommandXboxController(0);
   private Ruffy leftStick = new Ruffy(0);
   private Ruffy rightStick = new Ruffy(1);
 
@@ -163,10 +165,9 @@ public class RobotContainer{
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    m_Controller.leftBumper().onTrue(new CloseGripper(m_Effector));
 
-    if (m_Controller.getRawButtonPressed(1)) {
-      m_intake.run(.5);
-    }
+
 
     // Default command, normal field-relative drive
     // drive.setDefaultCommand(

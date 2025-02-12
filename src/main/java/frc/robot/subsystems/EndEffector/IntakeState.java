@@ -1,4 +1,4 @@
-package frc.robot.subsystems.CoralIntake;
+package frc.robot.subsystems.EndEffector;
 
 public enum IntakeState {
   DEPLOY,
