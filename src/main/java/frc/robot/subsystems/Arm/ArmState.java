@@ -2,27 +2,35 @@ package frc.robot.subsystems.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Superstructure.Superstructure;
 
 public enum ArmState {
-  IDLE_NO_PIECE(0),
-  IDLE_PIECE(0),
-  IN_BOX(0),
-  SCOREL1(0),
-  SCOREL2(0),
-  SCOREL3(0),
-  SCOREL4(0),
-  PICKUP_ALGAE(0),
-  PICKUP_CORAL(0),
-  CLIMB(0),
-  HUMAN_INTAKE(0),
-  NO_OP(-1);
+  UPSIDE_DOWN(-90), // upside down, for quick pickup once game piece intook
+  RIGHT_SIDE_UP(90), // arm doesnt move from idle to handoff
+  HP_INTAKE(0),
+  CORAL_SCORE_L1(0),
+  CORAL_SCORE_L2(0),
+  CORAL_SCORE_L3(0),
+  CORAL_SCORE_L4(0),
+  CORAL_PREP_L1(0),
+  CORAL_PREP_L2(0),
+  CORAL_PREP_L3(0),
+  CORAL_PREP_L4(0),
+  ALGAE_PREP_L2(0),
+  ALGAE_PREP_L3(0),
+  ALGAE_SCORE_L2(0),
+  ALGAE_SCORE_L3(0),
+  ALGAE_GROUND(0),
+  ALGAE_SCORE_PROCESSOR(0),
+  IDLE_ALGAE(0), // coral handoff
+  UNKOWN(0); // arm isnt at a predefined state
 
   ArmState(int degrees) {
     this.degrees = degrees;
     this.rotations = degrees / 360;
     this.radians = Units.degreesToRadians(degrees);
     this.rot2d = Rotation2d.fromDegrees(degrees);
-    this.zone = Arm.getArmZone(rot2d);
+    this.zone = Superstructure.getArmZone(rot2d);
   }
 
   public double degrees;

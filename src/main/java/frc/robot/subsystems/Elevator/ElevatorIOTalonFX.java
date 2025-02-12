@@ -11,6 +11,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
+  public static final double GEAR_RATIO =
+      10.08 / 1; // GEAR_RATIO motor rotations = 1 rotation of the ouput shaft TODO FIND THIS
   public static final InvertedValue ELEVATOR_MOTOR_INVERTED =
       InvertedValue.CounterClockwise_Positive;
   public static final double ELEVATOR_ROTOR_TO_SENSOR_RATIO = 1;

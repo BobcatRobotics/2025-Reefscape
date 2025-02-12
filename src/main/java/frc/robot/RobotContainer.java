@@ -22,10 +22,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AidenGamepads.EightBitDo;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.AidenGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Arm.Arm;
+import frc.robot.subsystems.Arm.ArmIO;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
@@ -35,6 +39,11 @@ import frc.robot.subsystems.Drive.ModuleIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.Limelight.VisionIOLimelight;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.RobotVisualizer;
+import frc.robot.subsystems.Superstructure.Superstructure;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -45,8 +54,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  public final Drive drive;
   public final Vision limelight;
+  private final Drive drive;
+  // public final Vision limelight;
+  // private final Elevator elevator;
+  private Superstructure superstructure;
 
   // Controller
   // private LogitechGamepad logitech = new LogitechGamepad(0);
@@ -83,7 +95,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants24.BackLeft),
                 new ModuleIOSim(TunerConstants24.BackRight));
         limelight = new Vision(drive, new VisionIO() {});
-
+        superstructure =
+            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
         break;
 
       default:
@@ -107,19 +120,23 @@ public class RobotContainer {
 
     // Set up SysId routines
     // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // "Drive Wheel Radius Characterization",
+    // DriveCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // "Drive Simple FF Characterization",
+    // DriveCommands.feedforwardCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // "Drive SysId (Quasistatic Forward)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // "Drive SysId (Quasistatic Reverse)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // "Drive SysId (Dynamic Forward)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // "Drive SysId (Dynamic Reverse)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -133,20 +150,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // // Default command, normal field-relative drive
-    // drive.setDefaultCommand(
-    //     DriveCommands.fieldRelativeJoystickDrive(
-    //         drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
-
+    //TODO decrease speed when CoG really high
+    // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
 
-    // rightStick.button.whileTrue(
-    //    DriveCommands.alignToTag(
-    //        drive,
-    //        () -> limelight.getTX().unaryMinus(),
-    //        () -> limelight.targetPoseCameraSpace().getX(),
-    //        () -> limelight.targetPoseCameraSpace().getY()));
 
     // Switch to X pattern when X button is pressed
     // rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
