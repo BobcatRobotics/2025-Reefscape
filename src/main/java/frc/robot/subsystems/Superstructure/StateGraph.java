@@ -82,8 +82,9 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4
-            }, // TODO add outtake
+              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.HP_INTAKE
+            }, 
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
@@ -134,7 +135,7 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE, SuperstructureState.ALGAE_SCORE_PROCESSOR
-            }, // TODO add outtake
+            },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_SCORE_PROCESSOR, SuperstructureState.ELEVATOR_SAFE_ZONE
             },
@@ -165,6 +166,10 @@ public class StateGraph {
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.UPSIDE_DOWN_IDLE
+            },
+            new SuperstructureState[]{
+              SuperstructureState.HP_INTAKE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             });
 
     // for each set of transitions

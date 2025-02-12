@@ -36,9 +36,7 @@ import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
-import frc.robot.subsystems.Superstructure.RobotVisualizer;
 import frc.robot.subsystems.Superstructure.Superstructure;
-import frc.robot.subsystems.Superstructure.SuperstructureState;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -147,15 +145,7 @@ public class RobotContainer {
             drive, leftStick.yAxis, leftStick.xAxis, rightStick.xAxis));
 
 
-    // Switch to X pattern when X button is pressed
-    rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0 deg when B button is pressed
-    leftStick.button.onTrue(
-        Commands.runOnce(
-                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
-            .ignoringDisable(true));
+  
   }
 
   /**

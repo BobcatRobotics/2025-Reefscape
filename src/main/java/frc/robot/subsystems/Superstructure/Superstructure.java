@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Arm.Arm;
-import frc.robot.subsystems.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.Arm.ArmZone;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -26,6 +25,7 @@ import org.littletonrobotics.junction.Logger;
 public class Superstructure {
   public static final Distance ELEVATOR_TOLERANCE = Inches.of(0.5);
   public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(1.5);
+  StateGraph graph = StateGraph.getInstance();
 
   private SuperstructureState currentState = SuperstructureState.RIGHT_SIDE_UP_IDLE;
   private Arm arm;
@@ -57,6 +57,7 @@ public class Superstructure {
     return result;
   }
 
+
   /**
    * Performs a breadth-first search of all possible states to find the shortest path from the start
    * state to the goal state.
@@ -68,7 +69,7 @@ public class Superstructure {
    */
   public List<SuperstructureState> findShortestPath(
       SuperstructureState start, SuperstructureState goal) {
-    StateGraph graph = StateGraph.getInstance();
+    
 
     // Queue to manage the paths to be explored. Each element in the queue is a list of states
     // representing a path.
