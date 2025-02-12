@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,20 +20,22 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 7.0;
+  private static final double ANGLE_KP = .5;
   private static final double ANGLE_KD = 0;
-  private static final double DRIVE_KPY = 1.2;
-  private static final double DRIVE_KDY = 0.6;
-  private static final double DRIVE_KPX = 4;
-  private static final double DRIVE_KDX = 0.6;
+  private static final double DRIVE_KPY = 1;
+  private static final double DRIVE_KDY = 0;
+  private static final double DRIVE_KPX = 1;
+  private static final double DRIVE_KDX = 0;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
+  private static final Distance ALIGN_DISTANCE = Meters.of(.4);
 
   private DriveCommands() {}
 
@@ -342,11 +347,11 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier rotationSupplier) {
+      DoubleSupplier rotationSupplier,
+      BooleanSupplier clockwiseSupplier,
+      BooleanSupplier counterclockwiseSupplier) {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
-
-    Pose2d nearestFace = drive.getPose().nearest(faces);
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
@@ -358,47 +363,135 @@ public class DriveCommands {
 
     ProfiledPIDController xController =
         new ProfiledPIDController(
-            DRIVE_KPX, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(1, 1.0));
+            DRIVE_KPX, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
 
     ProfiledPIDController yController =
         new ProfiledPIDController(
-            DRIVE_KPY, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(1, 1.0));
+            DRIVE_KPY, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
 
     return Commands.run(
-        () -> {
-          double xOutput = xController.calculate(drive.getPose().getX(), nearestFace.getX());
-          double yOutput = xController.calculate(drive.getPose().getY(), nearestFace.getY());
-          double omegaOutput =
-              angleController.calculate(
-                  drive.getPose().getRotation().getRadians(),
-                  nearestFace.getRotation().getRadians());
+            () -> {
+              Pose2d nearestFace = drive.getPose().nearest(faces);
+              Logger.recordOutput("reef_face/raw", nearestFace);
+              double adjustY = 0;
 
-          // Get linear velocity
-          Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              if (clockwiseSupplier.getAsBoolean()) {
+                adjustY = -FieldConstants.Reef.reefToBranchY;
+              } else if (counterclockwiseSupplier.getAsBoolean()) {
+                adjustY = FieldConstants.Reef.reefToBranchY;
+              }
 
-          //   Apply rotation deadband
-          double omegaOverride = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), DEADBAND);
+              //   List<Map<ReefHeight, Pose3d>> offsetPositions =
+              // FieldConstants.Reef.branchPositions;
 
-          //   Square rotation value for more precise control
-          omegaOverride = Math.copySign(omegaOverride * omegaOverride, omegaOverride);
+              // double xOffset =
+              // ALIGN_DISTANCE.baseUnitMagnitude()
+              // * Math.cos(nearestFace.getRotation().getRadians());
+              // double yOffset =
+              // ALIGN_DISTANCE.baseUnitMagnitude()
+              // * Math.sin(nearestFace.getRotation().getRadians());
 
-          // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  linearVelocity.getX() + xOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() + yOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                  (omegaOutput + omegaOverride) * drive.getMaxAngularSpeedRadPerSec());
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-          drive.runVelocity(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
-        },
-        drive);
+              // Pose2d offsetFace =
+              // nearestFace.plus(new Transform2d(xOffset, yOffset, new Rotation2d()));
+              // Logger.recordOutput("reef_face/offset", offsetFace);
+              int faceIndex = -1;
+              for (int i = 0; i < FieldConstants.Reef.centerFaces.length; i++) {
+                if (FieldConstants.Reef.centerFaces[i] == nearestFace) {
+                  faceIndex = i;
+                  break;
+                }
+              }
+
+              Pose2d poseDirection =
+                  new Pose2d(
+                      FieldConstants.Reef.center, Rotation2d.fromDegrees(180 - (60 * faceIndex)));
+
+              double adjustX =
+                  ALIGN_DISTANCE.baseUnitMagnitude() + FieldConstants.Reef.faceToCenter;
+              //   double adjustY = Units.inchesToMeters(0);
+
+              Pose2d offsetFace =
+                  new Pose2d(
+                      new Translation2d(
+                          poseDirection
+                              .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                              .getX(),
+                          poseDirection
+                              .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                              .getY()),
+                      new Rotation2d(poseDirection.getRotation().getRadians()));
+
+              // Pose2d offsetFace = nearestFace.plus(new Transform2d(xOffset, yOffset, new
+              // Rotation2d()));
+              Logger.recordOutput("reef_face/offset", offsetFace);
+
+              // Transform2d reefOffset = nearestFace.minus(drive.getPose());
+
+              // double theta = Math.atan(reefOffset.getY() / reefOffset.getX());
+              // double xGoal = Math.cos(theta) * ALIGN_DISTANCE.baseUnitMagnitude();
+              // double yGoal = Math.sin(theta) * ALIGN_DISTANCE.baseUnitMagnitude();
+
+              // Pose2d calculatedReef =
+              // nearestFace.transformBy(new Transform2d(xGoal, yGoal, new
+              // Rotation2d(theta)));
+
+              // Logger.recordOutput("reef_face/reefOffset", reefOffset);
+              // Logger.recordOutput("reef_face/calculatedReef", calculatedReef);
+
+              double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
+              double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
+              double omegaOutput =
+                  angleController.calculate(
+                      drive.getPose().getRotation().getRadians(),
+                      offsetFace.getRotation().getRadians());
+
+              Logger.recordOutput("driveToReef/xError", xController.getPositionError());
+              Logger.recordOutput("driveToReef/xPID", xOutput);
+              Logger.recordOutput("driveToReef/yError", yController.getPositionError());
+              Logger.recordOutput("driveToReef/yPID", yOutput);
+              Logger.recordOutput("driveToReef/omegaError", angleController.getPositionError());
+              Logger.recordOutput("driveToReef/omegaPID", omegaOutput);
+
+              // double omegaOutput =
+              // angleController.calculate(
+              // drive.getPose().getRotation().getRadians(),
+              // nearestFace.getRotation().getRadians());
+
+              //   double omegaOutput = 0;
+
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+              // Apply rotation deadband
+              double omegaOverride =
+                  MathUtil.applyDeadband(rotationSupplier.getAsDouble(), DEADBAND);
+
+              // Square rotation value for more precise control
+              omegaOverride = Math.copySign(omegaOverride * omegaOverride, omegaOverride);
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      (linearVelocity.getX() + xOutput) * drive.getMaxLinearSpeedMetersPerSec(),
+                      (linearVelocity.getY() + yOutput) * drive.getMaxLinearSpeedMetersPerSec(),
+                      (omegaOutput + omegaOverride) * drive.getMaxAngularSpeedRadPerSec());
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+        .beforeStarting(
+            () -> {
+              xController.reset(drive.getPose().getX());
+              yController.reset(drive.getPose().getY());
+              angleController.reset(drive.getPose().getRotation().getRadians());
+            });
   }
 }

@@ -4,15 +4,23 @@
 
 package frc.robot.subsystems.Limelight;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.util.VisionObservation;
 import frc.robot.util.VisionObservation.LLTYPE;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -26,6 +34,8 @@ public class Vision extends SubsystemBase {
   public boolean apriltagPipeline;
   private double xyStdDev;
   private double thetaStdDev;
+  private AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
 
   public Vision(Drive swerve, VisionIO io) {
     this.io = io;
@@ -40,7 +50,7 @@ public class Vision extends SubsystemBase {
   }
 
   // public void setCamMode(CamMode mode) {
-  //   io.setCamMode(mode);
+  // io.setCamMode(mode);
   // }
 
   public double getTClass() {
@@ -68,11 +78,20 @@ public class Vision extends SubsystemBase {
 
     apriltagPipeline = inputs.pipelineID == 0;
 
-    if (inputs.limelightType != LLTYPE.LL4) {
-      SetRobotOrientation(swerve.getRotation());
+    if (inputs.limelightType != LLTYPE.LL4 && DriverStation.isDSAttached()) {
+      if (DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+        // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+        Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
+        io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
+
+      } else {
+        // io.setRobotOrientationMG2(swerve.getRotation());
+        io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
+      }
     }
 
-    if (inputs.tagCount >= 2) {
+    if (inputs.tagCount < 2) {
       xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
       thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
     } else {
@@ -80,12 +99,39 @@ public class Vision extends SubsystemBase {
       thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
     }
 
-    if (getPoseValidMG2(swerve.getRotation())) {
-      swerve.updatePose(
-          new VisionObservation(
-              getBotPoseMG2(),
-              getPoseTimestampMG2(),
-              VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+    if (inputs.limelightType == LLTYPE.LL4) {
+      if (getPoseValidMG2(swerve.getRotation())) {
+        swerve.updatePose(
+            new VisionObservation(
+                getBotPoseMG2(),
+                getPoseTimestampMG2(),
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+      }
+    } else {
+      if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
+        swerve.updatePose(
+            new VisionObservation(
+                getBotPoseMG2(),
+                getPoseTimestampMG2(),
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+      }
+    }
+
+    if (inputs.name != "sim") {
+      LimelightHelpers.RawFiducial[] rawTrackedTags =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
+      List<Integer> trackedTagID = new ArrayList<Integer>();
+
+      for (int i = 0; i < rawTrackedTags.length; i++) {
+        trackedTagID.add(rawTrackedTags[i].id);
+      }
+
+      Pose2d[] trackedTagPoses = new Pose2d[rawTrackedTags.length];
+      for (int i = 0; i < trackedTagID.size(); i++) {
+        trackedTagPoses[i] = aprilTagFieldLayout.getTagPose(trackedTagID.get(i)).get().toPose2d();
+      }
+
+      Logger.recordOutput("limelight" + inputs.name + "/visionTargets", trackedTagPoses);
     }
   }
 
@@ -93,10 +139,22 @@ public class Vision extends SubsystemBase {
     return inputs.botPoseMG2;
   }
 
-  public void resetGyroLL4() {
-    LimelightHelpers.SetIMUMode(inputs.name, 1);
-    io.setRobotOrientationMG2(swerve.getRotation());
-    LimelightHelpers.SetIMUMode(inputs.name, 2);
+  public void resetGyroLL4(Drive drive) {
+    if (DriverStation.isDSAttached()) {
+      LimelightHelpers.SetIMUMode(inputs.name, 1);
+      if (DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+        // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+        Rotation3d gyro = drive.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
+        io.setRobotOrientationMG2(gyro, drive.getRotationRate());
+
+      } else {
+        // io.setRobotOrientationMG2(swerve.getRotation());
+        io.setRobotOrientationMG2(drive.getRotation3d(), drive.getRotationRate());
+      }
+
+      LimelightHelpers.SetIMUMode(inputs.name, 2);
+    }
   }
 
   /**
@@ -124,9 +182,9 @@ public class Vision extends SubsystemBase {
   }
 
   /** tells the limelight what the rotation of the gyro is, for determining pose ambiguity stuff */
-  public void SetRobotOrientation(Rotation2d gyro) {
-    io.setRobotOrientationMG2(gyro);
-  }
+  // public void SetRobotOrientation(Rotation2d gyro) {
+  //   io.setRobotOrientationMG2(gyro);
+  // }
 
   /**
    * @param tags anything NOT in here will be thrownOut
@@ -158,7 +216,8 @@ public class Vision extends SubsystemBase {
     Logger.recordOutput("LLDebug/" + inputs.name + " rdiff", diff);
 
     // this determines if the raw data from the limelight is valid
-    // sometimes the limelight will give really bad data, so we want to throw this out
+    // sometimes the limelight will give really bad data, so we want to throw this
+    // out
     // and not use it in our pose estimation.
     // to check for this, we check to see if the rotation from the pose matches
     // the rotation that the gyro is reporting
@@ -186,12 +245,13 @@ public class Vision extends SubsystemBase {
   }
 
   // public double getDistToTag() {
-  //   //indicies don't match documentation with targetpose_robotspace
-  //   Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot",
+  // //indicies don't match documentation with targetpose_robotspace
+  // Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot",
   // Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
   // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
-  //   return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
-  // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is z
+  // return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0],
+  // LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is
+  // z
 
   // }
 
