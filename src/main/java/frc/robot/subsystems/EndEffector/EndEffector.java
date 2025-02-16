@@ -21,7 +21,7 @@ public class EndEffector extends SubsystemBase {
 
   private EndEffectorIOInputs inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;
-  
+
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
     this.io = io;
@@ -31,36 +31,49 @@ public class EndEffector extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
   }
-  
-  public Distance getDistanceToPiece(){
+
+  public Distance getDistanceToPiece() {
     return Meters.of(inputs.laserCanDistanceMeters);
   }
-  public void setSpeed(double rpm){
+
+  public void setSpeed(double rpm) {
     io.setSpeed(rpm);
   }
 
-  public void idle(){
+  public void idle() {
     io.setSpeed(IDLE_SPEED);
   }
-  public Command idleCommand(){
-    return new RunCommand(() -> {io.setSpeed(IDLE_SPEED);}, this);
+
+  public Command idleCommand() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(IDLE_SPEED);
+        },
+        this);
   }
 
-  public void intake(){
+  public void intake() {
     io.setSpeed(INTAKE_SPEED);
   }
-  public Command intakeCommand(){
-    return new RunCommand(() -> {io.setSpeed(INTAKE_SPEED);}, this)
-    .until(() -> inputs.laserCanDistanceMeters < INTOOK_THRESHOLD);
+
+  public Command intakeCommand() {
+    return new RunCommand(
+            () -> {
+              io.setSpeed(INTAKE_SPEED);
+            },
+            this)
+        .until(() -> inputs.laserCanDistanceMeters < INTOOK_THRESHOLD);
   }
 
-  public void outtake(){
+  public void outtake() {
     io.setSpeed(OUTTAKE_SPEED);
   }
-  public Command outtakeCommand(){
-    return new RunCommand(() -> {io.setSpeed(OUTTAKE_SPEED);}, this);
+
+  public Command outtakeCommand() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(OUTTAKE_SPEED);
+        },
+        this);
   }
-
-
-  
 }

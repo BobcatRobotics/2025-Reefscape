@@ -1,8 +1,7 @@
-package frc.robot.subsystems.Arm;
+package frc.robot.subsystems.Superstructure.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.Superstructure.Superstructure;
 
 public enum ArmState {
   UPSIDE_DOWN(-90), // upside down, for quick pickup once game piece intook

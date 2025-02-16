@@ -21,10 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
@@ -34,36 +31,33 @@ import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
 import frc.robot.commands.CharacterizationCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Arm.Arm;
-import frc.robot.subsystems.Arm.ArmIO;
-import frc.robot.subsystems.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.ModuleIO;
 import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorIO;
-import frc.robot.subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.Limelight.VisionIOLimelight;
+import frc.robot.subsystems.Superstructure.Arm.Arm;
+import frc.robot.subsystems.Superstructure.Arm.ArmIO;
+import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
+import frc.robot.subsystems.Superstructure.Elevator.Elevator;
+import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -82,6 +76,8 @@ public class RobotContainer {
   final Drive drive;
   // public final Vision limelight;
   private final Superstructure superstructure;
+  private final Elevator elevator; // do NOT use these directly!
+  private final Arm arm;
   private final EndEffector endEffector;
 
   // Controllers
@@ -94,108 +90,135 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive = new Drive(
-            new GyroIOPigeon2(),
-            new ModuleIOTalonFX(TunerConstants24.FrontLeft),
-            new ModuleIOTalonFX(TunerConstants24.FrontRight),
-            new ModuleIOTalonFX(TunerConstants24.BackLeft),
-            new ModuleIOTalonFX(TunerConstants24.BackRight));
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(TunerConstants24.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants24.FrontRight),
+                new ModuleIOTalonFX(TunerConstants24.BackLeft),
+                new ModuleIOTalonFX(TunerConstants24.BackRight));
         limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
-        superstructure = new Superstructure(
-            new Arm(
-                new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
-            new Elevator(
-                new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
-        endEffector = new EndEffector(
-            new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
+        arm = new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID));
+        elevator = new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID));
+
+        superstructure = new Superstructure(arm, elevator);
+
+        endEffector =
+            new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIOSim(TunerConstants24.FrontLeft),
-            new ModuleIOSim(TunerConstants24.FrontRight),
-            new ModuleIOSim(TunerConstants24.BackLeft),
-            new ModuleIOSim(TunerConstants24.BackRight));
-        limelight = new Vision(drive, new VisionIO() {
-        });
-        superstructure = new Superstructure(new Arm(new ArmIO() {
-        }), new Elevator(new ElevatorIO() {
-        }));
-        endEffector = new EndEffector(new EndEffectorIO() {
-        });
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(TunerConstants24.FrontLeft),
+                new ModuleIOSim(TunerConstants24.FrontRight),
+                new ModuleIOSim(TunerConstants24.BackLeft),
+                new ModuleIOSim(TunerConstants24.BackRight));
+        limelight = new Vision(drive, new VisionIO() {});
+        arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        superstructure = new Superstructure(arm, elevator);
+        endEffector = new EndEffector(new EndEffectorIO() {});
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            });
-        limelight = new Vision(drive, new VisionIO() {
-        });
-        superstructure = new Superstructure(new Arm(new ArmIO() {
-        }), new Elevator(new ElevatorIO() {
-        }));
-        endEffector = new EndEffector(new EndEffectorIO() {
-        });
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+        limelight = new Vision(drive, new VisionIO() {});
+        arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        superstructure = new Superstructure(arm, elevator);
+        endEffector = new EndEffector(new EndEffectorIO() {});
         break;
     }
 
+    SysIdRoutine elevatorRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> elevator.runVoltage(voltage),
+                null,
+                elevator // No log consumer, since data is recorded by AdvantageKit
+                ));
+
+    SysIdRoutine armRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> arm.runVoltage(voltage),
+                null,
+                arm // No log consumer, since data is recorded by AdvantageKit
+                ));
+
     // Set up auto routines
+    // autobuilder handles 'do nothing' command
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("Test", new PathPlannerAuto("Example Auto"));
-
     // Set up SysId routines
+    //drivetrain
     autoChooser.addOption(
         "Drive Wheel Radius Characterization",
-
         CharacterizationCommands.wheelRadiusCharacterization(drive));
     autoChooser.addOption(
         "Drive Simple FF Characterization",
         CharacterizationCommands.feedforwardCharacterization(drive));
+    //elevator
     autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        "Elevator SysId (Quasistatic Forward)",
+        elevatorRoutine.quasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        "Elevator SysId (Quasistatic Reverse)",
+        elevatorRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)",
-        drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        "Elevator SysId (Dynamic Forward)",
+        elevatorRoutine.dynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)",
-        drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        "Elevator SysId (Dynamic Reverse)",
+        elevatorRoutine.dynamic(SysIdRoutine.Direction.kReverse));
+    //arm
+    autoChooser.addOption(
+        "Arm SysId (Quasistatic Forward)",
+        armRoutine.quasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Arm SysId (Quasistatic Reverse)",
+        armRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Arm SysId (Dynamic Forward)",
+        armRoutine.dynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Arm SysId (Dynamic Reverse)",
+        armRoutine.dynamic(SysIdRoutine.Direction.kReverse));
+
 
     // Configure the button bindings
     configureButtonBindings();
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -206,16 +229,13 @@ public class RobotContainer {
     // default commands
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
-            drive,
-            leftRuffy.xAxis,
-            leftRuffy.yAxis,
-            rightRuffy.xAxis));
+            drive, leftRuffy.xAxis, leftRuffy.yAxis, rightRuffy.xAxis));
 
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(
         Commands.runOnce(
-            () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-            drive)
+                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                drive)
             .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
@@ -232,50 +252,43 @@ public class RobotContainer {
 
     // intake and go to hp pos
     joystick.bottomLeft.whileTrue(
-        endEffector.intakeCommand()
-            .alongWith(
-                superstructure.setState(SuperstructureState.HP_INTAKE)));
+        endEffector
+            .intakeCommand()
+            .alongWith(superstructure.setState(SuperstructureState.HP_INTAKE)));
 
     // autoalign
-    joystick.trigger.whileTrue(DriveCommands.driveToReef(
-        drive,
-        leftRuffy.xAxis,
-        leftRuffy.yAxis,
-        rightRuffy.xAxis,
-        joystick.povRight(),
-        joystick.povLeft()));
+    joystick.trigger.whileTrue(
+        DriveCommands.driveToReef(
+            drive,
+            leftRuffy.xAxis,
+            leftRuffy.yAxis,
+            rightRuffy.xAxis,
+            joystick.povRight(),
+            joystick.povLeft()));
 
     // reef levels
-    buttonBoard.l1.onTrue(
-        superstructure.setState(SuperstructureState.CORAL_PREP_L1));
+    buttonBoard.l1.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L1));
 
-    buttonBoard.l2.onTrue(
-        superstructure.setState(SuperstructureState.CORAL_PREP_L2));
+    buttonBoard.l2.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L2));
 
-    buttonBoard.l3.onTrue(
-        superstructure.setState(SuperstructureState.CORAL_PREP_L3));
+    buttonBoard.l3.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L3));
 
-    buttonBoard.l4.onTrue(
-        superstructure.setState(SuperstructureState.CORAL_PREP_L4));
+    buttonBoard.l4.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L4));
 
-    buttonBoard.net.onTrue(
-      superstructure.setState(SuperstructureState.NET_SCORE)
-    );
-
+    buttonBoard.net.onTrue(superstructure.setState(SuperstructureState.NET_SCORE));
 
     // score
     joystick.thumb.whileTrue(getOuttakeCommand());
 
-    //stow
-    joystick.povDown().onTrue(superstructure.setState(
-      SuperstructureState.RIGHT_SIDE_UP_IDLE
-    ));
-  };
+    // stow
+    joystick.povDown().onTrue(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE));
+  }
+  ;
 
   public ParallelCommandGroup getOuttakeCommand() {
     ParallelCommandGroup group = new ParallelCommandGroup();
 
-    //go to the scoring location if were at a prep position
+    // go to the scoring location if were at a prep position
     switch (superstructure.getState()) {
       case CORAL_PREP_L1:
         group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L1));
@@ -292,11 +305,9 @@ public class RobotContainer {
       default:
         break;
     }
-    
-    //outtake untill button is released
-    group.addCommands(
-      endEffector.outtakeCommand()
-    );
+
+    // outtake untill button is released
+    group.addCommands(endEffector.outtakeCommand());
 
     return group;
   }
@@ -310,4 +321,3 @@ public class RobotContainer {
     return autoChooser.get();
   }
 }
-

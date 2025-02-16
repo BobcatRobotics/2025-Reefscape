@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Arm;
+package frc.robot.subsystems.Superstructure.Arm;
 
 import static edu.wpi.first.units.Units.Meters;
 
@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +57,12 @@ public class Arm extends SubsystemBase {
   public boolean inTolerance(){
     return inputs.aligned;
   }
+
+  
+  public void runVoltage(Voltage volts){
+    io.runVoltage(volts);
+  }
+
   public boolean inTolerance(SuperstructureState desiredState){
     return Math.abs(
       inputs.absolutePosition.getRotations() - desiredState.armState.rotations) 

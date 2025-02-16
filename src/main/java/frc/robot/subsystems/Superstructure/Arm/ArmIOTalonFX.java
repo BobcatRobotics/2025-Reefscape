@@ -1,12 +1,15 @@
-package frc.robot.subsystems.Arm;
+package frc.robot.subsystems.Superstructure.Arm;
 
 import static edu.wpi.first.units.Units.Hertz;
+
+import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -18,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 
 public class ArmIOTalonFX implements ArmIO {
   public static final InvertedValue ARM_MOTOR_INVERTED =
@@ -32,11 +36,12 @@ public class ArmIOTalonFX implements ArmIO {
   private TalonFX motor;
   private CANcoder encoder;
   private MotionMagicExpoTorqueCurrentFOC angleRequest;
+  private VoltageOut voltageRequest;
 
   private StatusSignal<Angle> position;
   private StatusSignal<Current> torqueCurrentAmps;
   private StatusSignal<AngularVelocity> velocity;
-  
+
   private ArmState desiredState = ArmState.UNKOWN;
 
   public ArmIOTalonFX(int falconID, int encoderID) {
@@ -75,16 +80,13 @@ public class ArmIOTalonFX implements ArmIO {
     encoder.getConfigurator().apply(encoderConfig);
 
     angleRequest = new MotionMagicExpoTorqueCurrentFOC(0);
+    voltageRequest = new VoltageOut(0);
 
     position = encoder.getAbsolutePosition();
     torqueCurrentAmps = motor.getTorqueCurrent();
     velocity = motor.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(
-    Hertz.of(50), 
-    position,
-    torqueCurrentAmps,
-    velocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(Hertz.of(50), position, torqueCurrentAmps, velocity);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
@@ -94,24 +96,29 @@ public class ArmIOTalonFX implements ArmIO {
   public void updateInputs(ArmIOInputs inputs) {
     BaseStatusSignal.refreshAll(position);
     // (-0.5, 0.5) rotations
-    inputs.absolutePosition =
-        Rotation2d.fromRotations(position.getValueAsDouble());
+    inputs.absolutePosition = Rotation2d.fromRotations(position.getValueAsDouble());
     inputs.encoderConnected = encoder.isConnected();
     inputs.motorConnected = motor.isConnected();
     inputs.state = desiredState;
-    inputs.aligned = Math.abs(
-      position.getValueAsDouble() - desiredState.rotations) 
-      < Arm.ARM_TOLERANCE.getRotations();
+    inputs.aligned =
+        Math.abs(position.getValueAsDouble() - desiredState.rotations)
+            < Arm.ARM_TOLERANCE.getRotations();
     inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
+    inputs.controlMode = motor.getControlMode().getValue();
 
     // inputs.zone = getArmZone();
   }
 
-  // private ArmZone getArmZone() {
-  //   return Superstructure.getArmZone(getPosition());
-  // }
+  @Override
+  public void runVoltage(Voltage volts) {
+    motor.setControl(voltageRequest.withOutput(volts));
+  }
 
+
+  // private ArmZone getArmZone() {
+  // return Superstructure.getArmZone(getPosition());
+  // }
 
   /**
    * should be called every cycle, so that the arm collision avoidance gets updated

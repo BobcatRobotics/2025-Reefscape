@@ -1,9 +1,12 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.Superstructure.Elevator;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public enum ElevatorState {
-  IDLE_UPSIDE_DOWN(Rotation2d.fromRotations(0)), // upside down, for quick pickup once game piece intook
-  IDLE_RIGHT_SIDE_UP(Rotation2d.fromRotations(0)), // right side up for quick transition to scoring zone
+  IDLE_UPSIDE_DOWN(
+      Rotation2d.fromRotations(0)), // upside down, for quick pickup once game piece intook
+  IDLE_RIGHT_SIDE_UP(
+      Rotation2d.fromRotations(0)), // right side up for quick transition to scoring zone
   CORAL_HANDOFF(Rotation2d.fromRotations(0)), // picking up coral with the end effector
   CORAL_L1(Rotation2d.fromRotations(0)), // elevator pos doesnt matter for score or prep
   CORAL_L2(Rotation2d.fromRotations(0)),
@@ -20,7 +23,6 @@ public enum ElevatorState {
 
   ElevatorState(Rotation2d pos) {
     this.pos = pos;
-    
   }
 
   public Rotation2d pos;

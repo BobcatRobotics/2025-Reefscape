@@ -368,11 +368,9 @@ public class DriveCommands {
     ProfiledPIDController yController =
         new ProfiledPIDController(
             DRIVE_KPY, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
-    
-    
+
     return Commands.run(
             () -> {
-            
               Pose2d nearestFace = drive.getPose().nearest(faces);
               Logger.recordOutput("reef_face/raw", nearestFace);
               double adjustY = 0;
@@ -382,7 +380,6 @@ public class DriveCommands {
               } else if (counterclockwiseSupplier.getAsBoolean()) {
                 adjustY = FieldConstants.Reef.reefToBranchY;
               }
-
 
               //   List<Map<ReefHeight, Pose3d>> offsetPositions =
               // FieldConstants.Reef.branchPositions;

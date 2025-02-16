@@ -7,8 +7,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Arm.Arm;
-import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Superstructure.Arm.Arm;
+import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import org.littletonrobotics.junction.Logger;
 
 public class Superstructure {
   public static final Distance ELEVATOR_TOLERANCE = Inches.of(0.5);
@@ -26,7 +25,7 @@ public class Superstructure {
   private SuperstructureState currentState = SuperstructureState.UNKNOWN;
   private Arm arm;
   private Elevator elevator;
-  
+
   private SuperstructureState desiredState = SuperstructureState.UNKNOWN;
   private SuperstructureState desiredTransitionState = SuperstructureState.UNKNOWN;
 
@@ -117,9 +116,11 @@ public class Superstructure {
   //  */
   // public static boolean checkForArmCollision(ArmZone zone, ElevatorState elevatorState) {
   //   if (isInIntakeZone(zone)) {
-  //     return elevatorState.pos.getRotations() < Elevator.MIN_HEIGHT_INTAKE_AVOIDANCE.getRotations();
+  //     return elevatorState.pos.getRotations() <
+  // Elevator.MIN_HEIGHT_INTAKE_AVOIDANCE.getRotations();
   //   } else if (zone == ArmZone.BOTTOM_ZONE) {
-  //     return elevatorState.pos.getRotations() < Elevator.MIN_HEIGHT_BOTTOM_AVOIDANCE.getRotations();
+  //     return elevatorState.pos.getRotations() <
+  // Elevator.MIN_HEIGHT_BOTTOM_AVOIDANCE.getRotations();
   //   } else {
   //     return false;
   //   }
@@ -129,15 +130,12 @@ public class Superstructure {
   //   return checkForArmCollision(armState.zone, elevatorState);
   // }
 
-
-
   /**
    * @return {@code true} if the arm and elevator are within the tolerances for their current states
    */
   public boolean superstructureInTolerance() {
     return elevator.inTolerance() && arm.inTolerance();
   }
-
 
   // /**
   //  * @param zone
@@ -146,7 +144,6 @@ public class Superstructure {
   // public static boolean isInIntakeZone(ArmZone zone) {
   //   return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
   // }
-
 
   // /** see Assets\Docs\TopUpperLimit.png */
   // public static ArmZone getArmZone(Rotation2d position) {
