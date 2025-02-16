@@ -94,7 +94,6 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private AutoalignSelection autoalignSelection = AutoalignSelection.ALGAE;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -244,15 +243,7 @@ public class RobotContainer {
         leftRuffy.yAxis,
         rightRuffy.xAxis,
         joystick.povRight(),
-        joystick.povLeft()).beforeStarting(() -> autoalignSelection = AutoalignSelection.ALGAE));
-
-    joystick.povLeft().onTrue(
-        new InstantCommand(
-            () -> autoalignSelection = AutoalignSelection.COUNTERCLOCKWISE));
-
-    joystick.povRight().onTrue(
-        new InstantCommand(
-            () -> autoalignSelection = AutoalignSelection.CLOCKWISE));
+        joystick.povLeft()));
 
     // reef levels
     buttonBoard.l1.onTrue(
@@ -270,10 +261,15 @@ public class RobotContainer {
     buttonBoard.net.onTrue(
       superstructure.setState(SuperstructureState.NET_SCORE)
     );
-    
+
+
     // score
     joystick.thumb.whileTrue(getOuttakeCommand());
 
+    //stow
+    joystick.povDown().onTrue(superstructure.setState(
+      SuperstructureState.RIGHT_SIDE_UP_IDLE
+    ));
   };
 
   public ParallelCommandGroup getOuttakeCommand() {
@@ -315,8 +311,3 @@ public class RobotContainer {
   }
 }
 
-enum AutoalignSelection {
-  CLOCKWISE,
-  COUNTERCLOCKWISE,
-  ALGAE
-}
