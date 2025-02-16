@@ -1,28 +1,26 @@
 package frc.robot.subsystems.Elevator;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 public class Elevator extends SubsystemBase {
+
+  public static final Rotation2d MAX_ROTATIONS = Rotation2d.fromRotations(0); // TODO find this
+  
+  public static final Rotation2d ELEVATOR_TOLERANCE = Rotation2d.fromDegrees(2); // TODO tune
+
   /** the minimum height where the arm can swing freely without hitting an intake */
-  public static final Distance MIN_HEIGHT_INTAKE_AVOIDANCE = Meters.of(0);
+  public static final Rotation2d MIN_HEIGHT_INTAKE_AVOIDANCE = Rotation2d.fromRotations(0);
   /**
    * the lowest the elevator can go while the arm is upside down, for example while picking up a
    * game piece.
    */
-  public static final Distance MIN_HEIGHT_BOTTOM_AVOIDANCE = Meters.of(0);
-
-  /** the highest the elevator can go from the bottom */
-  public static final Distance ELEVATOR_MAX_HEIGHT = Meters.of(0);
+  public static final Rotation2d MIN_HEIGHT_BOTTOM_AVOIDANCE = Rotation2d.fromRotations(0);
 
   /** the number of rotations the encoder spins when it is at the top */
   public static final Rotation2d ELEVATOR_MAX_ROTATIONS = new Rotation2d();
 
-  private Distance height;
-  private ElevatorState currentState = ElevatorState.IDLE_RIGHT_SIDE_UP;
 
   private ElevatorIO io;
   private ElevatorIOInputsAutoLogged inputs;
@@ -33,26 +31,25 @@ public class Elevator extends SubsystemBase {
 
   public void periodic() {
     io.updateInputs(inputs);
-    io.setDesiredState(currentState);
   }
 
-  public Distance getPos() {
-    return inputs.position;
-  }
 
   public void setState(ElevatorState desiredState) {
-    currentState = desiredState;
+    io.setDesiredState(desiredState);
   }
 
   public ElevatorState getState() {
-    return currentState;
+    return inputs.state;
   }
 
-  public Distance getHeight() {
-    return height;
+  public boolean inTolerance(){
+    return inputs.aligned;
+  }
+  public boolean inTolerance(SuperstructureState desiredState){
+    return Math.abs(
+      inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations()) 
+      < ELEVATOR_TOLERANCE.getRotations();
+
   }
 
-  public double getHeightMeters() {
-    return getHeight().in(Meters);
-  }
 }

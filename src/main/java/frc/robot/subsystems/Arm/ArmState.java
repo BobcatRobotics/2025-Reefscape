@@ -23,6 +23,8 @@ public enum ArmState {
   ALGAE_GROUND(0),
   ALGAE_SCORE_PROCESSOR(0),
   IDLE_ALGAE(0), // coral handoff
+  NET_SCORE(0),
+  NET_PREP(0),
   UNKOWN(0); // arm isnt at a predefined state
 
   ArmState(int degrees) {
@@ -30,11 +32,11 @@ public enum ArmState {
     this.rotations = degrees / 360;
     this.radians = Units.degreesToRadians(degrees);
     this.rot2d = Rotation2d.fromDegrees(degrees);
-    this.zone = Superstructure.getArmZone(rot2d);
+    // this.zone = Superstructure.getArmZone(rot2d);
   }
 
   public double degrees;
-  public ArmZone zone;
+  // public ArmZone zone;
   public double rotations;
   public double radians;
   public Rotation2d rot2d;

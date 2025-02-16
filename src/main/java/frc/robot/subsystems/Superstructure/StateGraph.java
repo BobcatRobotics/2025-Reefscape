@@ -92,7 +92,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L1,
               SuperstructureState.UPSIDE_DOWN_IDLE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.NET_SCORE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L2,
@@ -101,7 +102,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L2,
               SuperstructureState.UPSIDE_DOWN_IDLE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.NET_SCORE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L3,
@@ -110,7 +112,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L3,
               SuperstructureState.UPSIDE_DOWN_IDLE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.NET_SCORE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L4,
@@ -119,25 +122,32 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.UPSIDE_DOWN_IDLE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.NET_SCORE
             },
             new SuperstructureState[] {
-              SuperstructureState.CORAL_SCORE_L1, SuperstructureState.CORAL_PREP_L1
+              SuperstructureState.CORAL_SCORE_L1, 
+              SuperstructureState.CORAL_PREP_L1
             },
             new SuperstructureState[] {
-              SuperstructureState.CORAL_SCORE_L2, SuperstructureState.CORAL_PREP_L2
+              SuperstructureState.CORAL_SCORE_L2, 
+              SuperstructureState.CORAL_PREP_L2
             },
             new SuperstructureState[] {
-              SuperstructureState.CORAL_SCORE_L3, SuperstructureState.CORAL_PREP_L3
+              SuperstructureState.CORAL_SCORE_L3, 
+              SuperstructureState.CORAL_PREP_L3
             },
             new SuperstructureState[] {
-              SuperstructureState.CORAL_SCORE_L4, SuperstructureState.CORAL_PREP_L4
+              SuperstructureState.CORAL_SCORE_L4, 
+              SuperstructureState.CORAL_PREP_L4
             },
             new SuperstructureState[] {
-              SuperstructureState.IDLE_ALGAE, SuperstructureState.ALGAE_SCORE_PROCESSOR
+              SuperstructureState.IDLE_ALGAE, 
+              SuperstructureState.ALGAE_SCORE_PROCESSOR
             },
             new SuperstructureState[] {
-              SuperstructureState.ALGAE_SCORE_PROCESSOR, SuperstructureState.ELEVATOR_SAFE_ZONE
+              SuperstructureState.ALGAE_SCORE_PROCESSOR, 
+              SuperstructureState.ELEVATOR_SAFE_ZONE
             },
             new SuperstructureState[] {
               SuperstructureState.INTAKE_ALGAE_GROUND,
@@ -157,10 +167,12 @@ public class StateGraph {
               SuperstructureState.ALGAE_PREP_L2
             },
             new SuperstructureState[] {
-              SuperstructureState.ALGAE_SCORE_L2, SuperstructureState.ALGAE_SCORE_L2
+              SuperstructureState.ALGAE_SCORE_L2, 
+              SuperstructureState.ALGAE_SCORE_L2
             },
             new SuperstructureState[] {
-              SuperstructureState.ALGAE_SCORE_L3, SuperstructureState.ALGAE_SCORE_L3
+              SuperstructureState.ALGAE_SCORE_L3, 
+              SuperstructureState.ALGAE_SCORE_L3
             },
             new SuperstructureState[] {
               SuperstructureState.ELEVATOR_SAFE_ZONE,
@@ -168,8 +180,14 @@ public class StateGraph {
               SuperstructureState.UPSIDE_DOWN_IDLE
             },
             new SuperstructureState[] {
-              SuperstructureState.HP_INTAKE, SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.NET_SCORE,
+              SuperstructureState.NET_PREP
+            },
+            new SuperstructureState[] {
+              SuperstructureState.HP_INTAKE, 
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             });
+            
 
     // for each set of transitions
     for (SuperstructureState[] transition : transitions) {

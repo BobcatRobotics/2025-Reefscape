@@ -6,11 +6,19 @@ package frc.robot.subsystems.EndEffector;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.EndEffector.EndEffectorIO.EndEffectorIOInputs;
 
 public class EndEffector extends SubsystemBase {
+  public static double IDLE_SPEED = 60;
+  public static double INTAKE_SPEED = 1000;
+  public static double OUTTAKE_SPEED = -300;
+  public static double INTOOK_THRESHOLD = Units.inchesToMeters(0.5);
+
   private EndEffectorIOInputs inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;
   
@@ -30,4 +38,29 @@ public class EndEffector extends SubsystemBase {
   public void setSpeed(double rpm){
     io.setSpeed(rpm);
   }
+
+  public void idle(){
+    io.setSpeed(IDLE_SPEED);
+  }
+  public Command idleCommand(){
+    return new RunCommand(() -> {io.setSpeed(IDLE_SPEED);}, this);
+  }
+
+  public void intake(){
+    io.setSpeed(INTAKE_SPEED);
+  }
+  public Command intakeCommand(){
+    return new RunCommand(() -> {io.setSpeed(INTAKE_SPEED);}, this)
+    .until(() -> inputs.laserCanDistanceMeters < INTOOK_THRESHOLD);
+  }
+
+  public void outtake(){
+    io.setSpeed(OUTTAKE_SPEED);
+  }
+  public Command outtakeCommand(){
+    return new RunCommand(() -> {io.setSpeed(OUTTAKE_SPEED);}, this);
+  }
+
+
+  
 }

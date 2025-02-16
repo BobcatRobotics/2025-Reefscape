@@ -1,4 +1,4 @@
-package frc.robot.AidenGamepads;
+package frc.robot.AidensGamepads;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;

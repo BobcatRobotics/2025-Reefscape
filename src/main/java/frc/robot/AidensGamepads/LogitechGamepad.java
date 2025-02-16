@@ -1,24 +1,20 @@
-package frc.robot.AidenGamepads;
+package frc.robot.AidensGamepads;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
-public class EightBitDo extends CommandJoystick {
+public class LogitechGamepad extends CommandJoystick {
   public Trigger a;
   public Trigger b;
   public Trigger x;
   public Trigger y;
   public Trigger lb;
   public Trigger rb;
-  public Trigger select;
+  public Trigger back;
   public Trigger start;
-  public Trigger leftPaddle;
-  public Trigger rightPaddle;
-  public DoubleSupplier leftXAxis;
-  public DoubleSupplier leftYAxis;
-  public DoubleSupplier rightXAxis;
-  public DoubleSupplier rightYAxis;
+  public Trigger leftStick;
+  public Trigger rightStick;
   public Trigger povUp;
   public Trigger povDown;
   public Trigger povLeft;
@@ -29,28 +25,39 @@ public class EightBitDo extends CommandJoystick {
   public Trigger povUpLeft;
   public Trigger povUpRight;
 
+  public DoubleSupplier leftXAxis;
+  public DoubleSupplier leftYAxis;
+  public DoubleSupplier rightXAxis;
+  public DoubleSupplier rightYAxis;
+
+  // TODO test
   /**
-   * 8bitdo controller
+   * Logitech controller
    *
-   * <p>Buttons 1 -b 2 -a 3- y 4 -x 5 -lb 6 - rb 7 - select 8 - start 9 - bl 10 - br
+   * <p>Buttons 1 - x 2 - a 3- b 4 - y 5 - lb 6 - rb 7 - lt 8 - rt 9 - back 10 - start 11 - lstick
+   * 12 - rstick
    *
-   * <p>Axes 0 - 1 - 2 - LT 3 - RT 4 - 5 -
+   * <p>Axes 0 - lstick x 1 - lstick y 2 - rstick x 3 - rstick y
    *
    * <p>Axis indices start at 0, button indices start at one -_-
    */
-  public EightBitDo(int port) {
-
+  public LogitechGamepad(int port) {
     super(port);
-    a = super.button(2);
-    b = super.button(1);
-    x = super.button(4);
-    y = super.button(3);
-    lb = super.button(5);
+    configureTriggers();
+    configureAxes();
+  }
+
+  private void configureTriggers() {
+    a = super.button(1);
+    b = super.button(2);
+    x = super.button(3);
+    y = super.button(4);
+    lb = super.button(5); // TODO check
     rb = super.button(6);
-    select = super.button(7);
-    start = super.button(8);
-    leftPaddle = super.button(9);
-    rightPaddle = super.button(10);
+    back = super.button(9);
+    start = super.button(10);
+    leftStick = super.button(11);
+    rightStick = super.button(12);
     povUp = super.povUp();
     povDown = super.povDown();
     povLeft = super.povLeft();
@@ -60,10 +67,14 @@ public class EightBitDo extends CommandJoystick {
     povDownRight = super.povDownRight();
     povUpLeft = super.povUpLeft();
     povUpRight = super.povUpRight();
+  }
 
+  private void configureAxes() {
+    // y is up/down
+    // x is left/right
     leftXAxis = () -> super.getRawAxis(0);
     leftYAxis = () -> -super.getRawAxis(1);
     rightXAxis = () -> super.getRawAxis(4);
-    rightYAxis = () -> -super.getRawAxis(3);
+    rightYAxis = () -> -super.getRawAxis(5);
   }
 }

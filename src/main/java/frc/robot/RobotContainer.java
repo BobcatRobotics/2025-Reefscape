@@ -21,13 +21,22 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.AidenGamepads.EightBitDo;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.AidensGamepads.ButtonBoard;
+import frc.robot.AidensGamepads.LogitechJoystick;
+import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants24;
+import frc.robot.commands.CharacterizationCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.ArmIO;
+import frc.robot.subsystems.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
@@ -36,75 +45,118 @@ import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
+import frc.robot.subsystems.Elevator.ElevatorIOTalonFX;
+import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.EndEffector.EndEffectorIO;
+import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import frc.robot.subsystems.Superstructure.Superstructure;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  // elevator ids
+  public static final int ELEVATOR_TALON_ID = 1;
+  public static final int ELEVATOR_ENCODER_ID = 1;
+  // arm ids
+  public static final int ARM_TALON_ID = 2;
+  public static final int ARM_ENCODER_ID = 2;
+  // end effector ids
+  public static final int END_EFFECTOR_TALON_ID = 3;
+  public static final int END_EFFECTOR_LASER_ID = 1;
+
   // Subsystems
   public final Vision limelight;
   final Drive drive;
   // public final Vision limelight;
-  // private final Elevator elevator;
-  private Superstructure superstructure;
+  private final Superstructure superstructure;
+  private final EndEffector endEffector;
 
-  // Controller
-  // private LogitechGamepad logitech = new LogitechGamepad(0);
-  // private Ruffy leftStick = new Ruffy(0);
-  // private Ruffy rightStick = new Ruffy(1);
-  private EightBitDo gp = new EightBitDo(0);
-
+  // Controllers
+  // driver
+  private final Ruffy leftRuffy = new Ruffy(0);
+  private final Ruffy rightRuffy = new Ruffy(1);
+  // operator
+  private final LogitechJoystick joystick = new LogitechJoystick(2);
+  private final ButtonBoard buttonBoard = new ButtonBoard(3);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private AutoalignSelection autoalignSelection = AutoalignSelection.ALGAE;
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants24.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants24.FrontRight),
-                new ModuleIOTalonFX(TunerConstants24.BackLeft),
-                new ModuleIOTalonFX(TunerConstants24.BackRight));
+        drive = new Drive(
+            new GyroIOPigeon2(),
+            new ModuleIOTalonFX(TunerConstants24.FrontLeft),
+            new ModuleIOTalonFX(TunerConstants24.FrontRight),
+            new ModuleIOTalonFX(TunerConstants24.BackLeft),
+            new ModuleIOTalonFX(TunerConstants24.BackRight));
         limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
-
+        superstructure = new Superstructure(
+            new Arm(
+                new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
+            new Elevator(
+                new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
+        endEffector = new EndEffector(
+            new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(TunerConstants24.FrontLeft),
-                new ModuleIOSim(TunerConstants24.FrontRight),
-                new ModuleIOSim(TunerConstants24.BackLeft),
-                new ModuleIOSim(TunerConstants24.BackRight));
-        limelight = new Vision(drive, new VisionIO() {});
-        superstructure =
-            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
+        drive = new Drive(
+            new GyroIO() {
+            },
+            new ModuleIOSim(TunerConstants24.FrontLeft),
+            new ModuleIOSim(TunerConstants24.FrontRight),
+            new ModuleIOSim(TunerConstants24.BackLeft),
+            new ModuleIOSim(TunerConstants24.BackRight));
+        limelight = new Vision(drive, new VisionIO() {
+        });
+        superstructure = new Superstructure(new Arm(new ArmIO() {
+        }), new Elevator(new ElevatorIO() {
+        }));
+        endEffector = new EndEffector(new EndEffectorIO() {
+        });
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-        limelight = new Vision(drive, new VisionIO() {});
+        drive = new Drive(
+            new GyroIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            },
+            new ModuleIO() {
+            });
+        limelight = new Vision(drive, new VisionIO() {
+        });
+        superstructure = new Superstructure(new Arm(new ArmIO() {
+        }), new Elevator(new ElevatorIO() {
+        }));
+        endEffector = new EndEffector(new EndEffectorIO() {
+        });
         break;
     }
 
@@ -115,69 +167,144 @@ public class RobotContainer {
     autoChooser.addOption("Test", new PathPlannerAuto("Example Auto"));
 
     // Set up SysId routines
-    // autoChooser.addOption(
-    // "Drive Wheel Radius Characterization",
-    // DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption(
-    // "Drive Simple FF Characterization",
-    // DriveCommands.feedforwardCharacterization(drive));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Forward)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Reverse)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Forward)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Reverse)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization",
+
+        CharacterizationCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization",
+        CharacterizationCommands.feedforwardCharacterization(drive));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)",
+        drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)",
+        drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
 
-    // TODO decrease speed when CoG really high
-    // Default command, normal field-relative drive
+    // driver controls
+
+    // TODO decrease speed when CoG really high?
+    // default commands
     drive.setDefaultCommand(
-        DriveCommands.fieldRelativeJoystickDrive(drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis));
+        DriveCommands.fieldRelativeJoystickDrive(
+            drive,
+            leftRuffy.xAxis,
+            leftRuffy.yAxis,
+            rightRuffy.xAxis));
 
-    // Switch to X pattern when X button is pressed
-    // rightStick.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0 deg when B button is pressed
-    gp.a.onTrue(
+    // Reset gyro to 0 deg
+    rightRuffy.button.onTrue(
         Commands.runOnce(
-                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
+            () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+            drive)
             .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
-    //   rightStick.button.whileTrue(
-    //       DriveCommands.singleTagAlign(
-    //           drive,
-    //           () -> limelight.targetPoseCameraSpace().getX(),
-    //           () -> 0,
-    //           () -> Rotation2d.fromDegrees(0)));
-    // }
+    // Switch to X pattern when X button is pressed
+    leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    //   rightStick.button.whileTrue(
-    //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));
-    // }
-    gp.b.whileTrue(
-        DriveCommands.driveToReef(
-            drive, gp.leftYAxis, gp.leftXAxis, gp.rightXAxis, gp.povLeft, gp.povRight));
+    // operator controls
+
+    // default commands
+    endEffector.setDefaultCommand(endEffector.idleCommand());
+
+    // outtake
+    joystick.thumb.whileTrue(endEffector.outtakeCommand());
+
+    // intake and go to hp pos
+    joystick.bottomLeft.whileTrue(
+        endEffector.intakeCommand()
+            .alongWith(
+                superstructure.setState(SuperstructureState.HP_INTAKE)));
+
+    // autoalign
+    joystick.trigger.whileTrue(DriveCommands.driveToReef(
+        drive,
+        leftRuffy.xAxis,
+        leftRuffy.yAxis,
+        rightRuffy.xAxis,
+        joystick.povRight(),
+        joystick.povLeft()).beforeStarting(() -> autoalignSelection = AutoalignSelection.ALGAE));
+
+    joystick.povLeft().onTrue(
+        new InstantCommand(
+            () -> autoalignSelection = AutoalignSelection.COUNTERCLOCKWISE));
+
+    joystick.povRight().onTrue(
+        new InstantCommand(
+            () -> autoalignSelection = AutoalignSelection.CLOCKWISE));
+
+    // reef levels
+    buttonBoard.l1.onTrue(
+        superstructure.setState(SuperstructureState.CORAL_PREP_L1));
+
+    buttonBoard.l2.onTrue(
+        superstructure.setState(SuperstructureState.CORAL_PREP_L2));
+
+    buttonBoard.l3.onTrue(
+        superstructure.setState(SuperstructureState.CORAL_PREP_L3));
+
+    buttonBoard.l4.onTrue(
+        superstructure.setState(SuperstructureState.CORAL_PREP_L4));
+
+    buttonBoard.net.onTrue(
+      superstructure.setState(SuperstructureState.NET_SCORE)
+    );
+    
+    // score
+    joystick.thumb.whileTrue(getOuttakeCommand());
+
+  };
+
+  public ParallelCommandGroup getOuttakeCommand() {
+    ParallelCommandGroup group = new ParallelCommandGroup();
+
+    //go to the scoring location if were at a prep position
+    switch (superstructure.getState()) {
+      case CORAL_PREP_L1:
+        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L1));
+        break;
+      case CORAL_PREP_L2:
+        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L2));
+        break;
+      case CORAL_PREP_L3:
+        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L3));
+        break;
+      case CORAL_PREP_L4:
+        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L4));
+        break;
+      default:
+        break;
+    }
+    
+    //outtake untill button is released
+    group.addCommands(
+      endEffector.outtakeCommand()
+    );
+
+    return group;
   }
-  ;
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -186,4 +313,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
+}
+
+enum AutoalignSelection {
+  CLOCKWISE,
+  COUNTERCLOCKWISE,
+  ALGAE
 }
