@@ -22,7 +22,7 @@ public class TunerConstants25 {
   // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
   private static final Slot0Configs steerGains =
       new Slot0Configs()
-          .withKP(100)
+          .withKP(300)
           .withKI(0)
           .withKD(0.5)
           .withKS(0.1)
@@ -32,13 +32,15 @@ public class TunerConstants25 {
   // When using closed-loop control, the drive motor uses the control
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(2.2).withKI(0).withKD(0).withKS(0.20477).withKV(0.72199);
+      new Slot0Configs().withKP(10).withKI(0).withKD(0).withKS(0.20477).withKV(0.72199);
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
-  private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
+  private static final ClosedLoopOutputType kSteerClosedLoopOutput =
+      ClosedLoopOutputType.TorqueCurrentFOC;
   // The closed-loop output type to use for the drive motors;
   // This affects the PID/FF gains for the drive motors
-  private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+  private static final ClosedLoopOutputType kDriveClosedLoopOutput =
+      ClosedLoopOutputType.TorqueCurrentFOC;
 
   // The type of motor used for the drive motor
   private static final DriveMotorArrangement kDriveMotorType =
@@ -77,7 +79,8 @@ public class TunerConstants25 {
 
   // Theoretical free speed (m/s) at 12 V applied output;
   // This needs to be tuned to your individual robot
-  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.4);
+  public static final LinearVelocity kSpeedAt12Volts =
+      MetersPerSecond.of(4.4); // TODO this is too low
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
   // This may need to be tuned to your individual robot

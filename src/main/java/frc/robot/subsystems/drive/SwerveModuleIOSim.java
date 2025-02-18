@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
  * Physics sim implementation of module IO. The sim models are configured using a set of module
  * constants from Phoenix. Simulation is always based on voltage control.
  */
-public class ModuleIOSim implements ModuleIO {
+public class SwerveModuleIOSim implements SwerveModuleIO {
   // TunerConstants doesn't support separate sim constants, so they are declared locally
   private static final double DRIVE_KP = 0.05;
   private static final double DRIVE_KD = 0.0;
@@ -53,7 +53,7 @@ public class ModuleIOSim implements ModuleIO {
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
 
-  public ModuleIOSim(
+  public SwerveModuleIOSim(
       SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
           constants) {
     // Create drive and turn sim models

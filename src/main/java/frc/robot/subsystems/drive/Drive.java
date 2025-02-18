@@ -60,9 +60,12 @@ import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
   // TunerConstants25 doesn't include these constants, so they are declared locally
-  public static final double ODOMETRY_FREQUENCY =
+  public static final double
+      ODOMETRY_FREQUENCY = // if were on the canivore, run at a higher frequency
       new CANBus(TunerConstants25.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
   public static final double DRIVE_BASE_RADIUS =
+      // maximum distance from the center of the robot to one of the modules
+      // on a square drive base they should all be the same
       Math.max(
           Math.max(
               Math.hypot(
@@ -75,8 +78,9 @@ public class Drive extends SubsystemBase {
                   TunerConstants25.BackRight.LocationX, TunerConstants25.BackRight.LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = Units.lbsToKilograms(96.1);
-  private static final double ROBOT_MOI = 6.883;
+  private static final double ROBOT_MASS_KG =
+      Units.lbsToKilograms(96.1); // TODO update as more mechanisms get added
+  private static final double ROBOT_MOI = 6.883; // TODO find these
   private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
@@ -95,7 +99,7 @@ public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-  private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+  private final SwerveModule[] modules = new SwerveModule[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
@@ -114,15 +118,15 @@ public class Drive extends SubsystemBase {
 
   public Drive(
       GyroIO gyroIO,
-      ModuleIO flModuleIO,
-      ModuleIO frModuleIO,
-      ModuleIO blModuleIO,
-      ModuleIO brModuleIO) {
+      SwerveModuleIO flModuleIO,
+      SwerveModuleIO frModuleIO,
+      SwerveModuleIO blModuleIO,
+      SwerveModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0, TunerConstants25.FrontLeft);
-    modules[1] = new Module(frModuleIO, 1, TunerConstants25.FrontRight);
-    modules[2] = new Module(blModuleIO, 2, TunerConstants25.BackLeft);
-    modules[3] = new Module(brModuleIO, 3, TunerConstants25.BackRight);
+    modules[0] = new SwerveModule(flModuleIO, 0, TunerConstants25.FrontLeft);
+    modules[1] = new SwerveModule(frModuleIO, 1, TunerConstants25.FrontRight);
+    modules[2] = new SwerveModule(blModuleIO, 2, TunerConstants25.BackLeft);
+    modules[3] = new SwerveModule(brModuleIO, 3, TunerConstants25.BackRight);
 
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);

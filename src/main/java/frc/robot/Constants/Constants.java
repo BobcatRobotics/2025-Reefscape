@@ -31,6 +31,7 @@ public final class Constants {
   public static final double loopPeriodSecs = 0.02;
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final RobotType CURRENT_ROBOT = RobotType.k2025;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -80,4 +81,10 @@ public final class Constants {
 
     public static final String ip = "10.1.77.11";
   }
+}
+
+enum RobotType {
+  k2023,
+  k2024,
+  k2025
 }

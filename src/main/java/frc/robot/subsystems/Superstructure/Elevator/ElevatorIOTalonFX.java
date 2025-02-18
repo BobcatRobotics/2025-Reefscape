@@ -6,8 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
@@ -21,7 +20,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
@@ -39,8 +37,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   private CANcoder encoder;
 
-  private PositionTorqueCurrentFOC positionRequest = new PositionTorqueCurrentFOC(0);
-  private VoltageOut voltageRequest = new VoltageOut(0);
+  private MotionMagicTorqueCurrentFOC positionRequest = new MotionMagicTorqueCurrentFOC(0);
 
   private StatusSignal<AngularVelocity> velocity;
   private StatusSignal<Current> torqueCurrent;
@@ -59,11 +56,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     // TODO 120 stator limit
 
     // torque current, dont use kv and ka?
-    motorConfig.Slot0.kP = 30;
+    motorConfig.Slot0.kP = 45;
     motorConfig.Slot0.kI = 25;
-    motorConfig.Slot0.kD = 8;
-    motorConfig.Slot0.kS = 20;
-    motorConfig.Slot0.kG = 38;
+    motorConfig.Slot0.kD = 7;
+    motorConfig.Slot0.kS = 16.5;
+    motorConfig.Slot0.kG = 36.5;
+    motorConfig.MotionMagic.MotionMagicAcceleration = 4.5;
+    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 7.695;
     motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
     motorConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
@@ -120,10 +119,5 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public void setDesiredState(ElevatorState state) {
     this.desiredState = state;
     motor.setControl(positionRequest.withPosition(state.pos.getRotations()));
-  }
-
-  @Override
-  public void runVoltage(Voltage volts) {
-    motor.setControl(voltageRequest.withOutput(volts));
   }
 }

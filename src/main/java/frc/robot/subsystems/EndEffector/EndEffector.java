@@ -6,7 +6,6 @@ package frc.robot.subsystems.EndEffector;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -17,7 +16,6 @@ public class EndEffector extends SubsystemBase {
   public static double IDLE_SPEED = 60;
   public static double INTAKE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
-  public static double INTOOK_THRESHOLD = Units.inchesToMeters(0.5);
 
   private EndEffectorIOInputs inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;
@@ -33,7 +31,11 @@ public class EndEffector extends SubsystemBase {
   }
 
   public Distance getDistanceToPiece() {
-    return Meters.of(inputs.laserCanDistanceMeters);
+    return Meters.of(inputs.laserCanDistanceMilimeters);
+  }
+
+  public boolean hasPiece() {
+    return inputs.hasPiece;
   }
 
   public void setSpeed(double rpm) {
@@ -62,7 +64,7 @@ public class EndEffector extends SubsystemBase {
               io.setSpeed(INTAKE_SPEED);
             },
             this)
-        .until(() -> inputs.laserCanDistanceMeters < INTOOK_THRESHOLD);
+        .until(() -> inputs.hasPiece);
   }
 
   public void outtake() {

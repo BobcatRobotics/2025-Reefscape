@@ -1,6 +1,8 @@
 package frc.robot.subsystems.EndEffector;
 
 import static edu.wpi.first.units.Units.Hertz;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Millimeters;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
@@ -18,6 +20,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class EndEffectorIOTalonFX implements EndEffectorIO {
+
+  public static final double INTOOK_THRESHOLD = Inches.of(2).in(Millimeters);
   public static final double END_EFFEFCTOR_GEAR_RATIO = 11 / 36;
 
   private TalonFX motor;
@@ -67,8 +71,9 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
   @Override
   public void updateInputs(EndEffectorIOInputs inputs) {
     BaseStatusSignal.refreshAll(velocity, statorCurrent);
-    inputs.laserCanDistanceMeters = laser.getMeasurement().distance_mm / 1000;
+    inputs.laserCanDistanceMilimeters = laser.getMeasurement().distance_mm;
     inputs.rpm = motor.getVelocity().getValueAsDouble() * 60 * END_EFFEFCTOR_GEAR_RATIO;
     inputs.currentDraw = motor.getStatorCurrent().getValueAsDouble();
+    inputs.hasPiece = inputs.laserCanDistanceMilimeters < INTOOK_THRESHOLD;
   }
 }

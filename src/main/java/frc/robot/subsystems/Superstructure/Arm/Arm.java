@@ -5,7 +5,6 @@
 package frc.robot.subsystems.Superstructure.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,10 +50,6 @@ public class Arm extends SubsystemBase {
 
   public boolean inTolerance() {
     return inputs.aligned;
-  }
-
-  public void runVoltage(Voltage volts) {
-    io.runVoltage(volts);
   }
 
   public boolean inTolerance(SuperstructureState desiredState) {

@@ -2,7 +2,6 @@ package frc.robot.subsystems.Superstructure.Elevator;
 
 import com.ctre.phoenix6.signals.ControlModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorIO {
@@ -27,6 +26,4 @@ public interface ElevatorIO {
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void setDesiredState(ElevatorState state) {}
-
-  public default void runVoltage(Voltage volts) {}
 }

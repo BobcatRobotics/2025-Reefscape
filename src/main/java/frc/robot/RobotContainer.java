@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,7 +23,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -32,22 +32,20 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
-import frc.robot.subsystems.Drive.ModuleIO;
-import frc.robot.subsystems.Drive.ModuleIOSim;
-import frc.robot.subsystems.Drive.ModuleIOTalonFX;
+import frc.robot.subsystems.Drive.SwerveModuleIO;
+import frc.robot.subsystems.Drive.SwerveModuleIOSim;
+import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
-import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -72,8 +70,6 @@ public class RobotContainer {
   final Drive drive;
   // public final Vision limelight;
   private final Superstructure superstructure;
-  private final Elevator elevator; // do NOT use these directly!
-  private final Arm arm;
   private final EndEffector endEffector;
 
   // Controllers
@@ -95,18 +91,18 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants25.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants25.FrontRight),
-                new ModuleIOTalonFX(TunerConstants25.BackLeft),
-                new ModuleIOTalonFX(TunerConstants25.BackRight));
+                new SwerveModuleIOTalonFX(TunerConstants25.FrontLeft),
+                new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
+                new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
+                new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
         limelight =
             new Vision(
                 drive, new VisionIO() {}); // new VisionIOLimelight(LimelightConstants.constants));
 
-        arm = new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID));
-        elevator = new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID));
-
-        superstructure = new Superstructure(arm, elevator);
+        superstructure =
+            new Superstructure(
+                new Arm(new ArmIO() {}), // new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
+                new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
 
         endEffector =
             new EndEffector(
@@ -119,14 +115,13 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIOSim(TunerConstants25.FrontLeft),
-                new ModuleIOSim(TunerConstants25.FrontRight),
-                new ModuleIOSim(TunerConstants25.BackLeft),
-                new ModuleIOSim(TunerConstants25.BackRight));
+                new SwerveModuleIOSim(TunerConstants25.FrontLeft),
+                new SwerveModuleIOSim(TunerConstants25.FrontRight),
+                new SwerveModuleIOSim(TunerConstants25.BackLeft),
+                new SwerveModuleIOSim(TunerConstants25.BackRight));
         limelight = new Vision(drive, new VisionIO() {});
-        arm = new Arm(new ArmIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
-        superstructure = new Superstructure(arm, elevator);
+        superstructure =
+            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
         endEffector = new EndEffector(new EndEffectorIO() {});
         break;
 
@@ -135,61 +130,48 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
+                new SwerveModuleIO() {},
+                new SwerveModuleIO() {},
+                new SwerveModuleIO() {},
+                new SwerveModuleIO() {});
+        superstructure =
+            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
+
         limelight = new Vision(drive, new VisionIO() {});
-        arm = new Arm(new ArmIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
-        superstructure = new Superstructure(arm, elevator);
         endEffector = new EndEffector(new EndEffectorIO() {});
         break;
     }
 
-    SysIdRoutine elevatorRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> elevator.runVoltage(voltage),
-                null,
-                elevator // No log consumer, since data is recorded by AdvantageKit
-                ));
-
-    SysIdRoutine armRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> arm.runVoltage(voltage),
-                null,
-                arm // No log consumer, since data is recorded by AdvantageKit
-                ));
-
     // Set up auto routines
+    registerCommands();
     // autobuilder handles 'do nothing' command
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser.addOption("Auto Name", new PathPlannerAuto("Pathplanner Name"));
 
     // Set up SysId routines
     // drivetrain
     // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization",
-    //     CharacterizationCommands.wheelRadiusCharacterization(drive));
+    // "Drive Wheel Radius Characterization",
+    // CharacterizationCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive Simple FF Characterization",
-    //     CharacterizationCommands.feedforwardCharacterization(drive));
-
-    autoChooser.addOption("test auto", new PathPlannerAuto("Example Auto"));
+    // "Drive Simple FF Characterization",
+    // CharacterizationCommands.feedforwardCharacterization(drive));
 
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  private void registerCommands() {
+
+    // the naming convention is "Action" "Piece" "Level"
+
+    NamedCommands.registerCommand(
+        "Prep Coral L1", superstructure.setState(SuperstructureState.CORAL_PREP_L1));
+    NamedCommands.registerCommand(
+        "Score Coral L1",
+        new ParallelCommandGroup(
+            superstructure.setState(SuperstructureState.CORAL_SCORE_L1),
+            endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
   }
 
   /**

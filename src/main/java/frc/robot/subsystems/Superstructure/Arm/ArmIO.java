@@ -2,7 +2,6 @@ package frc.robot.subsystems.Superstructure.Arm;
 
 import com.ctre.phoenix6.signals.ControlModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ArmIO {
@@ -19,12 +18,11 @@ public interface ArmIO {
     public boolean aligned = false;
     public double positionRotations = 0;
     public ControlModeValue controlMode = ControlModeValue.DisabledOutput;
+    public double desiredPositionRotation = 0;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ArmIOInputs inputs) {}
 
   public default void setDesiredState(ArmState state) {}
-
-  public default void runVoltage(Voltage volts) {}
 }

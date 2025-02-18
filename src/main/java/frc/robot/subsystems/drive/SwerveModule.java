@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import org.littletonrobotics.junction.Logger;
 
-public class Module {
-  private final ModuleIO io;
+public class SwerveModule {
+  private final SwerveModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
   private final SwerveModuleConstants<
@@ -37,8 +37,8 @@ public class Module {
   private final Alert turnEncoderDisconnectedAlert;
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
-  public Module(
-      ModuleIO io,
+  public SwerveModule(
+      SwerveModuleIO io,
       int index,
       SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
           constants) {

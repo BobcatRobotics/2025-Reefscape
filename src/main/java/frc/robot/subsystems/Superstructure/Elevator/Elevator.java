@@ -1,10 +1,10 @@
 package frc.robot.subsystems.Superstructure.Elevator;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
@@ -26,6 +26,9 @@ public class Elevator extends SubsystemBase {
   public static final Rotation2d ELEVATOR_MAX_ROTATIONS = Rotation2d.fromRadians(25.8);
 
   public static final Distance ELEVATOR_MAX_HEIGHT = Inches.of(66);
+
+  /** the number of output shaft rotations per meter of elevator travel */
+  public static final double ROTATIONS_PER_METER = 15.3901217;
 
   private ElevatorIO io;
   private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
@@ -50,10 +53,6 @@ public class Elevator extends SubsystemBase {
     io.setDesiredState(desiredState);
   }
 
-  public void runVoltage(Voltage volts) {
-    io.runVoltage(volts);
-  }
-
   public ElevatorState getState() {
     return inputs.state;
   }
@@ -66,5 +65,16 @@ public class Elevator extends SubsystemBase {
     return Math.abs(
             inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations())
         < ELEVATOR_TOLERANCE.getRotations();
+  }
+
+  /**
+   * @param distance
+   * @return a {@code Rotation2d} containing the number of rotations necessary to acheive {@code
+   *     distance} units of travel, this is useful for adjusting setpoints in a more semantically
+   *     meaningful way, i.e. if a setpoint is an inch off, you can add {@code
+   *     distanceToElevatorRotations(Inches.of(1))} to it
+   */
+  public static Rotation2d distanceToElevatorRotations(Distance distance) {
+    return Rotation2d.fromRotations(distance.in(Meters) * ROTATIONS_PER_METER);
   }
 }
