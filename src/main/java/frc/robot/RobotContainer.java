@@ -27,9 +27,7 @@ import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
-import frc.robot.Constants.Constants.LimelightConstants;
-import frc.robot.Constants.TunerConstants24;
-import frc.robot.commands.CharacterizationCommands;
+import frc.robot.Constants.TunerConstants25;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
@@ -39,10 +37,8 @@ import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
-import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
-import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
@@ -63,12 +59,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // elevator ids
   public static final int ELEVATOR_TALON_ID = 1;
-  public static final int ELEVATOR_ENCODER_ID = 1;
+  public static final int ELEVATOR_ENCODER_ID = 5;
   // arm ids
-  public static final int ARM_TALON_ID = 2;
-  public static final int ARM_ENCODER_ID = 2;
+  public static final int ARM_TALON_ID = 9;
+  public static final int ARM_ENCODER_ID = 6;
   // end effector ids
-  public static final int END_EFFECTOR_TALON_ID = 3;
+  public static final int END_EFFECTOR_TALON_ID = 2;
   public static final int END_EFFECTOR_LASER_ID = 1;
 
   // Subsystems
@@ -87,6 +83,7 @@ public class RobotContainer {
   // operator
   private final LogitechJoystick joystick = new LogitechJoystick(2);
   private final ButtonBoard buttonBoard = new ButtonBoard(3);
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -98,18 +95,23 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants24.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants24.FrontRight),
-                new ModuleIOTalonFX(TunerConstants24.BackLeft),
-                new ModuleIOTalonFX(TunerConstants24.BackRight));
-        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+                new ModuleIOTalonFX(TunerConstants25.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants25.FrontRight),
+                new ModuleIOTalonFX(TunerConstants25.BackLeft),
+                new ModuleIOTalonFX(TunerConstants25.BackRight));
+        limelight =
+            new Vision(
+                drive, new VisionIO() {}); // new VisionIOLimelight(LimelightConstants.constants));
+
         arm = new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID));
         elevator = new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID));
 
         superstructure = new Superstructure(arm, elevator);
 
         endEffector =
-            new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
+            new EndEffector(
+                new EndEffectorIO() {}); // new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
+        // END_EFFECTOR_LASER_ID));
         break;
 
       case SIM:
@@ -117,10 +119,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIOSim(TunerConstants24.FrontLeft),
-                new ModuleIOSim(TunerConstants24.FrontRight),
-                new ModuleIOSim(TunerConstants24.BackLeft),
-                new ModuleIOSim(TunerConstants24.BackRight));
+                new ModuleIOSim(TunerConstants25.FrontLeft),
+                new ModuleIOSim(TunerConstants25.FrontRight),
+                new ModuleIOSim(TunerConstants25.BackLeft),
+                new ModuleIOSim(TunerConstants25.BackRight));
         limelight = new Vision(drive, new VisionIO() {});
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {});
@@ -176,40 +178,15 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
-    //drivetrain
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization",
-        CharacterizationCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization",
-        CharacterizationCommands.feedforwardCharacterization(drive));
-    //elevator
-    autoChooser.addOption(
-        "Elevator SysId (Quasistatic Forward)",
-        elevatorRoutine.quasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Elevator SysId (Quasistatic Reverse)",
-        elevatorRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Elevator SysId (Dynamic Forward)",
-        elevatorRoutine.dynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Elevator SysId (Dynamic Reverse)",
-        elevatorRoutine.dynamic(SysIdRoutine.Direction.kReverse));
-    //arm
-    autoChooser.addOption(
-        "Arm SysId (Quasistatic Forward)",
-        armRoutine.quasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Arm SysId (Quasistatic Reverse)",
-        armRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Arm SysId (Dynamic Forward)",
-        armRoutine.dynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Arm SysId (Dynamic Reverse)",
-        armRoutine.dynamic(SysIdRoutine.Direction.kReverse));
+    // drivetrain
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization",
+    //     CharacterizationCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization",
+    //     CharacterizationCommands.feedforwardCharacterization(drive));
 
+    autoChooser.addOption("test auto", new PathPlannerAuto("Example Auto"));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -229,7 +206,7 @@ public class RobotContainer {
     // default commands
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
-            drive, leftRuffy.xAxis, leftRuffy.yAxis, rightRuffy.xAxis));
+            drive, leftRuffy.xAxis, () -> -leftRuffy.yAxis.getAsDouble(), rightRuffy.xAxis));
 
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(

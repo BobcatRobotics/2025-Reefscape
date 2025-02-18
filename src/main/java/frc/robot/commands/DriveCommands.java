@@ -371,9 +371,9 @@ public class DriveCommands {
 
     return Commands.run(
             () -> {
+              double adjustY = 0;
               Pose2d nearestFace = drive.getPose().nearest(faces);
               Logger.recordOutput("reef_face/raw", nearestFace);
-              double adjustY = 0;
 
               if (clockwiseSupplier.getAsBoolean()) {
                 adjustY = -FieldConstants.Reef.reefToBranchY;

@@ -40,6 +40,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -49,7 +50,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.Mode;
-import frc.robot.Constants.TunerConstants24;
+import frc.robot.Constants.TunerConstants25;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VisionObservation;
 import java.util.concurrent.locks.Lock;
@@ -58,23 +59,23 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
-  // TunerConstants24 doesn't include these constants, so they are declared locally
+  // TunerConstants25 doesn't include these constants, so they are declared locally
   public static final double ODOMETRY_FREQUENCY =
-      new CANBus(TunerConstants24.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
+      new CANBus(TunerConstants25.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
   public static final double DRIVE_BASE_RADIUS =
       Math.max(
           Math.max(
               Math.hypot(
-                  TunerConstants24.FrontLeft.LocationX, TunerConstants24.FrontLeft.LocationY),
+                  TunerConstants25.FrontLeft.LocationX, TunerConstants25.FrontLeft.LocationY),
               Math.hypot(
-                  TunerConstants24.FrontRight.LocationX, TunerConstants24.FrontRight.LocationY)),
+                  TunerConstants25.FrontRight.LocationX, TunerConstants25.FrontRight.LocationY)),
           Math.max(
-              Math.hypot(TunerConstants24.BackLeft.LocationX, TunerConstants24.BackLeft.LocationY),
+              Math.hypot(TunerConstants25.BackLeft.LocationX, TunerConstants25.BackLeft.LocationY),
               Math.hypot(
-                  TunerConstants24.BackRight.LocationX, TunerConstants24.BackRight.LocationY)));
+                  TunerConstants25.BackRight.LocationX, TunerConstants25.BackRight.LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 56.7;
+  private static final double ROBOT_MASS_KG = Units.lbsToKilograms(96.1);
   private static final double ROBOT_MOI = 6.883;
   private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
@@ -82,12 +83,12 @@ public class Drive extends SubsystemBase {
           ROBOT_MASS_KG,
           ROBOT_MOI,
           new ModuleConfig(
-              TunerConstants24.FrontLeft.WheelRadius,
-              TunerConstants24.kSpeedAt12Volts.in(MetersPerSecond),
+              TunerConstants25.FrontLeft.WheelRadius,
+              TunerConstants25.kSpeedAt12Volts.in(MetersPerSecond),
               WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
-                  .withReduction(TunerConstants24.FrontLeft.DriveMotorGearRatio),
-              TunerConstants24.FrontLeft.SlipCurrent,
+                  .withReduction(TunerConstants25.FrontLeft.DriveMotorGearRatio),
+              TunerConstants25.FrontLeft.SlipCurrent,
               1),
           getModuleTranslations());
 
@@ -118,10 +119,10 @@ public class Drive extends SubsystemBase {
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0, TunerConstants24.FrontLeft);
-    modules[1] = new Module(frModuleIO, 1, TunerConstants24.FrontRight);
-    modules[2] = new Module(blModuleIO, 2, TunerConstants24.BackLeft);
-    modules[3] = new Module(brModuleIO, 3, TunerConstants24.BackRight);
+    modules[0] = new Module(flModuleIO, 0, TunerConstants25.FrontLeft);
+    modules[1] = new Module(frModuleIO, 1, TunerConstants25.FrontRight);
+    modules[2] = new Module(blModuleIO, 2, TunerConstants25.BackLeft);
+    modules[3] = new Module(brModuleIO, 3, TunerConstants25.BackRight);
 
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -231,7 +232,7 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants24.kSpeedAt12Volts);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants25.kSpeedAt12Volts);
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -365,7 +366,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return TunerConstants24.kSpeedAt12Volts.in(MetersPerSecond);
+    return TunerConstants25.kSpeedAt12Volts.in(MetersPerSecond);
   }
 
   /** Returns the maximum angular speed in radians per sec. */
@@ -376,11 +377,11 @@ public class Drive extends SubsystemBase {
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(TunerConstants24.FrontLeft.LocationX, TunerConstants24.FrontLeft.LocationY),
+      new Translation2d(TunerConstants25.FrontLeft.LocationX, TunerConstants25.FrontLeft.LocationY),
       new Translation2d(
-          TunerConstants24.FrontRight.LocationX, TunerConstants24.FrontRight.LocationY),
-      new Translation2d(TunerConstants24.BackLeft.LocationX, TunerConstants24.BackLeft.LocationY),
-      new Translation2d(TunerConstants24.BackRight.LocationX, TunerConstants24.BackRight.LocationY)
+          TunerConstants25.FrontRight.LocationX, TunerConstants25.FrontRight.LocationY),
+      new Translation2d(TunerConstants25.BackLeft.LocationX, TunerConstants25.BackLeft.LocationY),
+      new Translation2d(TunerConstants25.BackRight.LocationX, TunerConstants25.BackRight.LocationY)
     };
   }
 

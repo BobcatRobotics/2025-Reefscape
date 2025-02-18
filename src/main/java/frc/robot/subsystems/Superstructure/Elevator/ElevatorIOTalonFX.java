@@ -4,15 +4,19 @@ import static edu.wpi.first.units.Units.Hertz;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -35,14 +39,15 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   private CANcoder encoder;
 
-  private MotionMagicExpoTorqueCurrentFOC positionRequest = new MotionMagicExpoTorqueCurrentFOC(0);
+  private PositionTorqueCurrentFOC positionRequest = new PositionTorqueCurrentFOC(0);
   private VoltageOut voltageRequest = new VoltageOut(0);
 
   private StatusSignal<AngularVelocity> velocity;
   private StatusSignal<Current> torqueCurrent;
   private StatusSignal<Angle> rotationalPosition;
+  private StatusSignal<ControlModeValue> controlMode;
 
-  private ElevatorState desiredState;
+  private ElevatorState desiredState = ElevatorState.UNKNOWN;
 
   public ElevatorIOTalonFX(int motorID, int encoderID) {
     motor = new TalonFX(motorID);
@@ -51,15 +56,15 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     motorConfig.MotorOutput.Inverted = ELEVATOR_MOTOR_INVERTED;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 0; // unlimited
-    // 63.972168; //TODO theoretical value
-    motorConfig.MotionMagic.MotionMagicExpo_kA = 0;
-    motorConfig.MotionMagic.MotionMagicExpo_kV = 0;
+    // TODO 120 stator limit
 
     // torque current, dont use kv and ka?
-    motorConfig.Slot0.kG = 0; // TODO find this
-    motorConfig.Slot0.kS = 0; // TODO find this
-    motorConfig.Slot0.kP = 0.273285; // TODO theoretical value
+    motorConfig.Slot0.kP = 30;
+    motorConfig.Slot0.kI = 25;
+    motorConfig.Slot0.kD = 8;
+    motorConfig.Slot0.kS = 20;
+    motorConfig.Slot0.kG = 38;
+    motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
     motorConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
@@ -67,16 +72,27 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     motorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1; // max 360 deg ccw
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        Elevator.ELEVATOR_MAX_ROTATIONS.getRotations();
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -1; // max -360 deg cw
+    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+
+    motor.getConfigurator().apply(motorConfig);
+
+    encoder = new CANcoder(encoderID);
+    CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+    encoder.getConfigurator().apply(encoderConfig);
+    encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    encoderConfig.MagnetSensor.MagnetOffset = 0.219971; // TODO find this
+    encoder.getConfigurator().apply(encoderConfig);
 
     torqueCurrent = motor.getTorqueCurrent();
     velocity = motor.getVelocity();
-    rotationalPosition = encoder.getAbsolutePosition();
+    rotationalPosition = encoder.getPosition();
+    controlMode = motor.getControlMode();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), torqueCurrent, velocity, rotationalPosition);
+        Hertz.of(50), controlMode, torqueCurrent, velocity, rotationalPosition);
 
     motor.optimizeBusUtilization();
     encoder.optimizeBusUtilization();
@@ -89,13 +105,15 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.rotPosition = Rotation2d.fromRotations(rotationalPosition.getValueAsDouble());
     inputs.positionPercent =
-        rotationalPosition.getValueAsDouble() / Elevator.MAX_ROTATIONS.getRotations();
+        rotationalPosition.getValueAsDouble() / Elevator.ELEVATOR_MAX_ROTATIONS.getRotations();
     inputs.aligned =
         Math.abs(rotationalPosition.getValueAsDouble() - desiredState.pos.getRotations())
             < Elevator.ELEVATOR_TOLERANCE.getRotations();
     inputs.motorConnected = motor.isConnected();
     inputs.encoderConnected = encoder.isConnected();
     inputs.controlMode = motor.getControlMode().getValue();
+    inputs.positionRotations = inputs.rotPosition.getRotations();
+    inputs.state = desiredState;
   }
 
   @Override

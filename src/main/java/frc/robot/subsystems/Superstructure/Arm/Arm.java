@@ -4,21 +4,17 @@
 
 package frc.robot.subsystems.Superstructure.Arm;
 
-import static edu.wpi.first.units.Units.Meters;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
   // see Assets\Docs\TopUpperLimit.png
-  //TODO remove?
+  // TODO remove?
   // public static final Rotation2d TOP_UPPER_LIMIT = Rotation2d.fromDegrees(0);
   // public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
   // public static final Rotation2d BOTTOM_UPPER_LIMIT = Rotation2d.fromDegrees(0);
@@ -26,7 +22,7 @@ public class Arm extends SubsystemBase {
   // // the total length of the arm + end effector from the rotational joint, for kinematic use
   // public static final Distance LENGTH_TO_END_EFFECTOR = Meters.of(0);
 
-  //TODO make this as small as possible
+  // TODO make this as small as possible
   public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(2);
 
   private Alert motorDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);
@@ -45,7 +41,6 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
-    io.setDesiredState(desiredState);
     motorDisconnected.set(!inputs.motorConnected);
     encoderDisconnected.set(!inputs.encoderConnected);
   }
@@ -54,19 +49,17 @@ public class Arm extends SubsystemBase {
     return inputs.absolutePosition;
   }
 
-  public boolean inTolerance(){
+  public boolean inTolerance() {
     return inputs.aligned;
   }
 
-  
-  public void runVoltage(Voltage volts){
+  public void runVoltage(Voltage volts) {
     io.runVoltage(volts);
   }
 
-  public boolean inTolerance(SuperstructureState desiredState){
-    return Math.abs(
-      inputs.absolutePosition.getRotations() - desiredState.armState.rotations) 
-      < ARM_TOLERANCE.getRotations();
+  public boolean inTolerance(SuperstructureState desiredState) {
+    return Math.abs(inputs.absolutePosition.getRotations() - desiredState.armState.rotations)
+        < ARM_TOLERANCE.getRotations();
   }
 
   // public ArmZone getArmZone() {
@@ -78,10 +71,13 @@ public class Arm extends SubsystemBase {
   // }
 
   // /**
-  //  * @return {@code false} if the the arm has to go through potential collision zones to get to the
-  //  *     desired state from its current state, {@code true} if the current state and desired state
+  //  * @return {@code false} if the the arm has to go through potential collision zones to get to
+  // the
+  //  *     desired state from its current state, {@code true} if the current state and desired
+  // state
   //  *     are in the same zone.
-  //  *     <p>note that if the elevator is high enough, this wont matter, since it will be out of the
+  //  *     <p>note that if the elevator is high enough, this wont matter, since it will be out of
+  // the
   //  *     range of the intake and bellypan
   //  */
   // public boolean willStayInZone(ArmState desiredState) {
@@ -90,6 +86,7 @@ public class Arm extends SubsystemBase {
 
   public void setState(ArmState state) {
     desiredState = state;
+    io.setDesiredState(desiredState);
   }
 
   public ArmState getState() {

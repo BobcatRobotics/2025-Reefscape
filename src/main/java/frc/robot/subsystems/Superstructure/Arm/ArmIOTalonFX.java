@@ -2,21 +2,21 @@ package frc.robot.subsystems.Superstructure.Arm;
 
 import static edu.wpi.first.units.Units.Hertz;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -25,22 +25,20 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class ArmIOTalonFX implements ArmIO {
   public static final InvertedValue ARM_MOTOR_INVERTED =
-      InvertedValue.CounterClockwise_Positive; // TODO find this
-  public static final double ARM_ROTOR_TO_SENSOR_RATIO = 1; // TODO find this
-  public static final double MM_CRUISE_VELOCITY = 0; // TODO find this
-  public static final double MM_EXPO_KA = 0; // TODO find this
-  public static final double MM_EXPO_KV = 0; // TODO find this
-  public static final Rotation2d ARM_MIN_ANGLE = Rotation2d.fromDegrees(-180);
-  public static final Rotation2d ARM_MAX_ANGLE = Rotation2d.fromDegrees(180);
+      InvertedValue.Clockwise_Positive; // TODO find this
+  public static final double ARM_ROTOR_TO_SENSOR_RATIO = 76.62; // TODO find this
+  public static final Rotation2d ARM_MIN_ANGLE = Rotation2d.fromDegrees(270);
+  public static final Rotation2d ARM_MAX_ANGLE = Rotation2d.fromDegrees(-90);
 
   private TalonFX motor;
   private CANcoder encoder;
-  private MotionMagicExpoTorqueCurrentFOC angleRequest;
+  private PositionTorqueCurrentFOC angleRequest = new PositionTorqueCurrentFOC(0);
   private VoltageOut voltageRequest;
 
   private StatusSignal<Angle> position;
   private StatusSignal<Current> torqueCurrentAmps;
   private StatusSignal<AngularVelocity> velocity;
+  private StatusSignal<ControlModeValue> controlMode;
 
   private ArmState desiredState = ArmState.UNKOWN;
 
@@ -51,42 +49,42 @@ public class ArmIOTalonFX implements ArmIO {
     motor.getConfigurator().apply(angleConfigs);
     angleConfigs.MotorOutput.Inverted = ARM_MOTOR_INVERTED;
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    angleConfigs.MotionMagic.MotionMagicCruiseVelocity = MM_CRUISE_VELOCITY;
-    angleConfigs.MotionMagic.MotionMagicExpo_kA = MM_EXPO_KA;
-    angleConfigs.MotionMagic.MotionMagicExpo_kV = MM_EXPO_KV;
 
-    angleConfigs.Slot0.kG = 0; // TODO find these
-    angleConfigs.Slot0.kS = 0;
-    angleConfigs.Slot0.kA = 0;
-    angleConfigs.Slot0.kP = 0;
-    angleConfigs.Slot0.kD = 0;
+    angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+    angleConfigs.Slot0.kP = 45; // TODO find these
+    angleConfigs.Slot0.kI = 15;
+    angleConfigs.Slot0.kD = 10;
+    angleConfigs.Slot0.kS = 5;
+    angleConfigs.Slot0.kG = 6;
 
     angleConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
     angleConfigs.Feedback.FeedbackRemoteSensorID = encoderID;
     angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     angleConfigs.Feedback.RotorToSensorRatio = ARM_ROTOR_TO_SENSOR_RATIO;
-    angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ARM_MAX_ANGLE.getRotations();
-    angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ARM_MIN_ANGLE.getRotations();
+    // angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    // angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ARM_MAX_ANGLE.getRotations();
+    // angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    // angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ARM_MIN_ANGLE.getRotations();
+    angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motor.getConfigurator().apply(angleConfigs);
 
     encoder = new CANcoder(encoderID);
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
     encoder.getConfigurator().apply(encoderConfig);
-    encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    encoderConfig.MagnetSensor.MagnetOffset = 0.0; // TODO find this
+    encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    encoderConfig.MagnetSensor.MagnetOffset = 0.19458;
     encoder.getConfigurator().apply(encoderConfig);
 
-    angleRequest = new MotionMagicExpoTorqueCurrentFOC(0);
     voltageRequest = new VoltageOut(0);
 
+    controlMode = motor.getControlMode();
     position = encoder.getAbsolutePosition();
     torqueCurrentAmps = motor.getTorqueCurrent();
     velocity = motor.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(Hertz.of(50), position, torqueCurrentAmps, velocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        Hertz.of(50), controlMode, position, torqueCurrentAmps, velocity);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
@@ -106,6 +104,9 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.controlMode = motor.getControlMode().getValue();
+    inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
+    inputs.velocityRotPerSec = velocity.getValueAsDouble();
+    inputs.positionRotations = inputs.absolutePosition.getRotations();
 
     // inputs.zone = getArmZone();
   }
@@ -114,7 +115,6 @@ public class ArmIOTalonFX implements ArmIO {
   public void runVoltage(Voltage volts) {
     motor.setControl(voltageRequest.withOutput(volts));
   }
-
 
   // private ArmZone getArmZone() {
   // return Superstructure.getArmZone(getPosition());

@@ -7,12 +7,10 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
-
-  public static final Rotation2d MAX_ROTATIONS = Rotation2d.fromRotations(0); // TODO find this
 
   public static final Rotation2d ELEVATOR_TOLERANCE = Rotation2d.fromDegrees(2); // TODO tune
 
@@ -25,19 +23,17 @@ public class Elevator extends SubsystemBase {
   public static final Rotation2d MIN_HEIGHT_BOTTOM_AVOIDANCE = Rotation2d.fromRotations(0);
 
   /** the number of rotations the encoder spins when it is at the top */
-  public static final Rotation2d ELEVATOR_MAX_ROTATIONS = new Rotation2d();
+  public static final Rotation2d ELEVATOR_MAX_ROTATIONS = Rotation2d.fromRadians(25.8);
 
   public static final Distance ELEVATOR_MAX_HEIGHT = Inches.of(66);
 
   private ElevatorIO io;
-  private ElevatorIOInputsAutoLogged inputs;
+  private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   private final Alert motorDisconnectedAlert =
       new Alert("Elevator motor disconnected!", Alert.AlertType.kWarning);
   private final Alert encoderDisconnectedAlert =
       new Alert("Elevator encoder disconnected!", Alert.AlertType.kWarning);
-
-  private SysIdRoutine routine;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
@@ -45,6 +41,7 @@ public class Elevator extends SubsystemBase {
 
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("Elevator", inputs);
     motorDisconnectedAlert.set(!inputs.motorConnected);
     encoderDisconnectedAlert.set(!inputs.encoderConnected);
   }

@@ -41,7 +41,9 @@ public class Superstructure {
 
   public SequentialCommandGroup setState(SuperstructureState state) {
     List<SuperstructureState> states = findShortestPath(getState(), state);
-
+    if (states == null) {
+      return new SequentialCommandGroup();
+    }
     SequentialCommandGroup result = new SequentialCommandGroup();
 
     for (SuperstructureState desiredState : states) {

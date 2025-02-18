@@ -63,6 +63,15 @@ public class StateGraph {
     List<SuperstructureState[]> transitions =
         List.of(
             new SuperstructureState[] {
+              SuperstructureState.UNKNOWN,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.NET_PREP,
+            },
+            new SuperstructureState[] {
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.CORAL_HANDOFF,
               SuperstructureState.INTAKE_ALGAE_GROUND,
