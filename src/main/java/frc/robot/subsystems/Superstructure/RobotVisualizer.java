@@ -1,27 +1,64 @@
 package frc.robot.subsystems.Superstructure;
 
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.units.measure.Distance;
+
+import static edu.wpi.first.units.Units.Meters;
+
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class RobotVisualizer {
-  // the main mechanism object
-  LoggedMechanism2d mech = new LoggedMechanism2d(3, 3);
-  // the mechanism root node
-  LoggedMechanismRoot2d root = mech.getRoot("climber", 2, 0);
+  // Singleton instance
+  private static RobotVisualizer instance;
 
-  // MechanismLigament2d objects represent each "section"/"stage" of the
-  // mechanism, and are based off the root node or another ligament object
-  LoggedMechanismLigament2d m_elevator =
-      root.append(new LoggedMechanismLigament2d("elevator", 1, 90));
-  LoggedMechanismLigament2d m_wrist =
-      m_elevator.append(
-          new LoggedMechanismLigament2d("wrist", 0.5, 0, 6, new Color8Bit(Color.kPurple)));
+  private double elevatorHeightMeters = 0;
+  private double armAngleRadians = 0;
 
-  public RobotVisualizer() {
-    Logger.recordOutput("Mech", mech);
+  private RobotVisualizer() {
+  }
+
+  // Singleton accessor
+  public static RobotVisualizer getInstance() {
+    if (instance == null) {
+      instance = new RobotVisualizer();
+    }
+    return instance;
+  }
+
+
+
+  public void setElevatorHeight(Distance height) {
+    // Consider adding bounds checking if necessary.
+    elevatorHeightMeters = height.in(Meters);
+    update();
+  }
+
+  /**
+   * 0 deg is horizontal pointing right
+   */
+  public void setArmRotation(Rotation2d angle) {
+    armAngleRadians = angle.getRadians();
+    update();
+  }
+
+  private void update() {
+    //the distance between each stage of the elevator
+    double stageHeight = elevatorHeightMeters/3;
+    Logger.recordOutput(
+        "Visualization/Mechanisms",
+        new Pose3d[] {
+          new Pose3d(0, -0.192, 0.14 + stageHeight, new Rotation3d()), // stage 1
+          new Pose3d(0, -0.192, 0.16 + stageHeight * 2, new Rotation3d()), // stage 2
+          new Pose3d(0, -0.192, 0.18 + stageHeight * 3, new Rotation3d()), // carrige
+          new Pose3d(
+            0, -0.21, 0.313 + stageHeight * 3,
+             new Rotation3d(
+              0,
+              armAngleRadians,
+              0
+             )) // arm
+        });
   }
 }

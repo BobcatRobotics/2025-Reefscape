@@ -1,0 +1,90 @@
+{
+    "name": "aneurysm",
+    "sourceUrl": "https://www.chiefdelphi.com/t/team-177-429-bobcat-robotics-program-2025-build-blog/478233",
+    "disableSimplification": true,
+    "rotations": [
+        {
+            "axis": "x",
+            "degrees": 90
+        },
+        {
+            "axis": "z",
+            "degrees": 90
+        }
+    ],
+    "position": [
+        0.33,
+        0,
+        0.07
+    ],
+    "components": [
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                -0.1,
+                0,
+                -0.2
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 90
+                }
+            ],
+            "zeroedPosition": [
+                0,
+                -0.02,
+                0
+            ]
+        }
+    ]
+}

@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Superstructure.RobotVisualizer;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import org.littletonrobotics.junction.Logger;
 
@@ -31,6 +32,8 @@ public class Arm extends SubsystemBase {
   ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
   private ArmState desiredState = ArmState.RIGHT_SIDE_UP;
 
+  private RobotVisualizer visualizer = RobotVisualizer.getInstance();
+
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
     this.io = io;
@@ -42,6 +45,7 @@ public class Arm extends SubsystemBase {
     Logger.processInputs("Arm", inputs);
     motorDisconnected.set(!inputs.motorConnected);
     encoderDisconnected.set(!inputs.encoderConnected);
+    visualizer.setArmRotation(inputs.absolutePosition);
   }
 
   public Rotation2d getPos() {

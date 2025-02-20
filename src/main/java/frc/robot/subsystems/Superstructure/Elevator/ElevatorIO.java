@@ -14,6 +14,7 @@ public interface ElevatorIO {
     double velocityRotPerSec = -1;
     double torqueCurrentAmps = -1;
     double positionPercent = -1;
+    double heightMeters = -1;
     /** is the elevator at its desired state? */
     boolean aligned = false;
 

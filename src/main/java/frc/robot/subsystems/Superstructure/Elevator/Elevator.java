@@ -7,8 +7,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Superstructure.RobotVisualizer;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -30,19 +30,22 @@ public class Elevator extends SubsystemBase {
 
   /** the number of output shaft rotations per meter of elevator travel */
   public static final double ROTATIONS_PER_METER = 15.3901217;
-  public static final double METERS_PER_ROTATION = 1/ROTATIONS_PER_METER;
+
+  public static final double METERS_PER_ROTATION = 1 / ROTATIONS_PER_METER;
 
   private ElevatorIO io;
   private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-  private final Alert motorDisconnectedAlert = 
+  private final Alert motorDisconnectedAlert =
       new Alert("Elevator motor disconnected!", Alert.AlertType.kWarning);
   private final Alert encoderDisconnectedAlert =
       new Alert("Elevator encoder disconnected!", Alert.AlertType.kWarning);
 
+  private RobotVisualizer visualizer = RobotVisualizer.getInstance();
+
+
   public Elevator(ElevatorIO io) {
     this.io = io;
-    
   }
 
   public void periodic() {
@@ -50,6 +53,11 @@ public class Elevator extends SubsystemBase {
     Logger.processInputs("Elevator", inputs);
     motorDisconnectedAlert.set(!inputs.motorConnected);
     encoderDisconnectedAlert.set(!inputs.encoderConnected);
+    visualizer.setElevatorHeight(Meters.of(inputs.heightMeters));
+  }
+
+  public double positionPercent() {
+    return inputs.positionPercent;
   }
 
   public void setState(ElevatorState desiredState) {
@@ -70,10 +78,7 @@ public class Elevator extends SubsystemBase {
         < ELEVATOR_TOLERANCE.getRotations();
   }
 
-
-  public void updateMechanism2d(){
-
-  }
+  public void updateMechanism2d() {}
 
   /**
    * @param distance
@@ -85,5 +90,4 @@ public class Elevator extends SubsystemBase {
   public static Rotation2d distanceToElevatorRotations(Distance distance) {
     return Rotation2d.fromRotations(distance.in(Meters) * ROTATIONS_PER_METER);
   }
-
 }

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class DSUtil {
+
   public static Alliance getAlliance() {
     return DriverStation.getAlliance().isEmpty()
         ? Alliance.Blue

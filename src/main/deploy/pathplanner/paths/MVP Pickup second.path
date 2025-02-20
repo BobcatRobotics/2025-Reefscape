@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.1672768878718545,
+        "y": 5.1960996240601505
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.551487414187644,
+        "y": 5.547740274599541
+      },
+      "isLocked": false,
+      "linkedName": "MVP score first"
+    },
+    {
+      "anchor": {
+        "x": 2.650572082379863,
+        "y": 6.391104118993135
+      },
+      "prevControl": {
+        "x": 3.4203089244851252,
+        "y": 5.828861556064073
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "MVP pickup second"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -48.13966014782024
+  },
+  "reversed": false,
+  "folder": "MVP",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -121.200562821265
+  },
+  "useDefaultConstraints": true
+}

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.util.ScoringLevel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,8 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure {
@@ -27,12 +24,10 @@ public class Superstructure {
   public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(1.5);
   private final StateGraph graph = StateGraph.getInstance();
 
-
   private SuperstructureState currentState = SuperstructureState.UNKNOWN;
   private Arm arm;
   private Elevator elevator;
   private ScoringLevel scoringLevel = ScoringLevel.L1;
-  
 
   private SuperstructureState desiredState = SuperstructureState.UNKNOWN;
   private SuperstructureState desiredTransitionState = SuperstructureState.UNKNOWN;
@@ -43,27 +38,28 @@ public class Superstructure {
     this.elevator = elevator;
   }
 
-  public void setScoringLevel(ScoringLevel level){
+  /**
+   * @return the position of the elevator, expressed as a percentage of its max travel, [0,1]
+   */
+  public double getElevatorPercentage() {
+    return elevator.positionPercent();
+  }
+
+  public void setScoringLevel(ScoringLevel level) {
     Logger.recordOutput("Auto/DesiredScoringLevel", level);
     scoringLevel = level;
   }
-  /**
-   * only for use in commands
-   */
-  public ScoringLevel getScoringLevel(){
+  /** only for use in commands */
+  public ScoringLevel getScoringLevel() {
     return scoringLevel;
   }
 
-  /**
-   * ONLY USE FOR DECLARING COMMAND REQUIREMENTS!!! 
-   */
-  public Arm getArmRequirement(){
+  /** ONLY USE FOR DECLARING COMMAND REQUIREMENTS!!! */
+  public Arm getArmRequirement() {
     return arm;
   }
-  /**
-   * ONLY USE FOR DECLARING COMMAND REQUIREMENTS!!! 
-   */
-  public Elevator getElevatorRequirement(){
+  /** ONLY USE FOR DECLARING COMMAND REQUIREMENTS!!! */
+  public Elevator getElevatorRequirement() {
     return elevator;
   }
 

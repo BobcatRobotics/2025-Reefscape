@@ -45,10 +45,10 @@ import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
-import frc.robot.util.IdleType;
-import frc.robot.util.ScoringLevel;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import frc.robot.util.IdleType;
+import frc.robot.util.ScoringLevel;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -191,7 +191,11 @@ public class RobotContainer {
     // default commands
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
-            drive, leftRuffy.xAxis, () -> -leftRuffy.yAxis.getAsDouble(), rightRuffy.xAxis));
+            drive,
+            leftRuffy.xAxis,
+            () -> -leftRuffy.yAxis.getAsDouble(),
+            rightRuffy.xAxis,
+            superstructure::getElevatorPercentage));
 
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(
@@ -230,32 +234,31 @@ public class RobotContainer {
 
     // reef levels
     buttonBoard.l1.onTrue(
-      SuperstructureActions.prepScore(
-        ScoringLevel.L1, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.L1, superstructure, endEffector));
 
     buttonBoard.l2.onTrue(
-      SuperstructureActions.prepScore(
-        ScoringLevel.L2, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.L2, superstructure, endEffector));
 
     buttonBoard.l3.onTrue(
-      SuperstructureActions.prepScore(
-        ScoringLevel.L3, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.L3, superstructure, endEffector));
 
     buttonBoard.l4.onTrue(
-      SuperstructureActions.prepScore(
-        ScoringLevel.L4, superstructure, endEffector));
-        
-    buttonBoard.net.onTrue(SuperstructureActions.prepScore(
-      ScoringLevel.NET, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.L4, superstructure, endEffector));
+
+    buttonBoard.net.onTrue(
+        SuperstructureActions.prepScore(ScoringLevel.NET, superstructure, endEffector));
 
     // score
     joystick.thumb.whileTrue(
-      SuperstructureActions.score(superstructure, endEffector, IdleType.UPRIGHT));
+        SuperstructureActions.score(superstructure, endEffector, IdleType.UPRIGHT));
 
     // stow
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
-  };
 
+    // intake
+
+  }
+  ;
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

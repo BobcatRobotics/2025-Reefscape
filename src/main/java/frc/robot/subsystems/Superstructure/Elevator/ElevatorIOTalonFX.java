@@ -53,7 +53,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     motorConfig.MotorOutput.Inverted = ELEVATOR_MOTOR_INVERTED;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    
+
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.CurrentLimits.StatorCurrentLimit = 120;
 
@@ -72,7 +72,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     motorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Elevator.MAX_ROTATIONS.getRotations();
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        Elevator.MAX_ROTATIONS.getRotations();
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 
@@ -113,6 +114,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.controlMode = motor.getControlMode().getValue();
     inputs.positionRotations = inputs.rotPosition.getRotations();
     inputs.state = desiredState;
+    inputs.heightMeters = inputs.positionRotations * Elevator.METERS_PER_ROTATION;
   }
 
   @Override
