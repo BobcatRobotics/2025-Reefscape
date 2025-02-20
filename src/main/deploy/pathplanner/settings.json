@@ -6,10 +6,7 @@
     "Its a start",
     "Drive by"
   ],
-  "autoFolders": [
-    "New Folder",
-    "New New Folder"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
@@ -20,7 +17,7 @@
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.048006,
   "driveGearing": 5.67,
-  "maxDriveSpeed": 4.4,
+  "maxDriveSpeed": 5.4,
   "driveMotorType": "krakenX60FOC",
   "driveCurrentLimit": 60.0,
   "wheelCOF": 1.2,
@@ -35,6 +32,9 @@
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
   "robotFeatures": [
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.27},\"size\":{\"width\":0.2,\"length\":0.2},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+    "{\"name\":\"elevator\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.27},\"size\":{\"width\":0.2,\"length\":0.3},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":true}}",
+    "{\"name\":\"intake\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":-0.35,\"y\":0.0},\"size\":{\"width\":0.8,\"length\":0.1},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":true}}",
+    "{\"name\":\"Arm\",\"type\":\"line\",\"data\":{\"start\":{\"x\":0.0,\"y\":-0.3},\"end\":{\"x\":0.0,\"y\":0.0},\"strokeWidth\":0.04}}",
+    "{\"name\":\"EE\",\"type\":\"line\",\"data\":{\"start\":{\"x\":-0.02,\"y\":0.0},\"end\":{\"x\":0.2,\"y\":0.0},\"strokeWidth\":0.04}}"
   ]
 }

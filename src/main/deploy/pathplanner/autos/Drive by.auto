@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Its a start"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "New Path"
+            "pathName": "Drive by"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "New New Folder",
+  "folder": null,
   "choreoAuto": false
 }

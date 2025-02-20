@@ -1,0 +1,109 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.085583524027463,
+        "y": 3.834239130434782
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.574931839682139,
+        "y": 4.4061486281018505
+      },
+      "isLocked": false,
+      "linkedName": "Its a start endpoint"
+    },
+    {
+      "anchor": {
+        "x": 5.140503432502559,
+        "y": 5.179605263150412
+      },
+      "prevControl": {
+        "x": 5.359251560910985,
+        "y": 5.058571150943106
+      },
+      "nextControl": {
+        "x": 2.7079657626022136,
+        "y": 6.525536949192114
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.646567505729103,
+        "y": 7.3817219679559045
+      },
+      "prevControl": {
+        "x": 1.8853288910863029,
+        "y": 7.307607186283753
+      },
+      "nextControl": {
+        "x": 1.407806120371903,
+        "y": 7.455836749628056
+      },
+      "isLocked": false,
+      "linkedName": "Driveby pickup"
+    },
+    {
+      "anchor": {
+        "x": 3.808524027468234,
+        "y": 5.179605263150412
+      },
+      "prevControl": {
+        "x": 3.5536667255119645,
+        "y": 5.330410200169683
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.999545247839928,
+      "rotationDegrees": -120.55472189427307
+    },
+    {
+      "waypointRelativePos": 2.0204638472032634,
+      "rotationDegrees": -50.973769644821274
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.7106430155210689,
+      "maxWaypointRelativePos": 1.1075388026607522,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -57.99461679191653
+  },
+  "reversed": false,
+  "folder": "Drive by",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 179.26547896574527
+  },
+  "useDefaultConstraints": true
+}

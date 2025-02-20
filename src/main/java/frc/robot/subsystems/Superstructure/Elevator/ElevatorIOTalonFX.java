@@ -53,9 +53,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     motorConfig.MotorOutput.Inverted = ELEVATOR_MOTOR_INVERTED;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // TODO 120 stator limit
+    
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfig.CurrentLimits.StatorCurrentLimit = 120;
 
-    // torque current, dont use kv and ka?
     motorConfig.Slot0.kP = 45;
     motorConfig.Slot0.kI = 25;
     motorConfig.Slot0.kD = 7;
@@ -63,7 +64,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.Slot0.kG = 36.5;
     motorConfig.MotionMagic.MotionMagicAcceleration = 4.5;
     motorConfig.MotionMagic.MotionMagicCruiseVelocity = 7.695;
-    motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+    motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     motorConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
@@ -71,8 +72,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     motorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        Elevator.ELEVATOR_MAX_ROTATIONS.getRotations();
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Elevator.MAX_ROTATIONS.getRotations();
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
 
@@ -104,7 +104,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.rotPosition = Rotation2d.fromRotations(rotationalPosition.getValueAsDouble());
     inputs.positionPercent =
-        rotationalPosition.getValueAsDouble() / Elevator.ELEVATOR_MAX_ROTATIONS.getRotations();
+        rotationalPosition.getValueAsDouble() / Elevator.MAX_ROTATIONS.getRotations();
     inputs.aligned =
         Math.abs(rotationalPosition.getValueAsDouble() - desiredState.pos.getRotations())
             < Elevator.ELEVATOR_TOLERANCE.getRotations();

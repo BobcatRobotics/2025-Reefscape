@@ -29,6 +29,7 @@ import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants25;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SuperstructureActions;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
@@ -44,6 +45,8 @@ import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
+import frc.robot.util.IdleType;
+import frc.robot.util.ScoringLevel;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -184,7 +187,7 @@ public class RobotContainer {
 
     // driver controls
 
-    // TODO decrease speed when CoG really high?
+    // TODO decrease speed when CoG really high
     // default commands
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
@@ -226,50 +229,33 @@ public class RobotContainer {
             joystick.povLeft()));
 
     // reef levels
-    buttonBoard.l1.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L1));
+    buttonBoard.l1.onTrue(
+      SuperstructureActions.prepScore(
+        ScoringLevel.L1, superstructure, endEffector));
 
-    buttonBoard.l2.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L2));
+    buttonBoard.l2.onTrue(
+      SuperstructureActions.prepScore(
+        ScoringLevel.L2, superstructure, endEffector));
 
-    buttonBoard.l3.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L3));
+    buttonBoard.l3.onTrue(
+      SuperstructureActions.prepScore(
+        ScoringLevel.L3, superstructure, endEffector));
 
-    buttonBoard.l4.onTrue(superstructure.setState(SuperstructureState.CORAL_PREP_L4));
-
-    buttonBoard.net.onTrue(superstructure.setState(SuperstructureState.NET_SCORE));
+    buttonBoard.l4.onTrue(
+      SuperstructureActions.prepScore(
+        ScoringLevel.L4, superstructure, endEffector));
+        
+    buttonBoard.net.onTrue(SuperstructureActions.prepScore(
+      ScoringLevel.NET, superstructure, endEffector));
 
     // score
-    joystick.thumb.whileTrue(getOuttakeCommand());
+    joystick.thumb.whileTrue(
+      SuperstructureActions.score(superstructure, endEffector, IdleType.UPRIGHT));
 
     // stow
-    joystick.povDown().onTrue(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE));
-  }
-  ;
+    joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
+  };
 
-  public ParallelCommandGroup getOuttakeCommand() {
-    ParallelCommandGroup group = new ParallelCommandGroup();
-
-    // go to the scoring location if were at a prep position
-    switch (superstructure.getState()) {
-      case CORAL_PREP_L1:
-        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L1));
-        break;
-      case CORAL_PREP_L2:
-        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L2));
-        break;
-      case CORAL_PREP_L3:
-        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L3));
-        break;
-      case CORAL_PREP_L4:
-        group.addCommands(superstructure.setState(SuperstructureState.CORAL_SCORE_L4));
-        break;
-      default:
-        break;
-    }
-
-    // outtake untill button is released
-    group.addCommands(endEffector.outtakeCommand());
-
-    return group;
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
