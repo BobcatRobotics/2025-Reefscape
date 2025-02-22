@@ -406,8 +406,6 @@ public class DriveCommands {
                 filteredOmega == 0 ? 0 : angleController.calculate(filteredOmega, 0);
 
             double xOutput = 0;
-            if(filteredOmega!=0){
-              xOutput=.5+(1/filteredOmega);
             }else if(filteredOmega == 0 && maxValue!=0){
               xOutput = .75;
             }

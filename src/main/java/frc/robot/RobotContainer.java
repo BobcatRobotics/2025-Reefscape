@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AidenGamepads.LogitechGamepad;
 import frc.robot.Constants.Constants;
-import frc.robot.Constants.Constants.LimelightConstants;
 import frc.robot.Constants.TunerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Drive.Drive;
@@ -34,7 +33,9 @@ import frc.robot.subsystems.Drive.ModuleIOSim;
 import frc.robot.subsystems.Drive.ModuleIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
-import frc.robot.subsystems.Limelight.VisionIOLimelight;
+import frc.robot.subsystems.PhotonVision.Photon;
+import frc.robot.subsystems.PhotonVision.PhotonIO;
+import frc.robot.subsystems.PhotonVision.PhotonIOPhoton;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -47,6 +48,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   public final Vision limelight;
+  public final Photon photon;
 
   // Controller
   private LogitechGamepad logitech = new LogitechGamepad(0);
@@ -65,7 +67,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+        // limelight = new Vision(drive, new VisionIOLimelight(LimelightConstants.constants));
+        limelight = new Vision(drive, new VisionIO() {});
+        photon = new Photon(new PhotonIOPhoton("photonvision"));
 
         break;
 
@@ -79,6 +83,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         limelight = new Vision(drive, new VisionIO() {});
+        photon = new Photon(new PhotonIO() {});
 
         break;
 
@@ -92,6 +97,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         limelight = new Vision(drive, new VisionIO() {});
+        photon = new Photon(new PhotonIO() {});
+
         break;
     }
 
@@ -159,6 +166,8 @@ public class RobotContainer {
             () -> limelight.targetPoseCameraSpace().getX(),
             () -> 0,
             () -> Rotation2d.fromDegrees(0)));
+
+    logitech.y.whileTrue(DriveCommands.driveToCoral(drive, photon, () -> 1, () -> 0, () -> 0));
   }
 
   /**
