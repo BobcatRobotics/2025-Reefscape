@@ -39,28 +39,23 @@ public class PhotonIOPhoton implements PhotonIO {
 
   }
 
-public boolean hasCoral(){
-            
-        for (PhotonTrackedTarget target : result.get(0).getTargets()) {
-            if (target.objDetectId == 1) {
-              return true;
-            } 
-          }
-        return false;
+  public boolean hasCoral() {
 
-}
-
-
-public boolean hasAlgae(){
-            
-    for (PhotonTrackedTarget target : result.get(1).getTargets()) {
-        if (target.objDetectId == 1) {
-          return true;
-        } 
+    for (PhotonTrackedTarget target : result.get(0).getTargets()) {
+      if (target.objDetectId == 1) {
+        return true;
       }
+    }
     return false;
+  }
 
-}
+  public boolean hasAlgae() {
 
-
+    for (PhotonTrackedTarget target : result.get(1).getTargets()) {
+      if (target.objDetectId == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
