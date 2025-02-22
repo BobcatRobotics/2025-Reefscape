@@ -1,45 +1,55 @@
 package frc.robot.subsystems.CoralIntake;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class CoralIntake extends SubsystemBase {
-  public static double GEAR_RATIO = 1; // TODO find this!
+  public static double GEAR_RATIO = 33.98 / 1; // TODO find this!
 
   /** the mazimum travel distance of the elevator */
   public static final Rotation2d RANGE_OF_MOTION = Rotation2d.fromDegrees(125);
 
-  private final Alert rollerDisconnectedAlert = new Alert("Intake roller motor disconnected!", AlertType.kWarning);
-  private final Alert pivotDisconnectedAlert = new Alert("Intake pivot motor disconnected!", AlertType.kWarning);
-  private final Alert carwashDisconnectedAlert = new Alert("Intake carwash motor disconnected!", AlertType.kWarning);
+  private final Alert rollerDisconnectedAlert =
+      new Alert("Intake roller motor disconnected!", AlertType.kWarning);
+  private final Alert pivotDisconnectedAlert =
+      new Alert("Intake pivot motor disconnected!", AlertType.kWarning);
+  private final Alert carwashDisconnectedAlert =
+      new Alert("Intake carwash motor disconnected!", AlertType.kWarning);
 
   private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
   private CoralIntakeIO io;
 
-  public CoralIntake(int rollerMotorID, int pivotMotorID, int carwashID) {
-    io = new CoralIntakeIOTalonFX(rollerMotorID, pivotMotorID, carwashID);
+  public CoralIntake(CoralIntakeIO io) {
+    this.io = io;
   }
 
   public void setState(IntakeState state) {
     io.setState(state);
   }
-  public void setSpeed(AngularVelocity speed){
+
+  public void setSpeed(AngularVelocity speed) {
     io.setSpeed(speed);
   }
-  public void setAngle(Angle angle){
+
+  public void setAngle(Angle angle) {
     io.setAngle(angle);
   }
-  public void deploy(){
+
+  public void deploy() {
     io.deploy();
   }
-  public void retract(){
+
+  public void retract() {
     io.retract();
+  }
+
+  public void stop() {
+    io.stop();
   }
 
   @Override

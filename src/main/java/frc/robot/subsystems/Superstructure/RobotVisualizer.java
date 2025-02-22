@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Superstructure;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.CoralIntake.CoralIntake;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotVisualizer {
@@ -35,7 +37,8 @@ public class RobotVisualizer {
 
   public void setElevatorHeight(Distance height) {
     // Consider adding bounds checking if necessary.
-    elevatorHeightMeters = height.in(Meters);
+    // prevent cad from going through the floor when the elevator isnt initialized
+    elevatorHeightMeters = height.in(Meters) == -1 ? 0 : height.in(Meters);
     updateReal();
   }
 
@@ -76,8 +79,9 @@ public class RobotVisualizer {
 
   private void updateReal() {
     // the distance between each stage of the elevator
-    double stageHeight = elevatorHeightMeters / 3;
-    double intakeAngle = minArmAngle.getRadians() - intakeAngleRadians;
+    double stageHeight = Inches.of(70).in(Meters) * oscilator(); // elevatorHeightMeters / 3;
+    double intakeAngle =
+        minArmAngle.getRadians() - CoralIntake.RANGE_OF_MOTION.getRadians() * oscilator();
 
     Logger.recordOutput("Visualization/Debug/ZeroedRobotPose", new Pose2d());
     Logger.recordOutput("Visualization/Debug/ZeroedMechanismPose", new Pose3d[] {new Pose3d()});

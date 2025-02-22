@@ -131,6 +131,7 @@ public class Robot extends LoggedRobot {
     // robotContainer.limelight.resetGyroLL4(robotContainer.drive);
     // System.out.println(FieldConstants.Reef.offsetPositions.size());
     // System.out.println(FieldConstants.Reef.centerFaces[0].getX());
+    robotContainer.updateControllerAlerts();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
