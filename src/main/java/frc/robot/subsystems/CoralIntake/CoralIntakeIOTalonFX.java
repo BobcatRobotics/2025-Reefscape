@@ -21,14 +21,15 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   private TalonFX pivot;
   private TalonFX carwash;
   private PositionTorqueCurrentFOC positionRequest = new PositionTorqueCurrentFOC(0);
-  private VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0);
+  private VelocityTorqueCurrentFOC rollerRequest = new VelocityTorqueCurrentFOC(0);
+  private VelocityTorqueCurrentFOC carwashRequest = new VelocityTorqueCurrentFOC(0);
 
   private StatusSignal<AngularVelocity> velocity;
   private StatusSignal<Angle> position;
 
   private IntakeState currState = IntakeState.UNKNOWN;
 
-  public CoralIntakeIOTalonFX(int rollerMotorID, int pivotMotorID) {
+  public CoralIntakeIOTalonFX(int rollerMotorID, int pivotMotorID, int carwashID) {
     roller = new TalonFX(rollerMotorID);
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     roller.getConfigurator().apply(rollerConfig);
@@ -54,14 +55,13 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     pivot = new TalonFX(pivotMotorID);
 
 
-    carwash = new TalonFX(pivotMotorID);
+    carwash = new TalonFX(carwashID);
     TalonFXConfiguration carwashConfig = new TalonFXConfiguration();
     carwash.getConfigurator().apply(carwashConfig);
     carwashConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     carwashConfig.CurrentLimits.StatorCurrentLimit = 60;
     carwashConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO check
     carwashConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    carwashConfig.Slot0.kS = 1; // TODO tune
     carwashConfig.Slot0.kP = 1; // TODO tune
     carwash.getConfigurator().apply(carwashConfig);
 
@@ -87,7 +87,8 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
   @Override
   public void setSpeed(AngularVelocity velocity) {
-    roller.setControl(velocityRequest.withVelocity(velocity));
+    roller.setControl(rollerRequest.withVelocity(velocity));
+    carwash.setControl(carwashRequest.withVelocity(velocity)); //TODO this is kinda lazy, we should probably set it seperately
   };
 
   @Override

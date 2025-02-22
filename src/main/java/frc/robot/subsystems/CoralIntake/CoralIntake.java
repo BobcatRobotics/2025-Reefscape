@@ -22,8 +22,8 @@ public class CoralIntake extends SubsystemBase {
   private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
   private CoralIntakeIO io;
 
-  public CoralIntake(int rollerMotorID, int pivotMotorID) {
-    io = new CoralIntakeIOTalonFX(rollerMotorID, pivotMotorID);
+  public CoralIntake(int rollerMotorID, int pivotMotorID, int carwashID) {
+    io = new CoralIntakeIOTalonFX(rollerMotorID, pivotMotorID, carwashID);
   }
 
   public void setState(IntakeState state) {
