@@ -43,7 +43,6 @@ public class Elevator extends SubsystemBase {
 
   private RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
-
   public Elevator(ElevatorIO io) {
     this.io = io;
   }

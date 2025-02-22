@@ -13,17 +13,10 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
@@ -190,26 +183,5 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {
-    double oscilator = ((Math.sin(Timer.getTimestamp()) + 1) / 2);
-    double height = oscilator * Inches.of(70).in(Meters) / 3;
-    double angle = Math.PI*oscilator;
-
-    Logger.recordOutput("Visualization/ZeroedRobotPose", new Pose2d());
-    Logger.recordOutput("Visualization/ZeroedMechanismPose", new Pose3d[] {new Pose3d()});
-    Logger.recordOutput(
-        "Visualization/Mechanisms",
-        new Pose3d[] {
-          new Pose3d(0, -0.192, 0.14 + height, new Rotation3d()), // stage 1
-          new Pose3d(0, -0.192, 0.16 + height * 2, new Rotation3d()), // stage 2
-          new Pose3d(0, -0.192, 0.18 + height * 3, new Rotation3d()), // carrige
-          new Pose3d(
-            0, -0.21, 0.313 + height * 3,
-             new Rotation3d(
-              0,
-              angle,
-              0
-             )) // arm
-        });
-  }
+  public void simulationPeriodic() {}
 }

@@ -6,7 +6,11 @@ package frc.robot.subsystems.EndEffector;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,8 +21,11 @@ public class EndEffector extends SubsystemBase {
   public static double INTAKE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
 
-  private EndEffectorIOInputs inputs = new EndEffectorIOInputsAutoLogged();
+  private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;
+
+  private final Alert motorDisconnectedAlert = new Alert("End Effector motor disconnected!", AlertType.kWarning);
+
 
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
@@ -28,6 +35,8 @@ public class EndEffector extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("EndEffector", inputs);
+    motorDisconnectedAlert.set(!inputs.motorConnected);
   }
 
   public Distance getDistanceToPiece() {

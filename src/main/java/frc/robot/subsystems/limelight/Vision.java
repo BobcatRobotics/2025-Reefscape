@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
   private double xyStdDev;
   private double thetaStdDev;
   private AprilTagFieldLayout aprilTagFieldLayout =
-      AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   public Vision(Drive swerve, VisionIO io) {
     this.io = io;

@@ -32,6 +32,8 @@ public class Superstructure {
   private SuperstructureState desiredState = SuperstructureState.UNKNOWN;
   private SuperstructureState desiredTransitionState = SuperstructureState.UNKNOWN;
 
+  private final RobotVisualizer visualizer = RobotVisualizer.getInstance();
+
   /** A class representing the Arm-Elevator superstructure */
   public Superstructure(Arm arm, Elevator elevator) {
     this.arm = arm;
@@ -115,6 +117,11 @@ public class Superstructure {
 
       // Check if the last state in the current path is the goal state.
       if (lastState.equals(goal)) {
+        String pathString = "";
+        for (SuperstructureState state : path) {
+          pathString.concat(state.toString() + ", ");
+        }
+        Logger.recordOutput("StatePath", pathString);
         // If it is, return the current path as it is the shortest path found.
         return path;
       }
@@ -208,6 +215,10 @@ public class Superstructure {
         .finallyDo(
             () -> {
               currentState = goal;
+            })
+        .beforeStarting(
+            () -> {
+              visualizer.setDesiredSuperstructureState(goal);
             });
   }
 }

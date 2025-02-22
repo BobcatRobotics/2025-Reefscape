@@ -1,6 +1,9 @@
 package frc.robot.subsystems.Superstructure.Elevator;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Distance;
 
 public enum ElevatorState {
   IDLE_UPSIDE_DOWN(
@@ -23,7 +26,11 @@ public enum ElevatorState {
 
   ElevatorState(Rotation2d pos) {
     this.pos = pos;
+    heightMeters = pos.getRotations() * Elevator.METERS_PER_ROTATION;
+    height = Meters.of(heightMeters);
   }
 
   public Rotation2d pos;
+  public Distance height;
+  public double heightMeters;
 }

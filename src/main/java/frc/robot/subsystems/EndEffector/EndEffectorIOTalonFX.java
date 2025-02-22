@@ -3,6 +3,7 @@ package frc.robot.subsystems.EndEffector;
 import static edu.wpi.first.units.Units.Hertz;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Millimeters;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
@@ -29,7 +30,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
   private VelocityDutyCycle request;
   private Alert rangingAlert =
       new Alert(
-          "Couldnt set end effector ranging mode!! OMG this is really bad!! the robot will EXPLODE!!!!!! fix IMEDIATELY",
+          "Couldnt set end effector ranging mode!! OMG this is really bad!! the robot will EXPLODE!!!!!! fix IMEDIATELY or i'll DIE a GRUESOME and PAINFUL death!",
           AlertType.kWarning);
 
   private StatusSignal<AngularVelocity> velocity;
@@ -43,6 +44,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
     motorConfig.CurrentLimits.StatorCurrentLimit = 80;
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    motor.getConfigurator().apply(motorConfig);
 
     laser = new LaserCan(laserCANID);
     try {
@@ -72,8 +74,10 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
   public void updateInputs(EndEffectorIOInputs inputs) {
     BaseStatusSignal.refreshAll(velocity, statorCurrent);
     inputs.laserCanDistanceMilimeters = laser.getMeasurement().distance_mm;
-    inputs.rpm = motor.getVelocity().getValueAsDouble() * 60 * END_EFFEFCTOR_GEAR_RATIO;
+    inputs.velocity =
+        RotationsPerSecond.of(motor.getVelocity().getValueAsDouble() * END_EFFEFCTOR_GEAR_RATIO);
     inputs.currentDraw = motor.getStatorCurrent().getValueAsDouble();
     inputs.hasPiece = inputs.laserCanDistanceMilimeters < INTOOK_THRESHOLD;
+    inputs.motorConnected = motor.isConnected();
   }
 }
