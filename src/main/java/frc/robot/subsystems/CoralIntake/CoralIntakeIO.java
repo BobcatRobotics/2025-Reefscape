@@ -2,7 +2,6 @@ package frc.robot.subsystems.CoralIntake;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Millimeters;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -16,11 +15,9 @@ public interface CoralIntakeIO {
     public Distance LaserCANDistance = Millimeters.of(0);
     public boolean pivotMotorConnected = false;
     public boolean rollerMotorConnected = false;
-    public boolean carwashMotorConnected = false;
-    public AngularVelocity intakeVelocity = RotationsPerSecond.of(0);
-    public AngularVelocity carwashVelocity = RotationsPerSecond.of(0);
-    public AngularVelocity desiredRollerVelocity = RotationsPerSecond.of(0);
-    public AngularVelocity desiredCarwashVelocity = RotationsPerSecond.of(0);
+    public double intakeVelocityRPS = 0;
+    public double desiredRollerVelocityRPS = 0;
+    public double desiredCarwashVelocityRPS = 0;
 
     public Angle position = Degrees.of(0);
     public IntakeState state = IntakeState.RETRACT;

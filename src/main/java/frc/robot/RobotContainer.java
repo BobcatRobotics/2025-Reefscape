@@ -39,16 +39,20 @@ import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
+import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.SwerveModuleIO;
 import frc.robot.subsystems.Drive.SwerveModuleIOSim;
+import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
+import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.IdleType;
@@ -76,6 +80,7 @@ public class RobotContainer {
   public static final int CARWASH_TALON_ID = 20;
   public static final int INTAKE_ROLLER_TALON_ID = 23;
   public static final int INTAKE_PIVOT_TALON_ID = 27;
+  public static final int INTAKE_LASER_ID = 0;
 
   // Subsystems
   public final Vision limelight;
@@ -113,44 +118,27 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // drive =
-        //     new Drive(
-        //         new GyroIOPigeon2(),
-        //         new SwerveModuleIOTalonFX(TunerConstants25.FrontLeft),
-        //         new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
-        //         new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
-        //         new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
-        // limelight =
-        //     new Vision(
-        //         drive, new VisionIO() {}); // new
-        // VisionIOLimelight(LimelightConstants.constants));
-
-        // superstructure =
-        //     new Superstructure(
-        //         new Arm(new ArmIO() {}), // new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
-        //         new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
-
-        // endEffector =
-        //     new EndEffector(
-        //         new EndEffectorIO() {}); // new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
-        // // END_EFFECTOR_LASER_ID));
-
         drive =
             new Drive(
-                new GyroIO() {},
-                new SwerveModuleIO() {},
-                new SwerveModuleIO() {},
-                new SwerveModuleIO() {},
-                new SwerveModuleIO() {});
-        limelight = new Vision(drive, new VisionIO() {});
+                new GyroIOPigeon2(),
+                new SwerveModuleIOTalonFX(TunerConstants25.FrontLeft),
+                new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
+                new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
+                new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
+        limelight = new Vision(drive, new VisionIO() {}); // new
+        // VisionIOLimelight(LimelightConstants.constants));
         superstructure =
-            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
-        endEffector = new EndEffector(new EndEffectorIO() {});
-
+            new Superstructure(
+                new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
+                new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
+        endEffector =
+            new EndEffector(
+                new EndEffectorIO() {}); // new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
+        // END_EFFECTOR_LASER_ID));
         intake =
             new CoralIntake(
                 new CoralIntakeIOTalonFX(
-                    INTAKE_ROLLER_TALON_ID, INTAKE_PIVOT_TALON_ID, CARWASH_TALON_ID, 0));
+                    INTAKE_ROLLER_TALON_ID, INTAKE_PIVOT_TALON_ID, INTAKE_LASER_ID));
         break;
 
       case SIM:
@@ -238,9 +226,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
-            leftRuffy.xAxis,
             () -> -leftRuffy.yAxis.getAsDouble(),
-            rightRuffy.xAxis,
+            leftRuffy.xAxis,
+            () -> -rightRuffy.xAxis.getAsDouble(),
             superstructure::getElevatorPercentage));
 
     // Reset gyro to 0 deg
@@ -305,7 +293,7 @@ public class RobotContainer {
     gp.a.whileTrue(
         new RunCommand(
                 () -> {
-                  intake.setSpeed(RotationsPerSecond.of(-100));
+                  intake.setSpeed(RotationsPerSecond.of(-6000));
                 },
                 intake)
             .finallyDo(intake::stop));

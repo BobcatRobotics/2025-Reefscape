@@ -64,7 +64,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.Slot0.kG = 36.5;
     motorConfig.MotionMagic.MotionMagicAcceleration = 4.5;
     motorConfig.MotionMagic.MotionMagicCruiseVelocity = 7.695;
-    motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+    motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
     motorConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 

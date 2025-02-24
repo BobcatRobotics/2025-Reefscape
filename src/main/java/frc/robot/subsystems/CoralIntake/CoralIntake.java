@@ -58,6 +58,5 @@ public class CoralIntake extends SubsystemBase {
     Logger.processInputs("CoralIntake", inputs);
     rollerDisconnectedAlert.set(!inputs.rollerMotorConnected);
     pivotDisconnectedAlert.set(!inputs.rollerMotorConnected);
-    carwashDisconnectedAlert.set(!inputs.carwashMotorConnected);
   }
 }

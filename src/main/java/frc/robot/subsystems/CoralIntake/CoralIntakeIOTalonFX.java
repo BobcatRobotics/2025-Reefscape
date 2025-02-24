@@ -18,32 +18,27 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.Constants.TunerConstants25;
 
 public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
   private TalonFX roller;
   private TalonFX pivot;
-  private TalonFX carwash;
   private LaserCan laser;
   private PositionTorqueCurrentFOC positionRequest = new PositionTorqueCurrentFOC(0);
   private VelocityVoltage rollerRequest = new VelocityVoltage(0);
-  private VelocityVoltage carwashRequest = new VelocityVoltage(0);
   private Alert rangingAlert =
       new Alert(
           "Couldnt set intake ranging mode!! OMG this is really bad!! the robot will EXPLODE!!!!!! fix IMEDIATELY or i'll DIE a GRUESOME and PAINFUL death!",
           AlertType.kWarning);
 
   private StatusSignal<AngularVelocity> rollerVelocity;
-  private StatusSignal<AngularVelocity> carwashVelocity;
-  // private StatusSignal<Angle> position;
+  private StatusSignal<Angle> position;
 
-  private AngularVelocity desiredCarwashVelocity = RotationsPerSecond.of(0);
   private AngularVelocity desiredRollerVelocity = RotationsPerSecond.of(0);
 
   private IntakeState currState = IntakeState.UNKNOWN;
 
-  public CoralIntakeIOTalonFX(int rollerMotorID, int pivotMotorID, int carwashID, int laserCANID) {
+  public CoralIntakeIOTalonFX(int rollerMotorID, int pivotMotorID, int laserCANID) {
 
     // laser = new LaserCan(laserCANID);
 
@@ -55,17 +50,17 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     // rangingAlert.set(true);
     // }
 
-    roller = new TalonFX(rollerMotorID, TunerConstants25.kCANBus);
+    roller = new TalonFX(rollerMotorID);
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     roller.getConfigurator().apply(rollerConfig);
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     rollerConfig.CurrentLimits.StatorCurrentLimit = 80;
     rollerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO check
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    rollerConfig.Slot0.kP = 0.4; // // TODO tune
+    rollerConfig.Slot0.kP = 3; // // TODO tune
     roller.getConfigurator().apply(rollerConfig);
 
-    pivot = new TalonFX(pivotMotorID, TunerConstants25.kCANBus);
+    pivot = new TalonFX(pivotMotorID);
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
     roller.getConfigurator().apply(pivotConfig);
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -77,49 +72,30 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     pivotConfig.Slot0.kP = 1; // TODO tune
     roller.getConfigurator().apply(pivotConfig);
 
-    carwash = new TalonFX(carwashID);
-    TalonFXConfiguration carwashConfig = new TalonFXConfiguration();
-    carwash.getConfigurator().apply(carwashConfig);
-    carwashConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    carwashConfig.CurrentLimits.StatorCurrentLimit = 60;
-    carwashConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO check
-    carwashConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    carwashConfig.Slot0.kP = 0.4; // TODO tune
-    carwash.getConfigurator().apply(carwashConfig);
-
     rollerVelocity = roller.getVelocity();
-    carwashVelocity = carwash.getVelocity();
-    // position = pivot.getPosition();
+    position = pivot.getPosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(Hertz.of(50), rollerVelocity, carwashVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(Hertz.of(50), rollerVelocity, position);
 
     pivot.optimizeBusUtilization();
     roller.optimizeBusUtilization();
-    carwash.optimizeBusUtilization();
   }
 
   @Override
   public void updateInputs(CoralIntakeIOInputs inputs) {
-    BaseStatusSignal.refreshAll(rollerVelocity, carwashVelocity);
-    inputs.intakeVelocity = rollerVelocity.getValue();
-    // inputs.position = position.getValue();
+    BaseStatusSignal.refreshAll(rollerVelocity, position);
+    inputs.intakeVelocityRPS = rollerVelocity.getValue().in(RotationsPerSecond);
+    inputs.position = position.getValue();
     inputs.pivotMotorConnected = pivot.isConnected();
     inputs.rollerMotorConnected = roller.isConnected();
-    inputs.carwashMotorConnected = carwash.isConnected();
     inputs.state = currState;
-    inputs.carwashVelocity = carwashVelocity.getValue();
-    inputs.desiredCarwashVelocity = desiredCarwashVelocity;
-    inputs.desiredRollerVelocity = desiredRollerVelocity;
+    inputs.desiredRollerVelocityRPS = desiredRollerVelocity.in(RotationsPerSecond);
   }
 
   @Override
   public void setSpeed(AngularVelocity velocity) {
     roller.setControl(rollerRequest.withVelocity(velocity));
-    carwash.setControl(
-        carwashRequest.withVelocity(
-            velocity)); // TODO this is kinda lazy, we should probably set it seperately
 
-    desiredCarwashVelocity = velocity;
     desiredRollerVelocity = velocity;
   }
 
@@ -148,7 +124,6 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   @Override
   public void stop() {
     roller.stopMotor();
-    carwash.stopMotor();
   }
 
   private double outputAngleToMotorRotations(Angle pivotAngle) {
