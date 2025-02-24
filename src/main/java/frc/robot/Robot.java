@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants25;
+import frc.robot.Constants.Constants.LimelightFLConstants;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -131,13 +133,26 @@ public class Robot extends LoggedRobot {
     // robotContainer.limelight.resetGyroLL4(robotContainer.drive);
     // System.out.println(FieldConstants.Reef.offsetPositions.size());
     // System.out.println(FieldConstants.Reef.centerFaces[0].getX());
+
+    robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
     robotContainer.updateControllerAlerts();
+
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     // robotContainer.limelight.resetGyroLL4();
+    robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
+
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -153,6 +168,12 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
+
     // robotContainer.limelight.resetGyroLL4();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
