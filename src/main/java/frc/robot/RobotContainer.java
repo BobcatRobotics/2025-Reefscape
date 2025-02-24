@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
-import frc.robot.AidensGamepads.LogitechGamepad;
+import frc.robot.AidensGamepads.EightBitDo;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
@@ -47,6 +47,7 @@ import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
+import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
@@ -83,7 +84,11 @@ public class RobotContainer {
   public static final int INTAKE_LASER_ID = 0;
 
   // Subsystems
-  public final Vision limelight;
+  public final Vision limelightfl;
+  public final Vision limelightfr;
+  public final Vision limelightbl;
+  public final Vision limelightbr;
+
   final Drive drive;
   // public final Vision limelight;
   private final Superstructure superstructure;
@@ -99,7 +104,7 @@ public class RobotContainer {
   private final LogitechJoystick joystick = new LogitechJoystick(2);
   private final ButtonBoard buttonBoard = new ButtonBoard(3);
 
-  private LogitechGamepad gp = new LogitechGamepad(0);
+  private EightBitDo gp = new EightBitDo(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -125,8 +130,37 @@ public class RobotContainer {
                 new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
-        limelight = new Vision(drive, new VisionIO() {}); // new
-        // VisionIOLimelight(LimelightConstants.constants));
+        limelightfl =
+            new Vision(drive, new VisionIOLimelight(Constants.LimelightFLConstants.constants));
+        limelightfr =
+            new Vision(drive, new VisionIOLimelight(Constants.LimelightFRConstants.constants));
+        limelightbl =
+            new Vision(drive, new VisionIOLimelight(Constants.LimelightBLConstants.constants));
+        limelightbr =
+            new Vision(drive, new VisionIOLimelight(Constants.LimelightBRConstants.constants));
+        // limelightfl = new Vision(drive, new VisionIO() {});
+        // limelightfr = new Vision(drive, new VisionIO() {});
+        // limelightbl = new Vision(drive, new VisionIO() {});
+        // limelightbr = new Vision(drive, new VisionIO() {});
+
+        // superstructure =
+        //     new Superstructure(
+        //         new Arm(new ArmIO() {}), // new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
+        //         new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
+
+        // endEffector =
+        //     new EndEffector(
+        //         new EndEffectorIO() {}); // new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
+        // // END_EFFECTOR_LASER_ID));
+
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new SwerveModuleIO() {},
+        //         new SwerveModuleIO() {},
+        //         new SwerveModuleIO() {},
+        //         new SwerveModuleIO() {});
+        // limelight = new Vision(drive, new VisionIO() {});
         superstructure =
             new Superstructure(
                 new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
@@ -150,10 +184,15 @@ public class RobotContainer {
                 new SwerveModuleIOSim(TunerConstants25.FrontRight),
                 new SwerveModuleIOSim(TunerConstants25.BackLeft),
                 new SwerveModuleIOSim(TunerConstants25.BackRight));
-        limelight = new Vision(drive, new VisionIO() {});
         superstructure =
             new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
         endEffector = new EndEffector(new EndEffectorIO() {});
+
+        limelightfl = new Vision(drive, new VisionIO() {});
+        limelightfr = new Vision(drive, new VisionIO() {});
+        limelightbl = new Vision(drive, new VisionIO() {});
+        limelightbr = new Vision(drive, new VisionIO() {});
+
         break;
 
       default:
@@ -168,7 +207,11 @@ public class RobotContainer {
         superstructure =
             new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
 
-        limelight = new Vision(drive, new VisionIO() {});
+        limelightfl = new Vision(drive, new VisionIO() {});
+        limelightfr = new Vision(drive, new VisionIO() {});
+        limelightbl = new Vision(drive, new VisionIO() {});
+        limelightbr = new Vision(drive, new VisionIO() {});
+
         endEffector = new EndEffector(new EndEffectorIO() {});
         break;
     }
@@ -236,7 +279,7 @@ public class RobotContainer {
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
-            .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
+            // .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
     // Switch to X pattern when X button is pressed
