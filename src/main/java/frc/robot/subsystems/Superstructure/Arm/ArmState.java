@@ -4,17 +4,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public enum ArmState {
-  UPSIDE_DOWN(-25), // upside down, for quick pickup once game piece intook
+  UPSIDE_DOWN(270), // upside down, for quick pickup once game piece intook
   RIGHT_SIDE_UP(25), // arm doesnt move from idle to handoff
   HP_INTAKE(0),
   CORAL_SCORE_L1(0),
   CORAL_SCORE_L2(0),
   CORAL_SCORE_L3(0),
   CORAL_SCORE_L4(0),
-  CORAL_PREP_L1(0),
-  CORAL_PREP_L2(12.5),
-  CORAL_PREP_L3(12.5),
-  CORAL_PREP_L4(18.75),
+  CORAL_PREP_L1(180 - 12.5),
+  CORAL_PREP_L2(180 - 12.5),
+  CORAL_PREP_L3(180 - 12.5),
+  CORAL_PREP_L4(180 - 18.75),
   ALGAE_PREP_L2(0),
   ALGAE_PREP_L3(0),
   ALGAE_SCORE_L2(0),

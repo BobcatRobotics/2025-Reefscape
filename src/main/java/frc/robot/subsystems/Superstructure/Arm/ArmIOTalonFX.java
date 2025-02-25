@@ -23,8 +23,8 @@ import edu.wpi.first.units.measure.Current;
 
 public class ArmIOTalonFX implements ArmIO {
   public static final double ARM_ROTOR_TO_SENSOR_RATIO = 76.62;
-  public static final Rotation2d ARM_MIN_ANGLE = Rotation2d.fromDegrees(270);
-  public static final Rotation2d ARM_MAX_ANGLE = Rotation2d.fromDegrees(-90);
+  public static final Rotation2d ARM_MIN_ANGLE = Rotation2d.fromDegrees(-90);
+  public static final Rotation2d ARM_MAX_ANGLE = Rotation2d.fromDegrees(270);
 
   private TalonFX motor;
   private CANcoder encoder;
@@ -68,7 +68,7 @@ public class ArmIOTalonFX implements ArmIO {
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
     encoder.getConfigurator().apply(encoderConfig);
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    encoderConfig.MagnetSensor.MagnetOffset = 0.19458;
+    encoderConfig.MagnetSensor.MagnetOffset = -0.148193;
     encoder.getConfigurator().apply(encoderConfig);
 
     controlMode = motor.getControlMode();

@@ -11,7 +11,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
@@ -20,6 +19,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class CoralIntakeIOTalonFX implements CoralIntakeIO {
+
+  public static double MAX_ROTATIONS = 14; // TODO slightly more than this
 
   private TalonFX roller;
   private TalonFX pivot;
@@ -65,10 +66,8 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     roller.getConfigurator().apply(pivotConfig);
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     pivotConfig.CurrentLimits.StatorCurrentLimit = 60;
-    pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO check
-    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine; // TODO tune
-    pivotConfig.Slot0.kG = 1; // TODO tune
+    pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast; // TODO check
     pivotConfig.Slot0.kP = 1; // TODO tune
     roller.getConfigurator().apply(pivotConfig);
 
