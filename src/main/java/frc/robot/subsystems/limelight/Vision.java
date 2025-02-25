@@ -78,7 +78,9 @@ public class Vision extends SubsystemBase {
 
     apriltagPipeline = inputs.pipelineID == 0;
 
-    if (inputs.limelightType != LLTYPE.LL4 && DriverStation.isDSAttached() && getBotPoseMG2()!=null) {
+    if (inputs.limelightType != LLTYPE.LL4
+        && DriverStation.isDSAttached()
+        && getBotPoseMG2() != null) {
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
         // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
