@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.MathUtil;
@@ -19,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.PhotonVision.Photon;
+import frc.robot.util.RotationUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +43,8 @@ public class DriveCommands {
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final Distance ALIGN_DISTANCE = Meters.of(.4); // TODO this should be zero
+
+  private static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); //towards elevator
 
   private DriveCommands() {}
 
@@ -414,6 +419,17 @@ public class DriveCommands {
                   new Pose2d(
                       FieldConstants.Reef.center, Rotation2d.fromDegrees(180 - (60 * faceIndex)));
 
+              double transformY = 0;
+
+              Rotation2d closestRotation = new Rotation2d();
+              if(poseDirection.getRotation().getRadians()-RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians()<=Math.PI/2){
+                closestRotation = poseDirection.getRotation();
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
+              } else {
+                closestRotation = poseDirection.getRotation().unaryMinus();
+                transformY= END_EFFECTOR_BIAS.in(Meters);
+              }
+
               double adjustX =
                   ALIGN_DISTANCE.baseUnitMagnitude() + FieldConstants.Reef.faceToCenter;
               // double adjustY = Units.inchesToMeters(0);
@@ -422,12 +438,12 @@ public class DriveCommands {
                   new Pose2d(
                       new Translation2d(
                           poseDirection
-                              .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                              .transformBy(new Transform2d(adjustX, adjustY+transformY, new Rotation2d()))
                               .getX(),
                           poseDirection
-                              .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                              .transformBy(new Transform2d(adjustX, adjustY+transformY, new Rotation2d()))
                               .getY()),
-                      new Rotation2d(poseDirection.getRotation().getRadians()));
+                      new Rotation2d(closestRotation.getRadians()));
 
               // Pose2d offsetFace = nearestFace.plus(new Transform2d(xOffset, yOffset, new
               // Rotation2d()));
@@ -528,13 +544,15 @@ public class DriveCommands {
                     : -FieldConstants.Reef.reefToBranchY));
   }
 
+
   public static Command driveToCoral(
       Drive drive,
       Photon photon,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier angleSupplier,
-      DoubleSupplier elevatorHeightPercentage) {
+      DoubleSupplier elevatorHeightPercentage
+      ) {
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
@@ -629,13 +647,33 @@ public class DriveCommands {
           drive);
     } else {
       return Commands.run(
-          () ->
-              fieldRelativeJoystickDrive(
-                  drive, xSupplier, ySupplier, angleSupplier, elevatorHeightPercentage),
-          drive);
+          () -> fieldRelativeJoystickDrive(drive, xSupplier, ySupplier, angleSupplier, elevatorHeightPercentage), drive);
     }
   }
+
+
+
+
+
 }
 
 // The cool thing about being the only one who ever touches certian parts of the code is you can
 // put whatever you want in the comments and no one will ever bother to read it
+
+// ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⠛⠛⠛⠛⠛⢛⣿⠿⠟⠛⠛⠛⠛⠛⠛⠿⠿⣿⣟⠛⠛⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⣛
+// ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⢠⡿⠁        ⠀⠀  ⠙⢷⡀⠺⠿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⣰⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⢸⡇   AMOGUS XD    ⢸⡇⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⠃⢀⣿⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⣀⡀⠀⠘⢷⣀⠀⠀⠀      ⠀⠀⠀⢀⣼⠃⠀⠀⠀⠉⠛⠿⢿⣿⣿⡏⠀⣼⣿⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠉⠀⡀⠀⠀⠉⠛⢷⣄⠈⢙⡷⠀⠀⣠⣤⣤⣤⣤⣤⡴⠾⠋⠁⣠⡶⠶⠶⠶⠶⣤⡀⠀⣿⡇⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠐⠉⠉⠁⠀⠀⠀⠀⠹⣶⠻⠟⠛⠛⠋⠀⠀⠀⡏⠀⠀⠀⠀⢠⡏⣠⣤⠤⠤⣄⡈⢻⡄⣿⡇⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⢰⡖⠲⣶⣶⢤⡤⠤⣤⣿⡆⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⡾⠀⠻⣷⣶⡶⠾⠃⠈⣿⣿⡇⠀⣿⡿⠿⢿
+// ⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⢀⣉⣛⠛⠉⢠⡙⠲⢿⣿⠃⠀⠀⠀⠀⠀⠀⢰⠇⠀⠀⠀⢰⡇⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⡇⠀⣿⣧⣤⣿
+// ⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣌⠛⠿⠿⠖⣎⣤⣶⡛⠁⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⣿⣿⣿⠟⠋⠉⠙⠛⠻⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⢠⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⣿⡿⠁⠀⠠⢤⡀⠀⢀⡬⠟⣻⣿⣯⠍⠻⣆⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⢸⡇⠀⣠⠶⠶⠶⢶⡀⠀⠀⢸⣿⡇⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⣿⠃⠀⡀⠀⠀⠉⠓⠋⠀⠀⣳⣾⡴⠂⠀⢹⡆⠀⠀⠀⠀⢀⣸⣰⣛⣛⣺⣀⣀⣸⣆⣀⣀⣸⣇⣀⣀⣸⣿⡇⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⡏⠀⠀⠉⠓⢦⣄⣀⣠⣴⣿⣷⣼⣵⣻⡄⠀⡇⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿
+// ⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠉⢹⣿⣿⣿⣿⣿⣍⣀⣸⣧⣤⣤⣤⣤⣼⣄⣀⣀⣀⡀⠀⢀⣀⣠⣤⣤⣤⣤⣤⣤⣀⣀⣀⠀⠀⠀⠀⠀
+// ⠛⠛⢻⡏⠀⠀⠀⠀⠀⠀⠀⠀⣾⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠀⠉⠉⠉⠛⠛⠛⠛⠛⠉⠉⠀⠀⠀⠀⠀⠉⠉⠉⠛⠛⠛⠛⠛⠛
+// ⣀⣀⣸⠁⠀⠀⢀⣶⣶⣦⠀⢀⣟⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣠⣄⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀
