@@ -52,8 +52,10 @@ import frc.robot.subsystems.PhotonVision.PhotonIO;
 import frc.robot.subsystems.PhotonVision.PhotonIOPhoton;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
+import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.IdleType;
@@ -81,6 +83,7 @@ public class RobotContainer {
   public static final int CARWASH_TALON_ID = 20;
   public static final int INTAKE_ROLLER_TALON_ID = 23;
   public static final int INTAKE_PIVOT_TALON_ID = 27;
+  public static final int INTAKE_LASER_ID = 0;
 
   // Subsystems
   public final Vision limelightfl;
@@ -165,13 +168,17 @@ public class RobotContainer {
         //         new SwerveModuleIO() {});
         // limelight = new Vision(drive, new VisionIO() {});
         superstructure =
-            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
-        endEffector = new EndEffector(new EndEffectorIO() {});
-
+            new Superstructure(
+                new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
+                new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
+        endEffector =
+            new EndEffector(
+                new EndEffectorIO() {}); // new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
+        // END_EFFECTOR_LASER_ID));
         intake =
             new CoralIntake(
                 new CoralIntakeIOTalonFX(
-                    INTAKE_ROLLER_TALON_ID, INTAKE_PIVOT_TALON_ID, CARWASH_TALON_ID, 0));
+                    INTAKE_ROLLER_TALON_ID, INTAKE_PIVOT_TALON_ID, INTAKE_LASER_ID));
         break;
 
       case SIM:
@@ -271,8 +278,8 @@ public class RobotContainer {
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
             () -> -leftRuffy.yAxis.getAsDouble(),
-            () -> -leftRuffy.xAxis.getAsDouble(),
-            rightRuffy.xAxis,
+            leftRuffy.xAxis,
+            () -> -rightRuffy.xAxis.getAsDouble(),
             superstructure::getElevatorPercentage));
 
     // Reset gyro to 0 deg
@@ -337,7 +344,7 @@ public class RobotContainer {
     gp.a.whileTrue(
         new RunCommand(
                 () -> {
-                  intake.setSpeed(RotationsPerSecond.of(-100));
+                  intake.setSpeed(RotationsPerSecond.of(-6000));
                 },
                 intake)
             .finallyDo(intake::stop));

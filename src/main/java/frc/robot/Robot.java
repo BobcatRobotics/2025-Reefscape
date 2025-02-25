@@ -21,9 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.Constants;
-import frc.robot.Constants.TunerConstants25;
 import frc.robot.Constants.Constants.LimelightFLConstants;
-
+import frc.robot.Constants.TunerConstants25;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -140,7 +139,6 @@ public class Robot extends LoggedRobot {
     robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
 
     robotContainer.updateControllerAlerts();
-
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -151,7 +149,6 @@ public class Robot extends LoggedRobot {
     robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
-
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -172,7 +169,6 @@ public class Robot extends LoggedRobot {
     robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
-
 
     // robotContainer.limelight.resetGyroLL4();
     // This makes sure that the autonomous stops running when

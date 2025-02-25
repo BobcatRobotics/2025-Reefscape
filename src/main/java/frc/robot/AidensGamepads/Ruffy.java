@@ -26,8 +26,8 @@ public class Ruffy extends CommandJoystick {
     // y is up/down
     // x is left/right
     // z is twist
-    xAxis = () -> -super.getRawAxis(0);
+    xAxis = () -> super.getRawAxis(0);
     yAxis = () -> -super.getRawAxis(1);
-    zAxis = () -> -super.getRawAxis(2);
+    zAxis = () -> super.getRawAxis(2);
   }
 }
