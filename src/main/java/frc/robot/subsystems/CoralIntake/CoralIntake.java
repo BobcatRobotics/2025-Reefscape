@@ -18,8 +18,6 @@ public class CoralIntake extends SubsystemBase {
       new Alert("Intake roller motor disconnected!", AlertType.kWarning);
   private final Alert pivotDisconnectedAlert =
       new Alert("Intake pivot motor disconnected!", AlertType.kWarning);
-  private final Alert carwashDisconnectedAlert =
-      new Alert("Intake carwash motor disconnected!", AlertType.kWarning);
 
   private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
   private CoralIntakeIO io;

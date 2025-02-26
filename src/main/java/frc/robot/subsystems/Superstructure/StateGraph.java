@@ -1,12 +1,33 @@
 package frc.robot.subsystems.Superstructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class StateGraph {
   private static StateGraph instance;
+  private List<SuperstructureState> prepStates =
+      Arrays.asList(
+          new SuperstructureState[] {
+            SuperstructureState.CORAL_PREP_L1,
+            SuperstructureState.CORAL_PREP_L2,
+            SuperstructureState.CORAL_PREP_L3,
+            SuperstructureState.CORAL_PREP_L4,
+            SuperstructureState.FLIPPED_CORAL_PREP_L1,
+            SuperstructureState.FLIPPED_CORAL_PREP_L2,
+            SuperstructureState.FLIPPED_CORAL_PREP_L3,
+            SuperstructureState.FLIPPED_CORAL_PREP_L4,
+            SuperstructureState.ALGAE_PREP_L2,
+            SuperstructureState.ALGAE_PREP_L3,
+            SuperstructureState.FLIPPED_ALGAE_PREP_L2,
+            SuperstructureState.FLIPPED_ALGAE_PREP_L3,
+            SuperstructureState.NET_PREP,
+            SuperstructureState.FLIPPED_NET_PREP
+          });
 
   private final Map<SuperstructureState, List<SuperstructureState>> adjacencyList = new HashMap<>();
 
@@ -92,6 +113,10 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
               SuperstructureState.HP_INTAKE
             },
             new SuperstructureState[] {
@@ -100,6 +125,11 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L2,
+              SuperstructureState.FLIPPED_CORAL_PREP_L3,
+              SuperstructureState.FLIPPED_CORAL_PREP_L4,
+              SuperstructureState.FLIPPED_CORAL_SCORE_L1,
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_SCORE
@@ -110,6 +140,11 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L2,
+              SuperstructureState.FLIPPED_CORAL_PREP_L2,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L3,
+              SuperstructureState.FLIPPED_CORAL_PREP_L4,
+              SuperstructureState.FLIPPED_CORAL_SCORE_L2,
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_SCORE
@@ -120,6 +155,11 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L3,
+              SuperstructureState.FLIPPED_CORAL_PREP_L3,
+              SuperstructureState.FLIPPED_CORAL_PREP_L1,
+              SuperstructureState.FLIPPED_CORAL_PREP_L2,
+              SuperstructureState.FLIPPED_CORAL_PREP_L4,
+              SuperstructureState.FLIPPED_CORAL_SCORE_L3,
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_SCORE
@@ -204,5 +244,109 @@ public class StateGraph {
     }
 
     return graph;
+  }
+
+  private List<SuperstructureState[]> transitions =
+      List.of(
+          new SuperstructureState[] {SuperstructureState.UNKNOWN},
+          new SuperstructureState[] {
+            SuperstructureState.UPSIDE_DOWN_IDLE, SuperstructureState.ELEVATOR_SAFE_ZONE
+          },
+          new SuperstructureState[] {SuperstructureState.RIGHT_SIDE_UP_IDLE},
+          new SuperstructureState[] {SuperstructureState.ELEVATOR_SAFE_ZONE},
+          new SuperstructureState[] {SuperstructureState.HP_INTAKE},
+          new SuperstructureState[] {SuperstructureState.CORAL_HANDOFF},
+          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L1},
+          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L2},
+          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L3},
+          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L4},
+          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L1},
+          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L2},
+          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L3},
+          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L4},
+          new SuperstructureState[] {SuperstructureState.FLIPPED_CORAL_PREP_L1},
+          new SuperstructureState[] {SuperstructureState.FLIPPED_CORAL_PREP_L2},
+          new SuperstructureState[] {SuperstructureState.FLIPPED_CORAL_PREP_L3},
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.FLIPPED_CORAL_PREP_L4,
+                SuperstructureState.FLIPPED_CORAL_SCORE_L4
+              }),
+          new SuperstructureState[] {
+            SuperstructureState.FLIPPED_CORAL_SCORE_L1,
+            SuperstructureState.FLIPPED_CORAL_PREP_L1,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.FLIPPED_CORAL_SCORE_L2,
+            SuperstructureState.FLIPPED_CORAL_PREP_L2,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.FLIPPED_CORAL_SCORE_L3,
+            SuperstructureState.FLIPPED_CORAL_PREP_L3,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.FLIPPED_CORAL_SCORE_L4,
+            SuperstructureState.FLIPPED_CORAL_PREP_L4,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.IDLE_ALGAE,
+            SuperstructureState.ALGAE_SCORE_PROCESSOR,
+            SuperstructureState.UPSIDE_DOWN_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.ALGAE_SCORE_PROCESSOR,
+            SuperstructureState.IDLE_ALGAE,
+            SuperstructureState.UPSIDE_DOWN_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.INTAKE_ALGAE_GROUND,
+            SuperstructureState.IDLE_ALGAE,
+            SuperstructureState.UPSIDE_DOWN_IDLE
+          },
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.ALGAE_PREP_L2, SuperstructureState.ALGAE_SCORE_L2
+              }),
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.ALGAE_PREP_L3, SuperstructureState.ALGAE_SCORE_L3
+              }),
+          new SuperstructureState[] {
+            SuperstructureState.ALGAE_SCORE_L2,
+            SuperstructureState.ALGAE_PREP_L2,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.ALGAE_SCORE_L3,
+            SuperstructureState.ALGAE_PREP_L3,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.NET_SCORE,
+            SuperstructureState.NET_PREP,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.NET_PREP, SuperstructureState.NET_SCORE
+              }));
+
+  public SuperstructureState[] withPrepStates(SuperstructureState[] other) {
+    // Convert the existing list to a set to remove duplicates
+    Set<SuperstructureState> uniqueStates = new HashSet<>(prepStates);
+
+    // Add elements from the other array to the set
+    for (SuperstructureState state : other) {
+      uniqueStates.add(state);
+    }
+
+    // Convert the set back to a list
+    prepStates = new ArrayList<>(uniqueStates);
+
+    return prepStates.toArray(new SuperstructureState[0]);
   }
 }

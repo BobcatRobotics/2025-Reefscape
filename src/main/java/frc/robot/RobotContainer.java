@@ -25,10 +25,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
-import frc.robot.AidensGamepads.EightBitDo;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
@@ -45,9 +45,9 @@ import frc.robot.subsystems.Drive.SwerveModuleIOSim;
 import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
+import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
-import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
@@ -104,7 +104,7 @@ public class RobotContainer {
   private final LogitechJoystick joystick = new LogitechJoystick(2);
   private final ButtonBoard buttonBoard = new ButtonBoard(3);
 
-  private EightBitDo gp = new EightBitDo(0);
+  //   private EightBitDo gp = new EightBitDo(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -130,18 +130,18 @@ public class RobotContainer {
                 new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
-        limelightfl =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightFLConstants.constants));
-        limelightfr =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightFRConstants.constants));
-        limelightbl =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightBLConstants.constants));
-        limelightbr =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightBRConstants.constants));
-        // limelightfl = new Vision(drive, new VisionIO() {});
-        // limelightfr = new Vision(drive, new VisionIO() {});
-        // limelightbl = new Vision(drive, new VisionIO() {});
-        // limelightbr = new Vision(drive, new VisionIO() {});
+        // limelightfl =
+        //     new Vision(drive, new VisionIOLimelight(Constants.LimelightFLConstants.constants));
+        // limelightfr =
+        //     new Vision(drive, new VisionIOLimelight(Constants.LimelightFRConstants.constants));
+        // limelightbl =
+        //     new Vision(drive, new VisionIOLimelight(Constants.LimelightBLConstants.constants));
+        // limelightbr =
+        //     new Vision(drive, new VisionIOLimelight(Constants.LimelightBRConstants.constants));
+        limelightfl = new Vision(drive, new VisionIO() {});
+        limelightfr = new Vision(drive, new VisionIO() {});
+        limelightbl = new Vision(drive, new VisionIO() {});
+        limelightbr = new Vision(drive, new VisionIO() {});
 
         // superstructure =
         //     new Superstructure(
@@ -167,8 +167,10 @@ public class RobotContainer {
                 new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
         endEffector =
             new EndEffector(
-                new EndEffectorIO() {}); // new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
-        // END_EFFECTOR_LASER_ID));
+                new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
+        // endEffector =
+        //     new EndEffector(
+        //         new EndEffectorIO() {}); 
         intake =
             new CoralIntake(
                 new CoralIntakeIOTalonFX(
@@ -333,13 +335,22 @@ public class RobotContainer {
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
 
     // intake
-    gp.a.whileTrue(
-        new RunCommand(
+    joystick
+        .bottomLeft
+        .whileTrue(
+            new RunCommand(
                 () -> {
-                  intake.setSpeed(RotationsPerSecond.of(-6000));
+                  intake.deploy();
+                  intake.setSpeed(RotationsPerSecond.of(-500));
                 },
-                intake)
-            .finallyDo(intake::stop));
+                intake))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  intake.retract();
+                  intake.stop();
+                },
+                intake));
   }
   ;
 

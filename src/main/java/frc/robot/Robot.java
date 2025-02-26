@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import au.grapplerobotics.CanBridge;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
@@ -41,6 +42,7 @@ public class Robot extends LoggedRobot {
   RobotContainer robotContainer;
 
   public Robot() {
+    CanBridge.runTCP();
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
