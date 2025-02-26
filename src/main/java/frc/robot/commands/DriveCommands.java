@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.PhotonVision.Photon;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RotationUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -390,7 +391,14 @@ public class DriveCommands {
 
     return Commands.run(
             () -> {
-              Pose2d nearestFace = drive.getPose().nearest(faces);
+
+              List<Pose2d> flippedFaces = new ArrayList<>();
+          
+              for (int j = 0; j<faces.size(); j++){
+                flippedFaces.add(AllianceFlipUtil.apply(faces.get(j)));
+              }
+
+              Pose2d nearestFace = drive.getPose().nearest(flippedFaces);
               Logger.recordOutput("reef_face/raw", nearestFace);
 
               // List<Map<ReefHeight, Pose3d>> offsetPositions =
