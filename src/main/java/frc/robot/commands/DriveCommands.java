@@ -43,7 +43,7 @@ public class DriveCommands {
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final Distance ALIGN_DISTANCE = Meters.of(.4); // TODO this should be zero
 
-  private static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); //towards elevator
+  private static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); // towards elevator
 
   private DriveCommands() {}
 
@@ -421,12 +421,14 @@ public class DriveCommands {
               double transformY = 0;
 
               Rotation2d closestRotation = new Rotation2d();
-              if(poseDirection.getRotation().getRadians()-RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians()<=Math.PI/2){
+              if (poseDirection.getRotation().getRadians()
+                      - RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians()
+                  <= Math.PI / 2) {
                 closestRotation = poseDirection.getRotation();
                 transformY = -END_EFFECTOR_BIAS.in(Meters);
               } else {
                 closestRotation = poseDirection.getRotation().unaryMinus();
-                transformY= END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -437,10 +439,12 @@ public class DriveCommands {
                   new Pose2d(
                       new Translation2d(
                           poseDirection
-                              .transformBy(new Transform2d(adjustX, adjustY+transformY, new Rotation2d()))
+                              .transformBy(
+                                  new Transform2d(adjustX, adjustY + transformY, new Rotation2d()))
                               .getX(),
                           poseDirection
-                              .transformBy(new Transform2d(adjustX, adjustY+transformY, new Rotation2d()))
+                              .transformBy(
+                                  new Transform2d(adjustX, adjustY + transformY, new Rotation2d()))
                               .getY()),
                       new Rotation2d(closestRotation.getRadians()));
 

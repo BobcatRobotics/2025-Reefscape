@@ -73,7 +73,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
   @Override
   public void updateInputs(EndEffectorIOInputs inputs) {
     BaseStatusSignal.refreshAll(velocity, statorCurrent);
-    inputs.laserCanDistanceMilimeters = laser.getMeasurement().distance_mm;
+    // inputs.laserCanDistanceMilimeters = laser.getMeasurement().distance_mm;
     inputs.velocity =
         RotationsPerSecond.of(motor.getVelocity().getValueAsDouble() * END_EFFEFCTOR_GEAR_RATIO);
     inputs.currentDraw = motor.getStatorCurrent().getValueAsDouble();
