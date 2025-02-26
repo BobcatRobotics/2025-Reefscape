@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.AidensGamepads.ButtonBoard;
+import frc.robot.AidensGamepads.EightBitDo;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
@@ -41,7 +42,6 @@ import frc.robot.subsystems.Drive.SwerveModuleIOSim;
 import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
-import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.PhotonVision.Photon;
@@ -101,10 +101,10 @@ public class RobotContainer {
   private final Ruffy rightRuffy = new Ruffy(1);
 
   // operator
-  private final LogitechJoystick joystick = new LogitechJoystick(2);
+  private final LogitechJoystick joystick = new LogitechJoystick(4);
   private final ButtonBoard buttonBoard = new ButtonBoard(3);
 
-  //   private EightBitDo gp = new EightBitDo(0);
+  private EightBitDo gp = new EightBitDo(2);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -139,7 +139,7 @@ public class RobotContainer {
         // limelightbr =
         //     new Vision(drive, new VisionIOLimelight(Constants.LimelightBRConstants.constants));
 
-        photon = new Photon(new PhotonIOPhoton("arducam"));
+        photon = new Photon(new PhotonIOPhoton("arducam"), "arducam");
         // photon = new Photon(new PhotonIO() {});
         limelightfl = new Vision(drive, new VisionIO() {});
         limelightfr = new Vision(drive, new VisionIO() {});
@@ -168,11 +168,10 @@ public class RobotContainer {
             new Superstructure(
                 new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
                 new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
-        endEffector =
-            new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
         // endEffector =
-        //     new EndEffector(
-        //         new EndEffectorIO() {});
+        //     new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
+        // END_EFFECTOR_LASER_ID));
+        endEffector = new EndEffector(new EndEffectorIO() {});
         intake =
             new CoralIntake(
                 new CoralIntakeIOTalonFX(
@@ -196,7 +195,7 @@ public class RobotContainer {
         limelightfr = new Vision(drive, new VisionIO() {});
         limelightbl = new Vision(drive, new VisionIO() {});
         limelightbr = new Vision(drive, new VisionIO() {});
-        photon = new Photon(new PhotonIO() {});
+        photon = new Photon(new PhotonIO() {}, "Sim");
         break;
 
       default:
@@ -217,7 +216,7 @@ public class RobotContainer {
         limelightbr = new Vision(drive, new VisionIO() {});
 
         endEffector = new EndEffector(new EndEffectorIO() {});
-        photon = new Photon(new PhotonIO() {});
+        photon = new Photon(new PhotonIO() {}, "Sim");
 
         break;
     }
@@ -290,8 +289,14 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     // leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
-    // leftRuffy.button.whileTrue(DriveCommands.driveToCoral(drive, null, null, null, null, null));
-    // operator controls
+    gp.a.whileTrue(
+        DriveCommands.driveToCoral(
+            drive,
+            photon,
+            () -> 0,
+            () -> 0,
+            () -> 0,
+            superstructure::getElevatorPercentage)); // operator controls
 
     // default commands
     endEffector.setDefaultCommand(endEffector.idleCommand());
