@@ -557,7 +557,7 @@ public class DriveCommands {
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            ANGLE_KP,
+            0.5,
             0.0,
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
@@ -616,7 +616,9 @@ public class DriveCommands {
               }
 
               double omegaOutput =
-                  filteredOmega == 0 ? 0 : angleController.calculate(filteredOmega, 0);
+                  filteredOmega == 0 ? 0 : -angleController.calculate(filteredOmega, 0);
+
+              Logger.recordOutput("CoralDetect/omegaOutput", omegaOutput);
 
               double xOutput = 0;
               if (filteredOmega != 0) {
@@ -642,13 +644,17 @@ public class DriveCommands {
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) + xOutput,
+                      0, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) + xOutput,
                       0,
                       omegaOutput * drive.getMaxAngularSpeedRadPerSec());
               drive.runVelocity(speeds);
             },
             drive)
-        .unless(() -> !photon.hasCoral());
+        .unless(() -> !photon.hasCoral())
+        .beforeStarting(
+            () -> {
+              angleController.reset(drive.getPose().getRotation().getRadians());
+            });
   }
 }
 
