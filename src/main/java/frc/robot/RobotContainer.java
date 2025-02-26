@@ -48,6 +48,9 @@ import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
+import frc.robot.subsystems.PhotonVision.Photon;
+import frc.robot.subsystems.PhotonVision.PhotonIO;
+import frc.robot.subsystems.PhotonVision.PhotonIOPhoton;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
@@ -90,6 +93,7 @@ public class RobotContainer {
   public final Vision limelightbr;
 
   final Drive drive;
+  public Photon photon;
   // public final Vision limelight;
   private final Superstructure superstructure;
   private final EndEffector endEffector;
@@ -138,6 +142,9 @@ public class RobotContainer {
         //     new Vision(drive, new VisionIOLimelight(Constants.LimelightBLConstants.constants));
         // limelightbr =
         //     new Vision(drive, new VisionIOLimelight(Constants.LimelightBRConstants.constants));
+
+        photon = new Photon(new PhotonIOPhoton("arducam"));
+        // photon = new Photon(new PhotonIO() {});
         limelightfl = new Vision(drive, new VisionIO() {});
         limelightfr = new Vision(drive, new VisionIO() {});
         limelightbl = new Vision(drive, new VisionIO() {});
@@ -194,7 +201,7 @@ public class RobotContainer {
         limelightfr = new Vision(drive, new VisionIO() {});
         limelightbl = new Vision(drive, new VisionIO() {});
         limelightbr = new Vision(drive, new VisionIO() {});
-
+        photon = new Photon(new PhotonIO() {});
         break;
 
       default:
@@ -215,6 +222,8 @@ public class RobotContainer {
         limelightbr = new Vision(drive, new VisionIO() {});
 
         endEffector = new EndEffector(new EndEffectorIO() {});
+        photon = new Photon(new PhotonIO() {});
+
         break;
     }
 
@@ -285,8 +294,8 @@ public class RobotContainer {
             .ignoringDisable(true));
 
     // Switch to X pattern when X button is pressed
-    leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
-
+    // leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // leftRuffy.button.whileTrue(DriveCommands.driveToCoral(drive, null, null, null, null, null));
     // operator controls
 
     // default commands

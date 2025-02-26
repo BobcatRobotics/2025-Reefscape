@@ -12,7 +12,7 @@ public class PhotonIOPhoton implements PhotonIO {
   private List<PhotonPipelineResult> result;
 
   public PhotonIOPhoton(String name) {
-    name = this.name;
+    this.name = name;
     camera = new PhotonCamera(name);
     result = camera.getAllUnreadResults();
   }

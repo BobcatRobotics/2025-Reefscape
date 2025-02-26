@@ -15,7 +15,7 @@ public class Photon extends SubsystemBase {
   private PhotonCamera camera;
 
   public Photon(PhotonIO io) {
-    io = this.io;
+    this.io = io;
     if (inputs.name != "sim") {
       camera = new PhotonCamera(inputs.name);
     }
