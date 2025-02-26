@@ -1,6 +1,7 @@
 package frc.robot.subsystems.PhotonVision;
 
 import org.littletonrobotics.junction.AutoLog;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 public interface PhotonIO {
 
@@ -11,6 +12,7 @@ public interface PhotonIO {
     public boolean hasTargets = false;
     public boolean hasCoral = false;
     public boolean hasAlgae = false;
+    public PhotonPipelineResult result = new PhotonPipelineResult();
     // public Array[] targets;
     // public List<PhotonTrackedTarget> target = new ArrayList<PhotonTrackedTarget>();
     // public int classID;
