@@ -562,7 +562,7 @@ public class DriveCommands {
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    LinearFilter omegaFilter = LinearFilter.movingAverage(50);
+    LinearFilter omegaFilter = LinearFilter.movingAverage(15);
 
     // ProfiledPIDController distanceController =
     //     new ProfiledPIDController(
@@ -610,10 +610,11 @@ public class DriveCommands {
               //     filteredDistance = xFilter.calculate(distToTag);
               //     Logger.recordOutput("SingleTagAlign/filteredDistance", filteredDistance);
               // }
-              if (omega != 0) {
-                filteredOmega = omegaFilter.calculate(omega);
-                Logger.recordOutput("SingleTagAlign/filteredOmega", filteredOmega);
-              }
+              // if (omega != 0) {
+              filteredOmega = omegaFilter.calculate(omega);
+              Logger.recordOutput("SingleTagAlign/filteredOmega", filteredOmega);
+              // }
+              // filteredOmega = omega;
 
               double omegaOutput =
                   filteredOmega == 0 ? 0 : -angleController.calculate(filteredOmega, 0);
@@ -644,7 +645,8 @@ public class DriveCommands {
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      0, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) + xOutput,
+                      -xOutput, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) +
+                      // xOutput,
                       0,
                       omegaOutput * drive.getMaxAngularSpeedRadPerSec());
               drive.runVelocity(speeds);
