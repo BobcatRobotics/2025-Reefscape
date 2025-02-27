@@ -44,7 +44,7 @@ public class DriveCommands {
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final Distance ALIGN_DISTANCE = Meters.of(.4); // TODO this should be zero
 
-  private static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); //towards elevator
+  private static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); // towards elevator
 
   private DriveCommands() {}
 
@@ -429,12 +429,14 @@ public class DriveCommands {
               double transformY = 0;
 
               Rotation2d closestRotation = new Rotation2d();
-              if(poseDirection.getRotation().getRadians()-RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians()<=Math.PI/2){
+              if (poseDirection.getRotation().getRadians()
+                      - RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians()
+                  <= Math.PI / 2) {
                 closestRotation = poseDirection.getRotation();
                 transformY = -END_EFFECTOR_BIAS.in(Meters);
               } else {
                 closestRotation = poseDirection.getRotation().unaryMinus();
-                transformY= END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -445,10 +447,12 @@ public class DriveCommands {
                   new Pose2d(
                       new Translation2d(
                           poseDirection
-                              .transformBy(new Transform2d(adjustX, adjustY+transformY, new Rotation2d()))
+                              .transformBy(
+                                  new Transform2d(adjustX, adjustY + transformY, new Rotation2d()))
                               .getX(),
                           poseDirection
-                              .transformBy(new Transform2d(adjustX, adjustY+transformY, new Rotation2d()))
+                              .transformBy(
+                                  new Transform2d(adjustX, adjustY + transformY, new Rotation2d()))
                               .getY()),
                       new Rotation2d(closestRotation.getRadians()));
 
@@ -561,102 +565,106 @@ public class DriveCommands {
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            ANGLE_KP,
+            0.5,
             0.0,
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    LinearFilter omegaFilter = LinearFilter.movingAverage(50);
+    LinearFilter omegaFilter = LinearFilter.movingAverage(15);
 
     // ProfiledPIDController distanceController =
     //     new ProfiledPIDController(
     //         DRIVE_KPX, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(1, 1.0));
     // LinearFilter xFilter = LinearFilter.movingAverage(50);
-    if (photon.hasTarget() && photon.hasCoral()) {
-      return Commands.run(
-          () -> {
-            Translation2d linearVelocity =
-                getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+    return Commands.run(
+            () -> {
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-            double StickMagnitude = linearVelocity.getDistance(new Translation2d(0, 0));
-            List<Double> areaList = new ArrayList<Double>();
-            PhotonPipelineResult result = photon.result().get(0);
+              double StickMagnitude = linearVelocity.getDistance(new Translation2d(0, 0));
+              List<Double> areaList = new ArrayList<Double>();
+              PhotonPipelineResult result = photon.result();
 
-            for (PhotonTrackedTarget target : result.targets) {
-              if (target.objDetectId == 1) {
-                areaList.add(target.area);
-              } else {
-                areaList.add(0.0);
+              for (PhotonTrackedTarget target : result.targets) {
+                if (target.objDetectId == 1) {
+                  areaList.add(target.area);
+                } else {
+                  areaList.add(0.0);
+                }
               }
-            }
 
-            int maxIndex = 0;
-            double maxValue = 0;
+              int maxIndex = 0;
+              double maxValue = 0;
 
-            for (int i = 1; i < areaList.size(); i++) {
-              if (areaList.get(i) > maxValue) {
-                maxValue = areaList.get(i);
-                maxIndex = i;
+              for (int i = 1; i < areaList.size(); i++) {
+                if (areaList.get(i) > maxValue) {
+                  maxValue = areaList.get(i);
+                  maxIndex = i;
+                }
               }
-            }
+              double omega = 0;
+              if (areaList.size() != 0) {
+                PhotonTrackedTarget target = result.targets.get(maxIndex);
 
-            PhotonTrackedTarget target = result.targets.get(maxIndex);
+                omega = -target.yaw;
+              }
+              Logger.recordOutput("CoralDetect/yaw", omega);
+              // double distToTag = distanceSupplier.getAsDouble();
+              // double omega = omegaSupplier.get().getRadians();
+              // double filteredDistance = 0;
+              double filteredOmega = 0;
 
-            double omega = -target.yaw;
-            // double distToTag = distanceSupplier.getAsDouble();
-            // double omega = omegaSupplier.get().getRadians();
-            // double filteredDistance = 0;
-            double filteredOmega = 0;
-
-            // if (distToTag != 0) {
-            //     filteredDistance = xFilter.calculate(distToTag);
-            //     Logger.recordOutput("SingleTagAlign/filteredDistance", filteredDistance);
-            // }
-            if (omega != 0) {
+              // if (distToTag != 0) {
+              //     filteredDistance = xFilter.calculate(distToTag);
+              //     Logger.recordOutput("SingleTagAlign/filteredDistance", filteredDistance);
+              // }
+              // if (omega != 0) {
               filteredOmega = omegaFilter.calculate(omega);
               Logger.recordOutput("SingleTagAlign/filteredOmega", filteredOmega);
-            }
+              // }
+              // filteredOmega = omega;
 
-            double omegaOutput =
-                filteredOmega == 0 ? 0 : angleController.calculate(filteredOmega, 0);
+              double omegaOutput =
+                  filteredOmega == 0 ? 0 : -angleController.calculate(filteredOmega, 0);
 
-            double xOutput = 0;
-            if (filteredOmega != 0) {
-              xOutput = .5 + (1 / filteredOmega);
-            } else if (filteredOmega == 0 && maxValue != 0) {
-              xOutput = .75;
-            }
+              Logger.recordOutput("CoralDetect/omegaOutput", omegaOutput);
 
-            // double distanceOutput = distToTag == 0 ? 0 :
-            // distanceController.calculate(filteredDistance, 2);
+              double xOutput = 0;
+              if (filteredOmega != 0) {
+                xOutput = .5 + (1 / filteredOmega);
+              } else if (filteredOmega == 0 && maxValue != 0) {
+                xOutput = .75;
+              }
 
-            // Get linear velocity
-            // Translation2d linearVelocity = new
-            // Translation2d(distanceController.calculate(xf,
-            // ANGLE_KD),2);
+              // double distanceOutput = distToTag == 0 ? 0 :
+              // distanceController.calculate(filteredDistance, 2);
 
-            // Apply rotation deadband
-            // double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+              // Get linear velocity
+              // Translation2d linearVelocity = new
+              // Translation2d(distanceController.calculate(xf,
+              // ANGLE_KD),2);
 
-            // Square rotation value for more precise control
-            // omega = Math.copySign(omega * omega, omega);
+              // Apply rotation deadband
+              // double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
 
-            // Convert to field relative speeds & send command
-            ChassisSpeeds speeds =
-                new ChassisSpeeds(
-                    -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) + xOutput,
-                    0,
-                    omegaOutput * drive.getMaxAngularSpeedRadPerSec());
-            drive.runVelocity(speeds);
-          },
-          drive);
-    } else {
-      return Commands.run(
-          () ->
-              fieldRelativeJoystickDrive(
-                  drive, xSupplier, ySupplier, angleSupplier, elevatorHeightPercentage),
-          drive);
-    }
+              // Square rotation value for more precise control
+              // omega = Math.copySign(omega * omega, omega);
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      -xOutput, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) +
+                      // xOutput,
+                      0,
+                      omegaOutput * drive.getMaxAngularSpeedRadPerSec());
+              drive.runVelocity(speeds);
+            },
+            drive)
+        .unless(() -> !photon.hasCoral())
+        .beforeStarting(
+            () -> {
+              angleController.reset(drive.getPose().getRotation().getRadians());
+            });
   }
 }
 

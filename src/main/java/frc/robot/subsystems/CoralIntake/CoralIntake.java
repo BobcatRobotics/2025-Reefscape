@@ -2,9 +2,10 @@ package frc.robot.subsystems.CoralIntake;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -30,7 +31,7 @@ public class CoralIntake extends SubsystemBase {
     io.setState(state);
   }
 
-  public void setSpeed(AngularVelocity speed) {
+  public void setSpeed(double speed) {
     io.setSpeed(speed);
   }
 
@@ -48,6 +49,17 @@ public class CoralIntake extends SubsystemBase {
 
   public void stop() {
     io.stop();
+  }
+  public Command stopCommand(){
+    return new InstantCommand(this::stop, this);
+  }
+
+  public void runIn() {
+    io.setSpeed(0.75);
+  }
+
+  public void dampenCoral() {
+    io.setSpeed(0.1);
   }
 
   @Override

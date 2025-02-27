@@ -26,7 +26,8 @@ public class StateGraph {
             SuperstructureState.FLIPPED_ALGAE_PREP_L2,
             SuperstructureState.FLIPPED_ALGAE_PREP_L3,
             SuperstructureState.NET_PREP,
-            SuperstructureState.FLIPPED_NET_PREP
+            SuperstructureState.FLIPPED_NET_PREP,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
           });
 
   private final Map<SuperstructureState, List<SuperstructureState>> adjacencyList = new HashMap<>();
@@ -248,25 +249,79 @@ public class StateGraph {
 
   private List<SuperstructureState[]> transitions =
       List.of(
-          new SuperstructureState[] {SuperstructureState.UNKNOWN},
           new SuperstructureState[] {
-            SuperstructureState.UPSIDE_DOWN_IDLE, SuperstructureState.ELEVATOR_SAFE_ZONE
+            SuperstructureState.UNKNOWN, SuperstructureState.RIGHT_SIDE_UP_IDLE
           },
-          new SuperstructureState[] {SuperstructureState.RIGHT_SIDE_UP_IDLE},
-          new SuperstructureState[] {SuperstructureState.ELEVATOR_SAFE_ZONE},
+          new SuperstructureState[] {
+            SuperstructureState.UPSIDE_DOWN_IDLE,
+            SuperstructureState.ELEVATOR_SAFE_ZONE,
+            SuperstructureState.CORAL_HANDOFF
+          },
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.RIGHT_SIDE_UP_IDLE, SuperstructureState.ELEVATOR_SAFE_ZONE
+              }),
+          new SuperstructureState[] {
+            SuperstructureState.ELEVATOR_SAFE_ZONE,
+            SuperstructureState.CORAL_HANDOFF,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE,
+            SuperstructureState.UPSIDE_DOWN_IDLE
+          },
           new SuperstructureState[] {SuperstructureState.HP_INTAKE},
-          new SuperstructureState[] {SuperstructureState.CORAL_HANDOFF},
-          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L1},
-          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L2},
-          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L3},
-          new SuperstructureState[] {SuperstructureState.CORAL_PREP_L4},
-          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L1},
-          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L2},
-          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L3},
-          new SuperstructureState[] {SuperstructureState.CORAL_SCORE_L4},
-          new SuperstructureState[] {SuperstructureState.FLIPPED_CORAL_PREP_L1},
-          new SuperstructureState[] {SuperstructureState.FLIPPED_CORAL_PREP_L2},
-          new SuperstructureState[] {SuperstructureState.FLIPPED_CORAL_PREP_L3},
+          new SuperstructureState[] {
+            SuperstructureState.CORAL_HANDOFF, SuperstructureState.ELEVATOR_SAFE_ZONE
+          },
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.CORAL_PREP_L1, SuperstructureState.CORAL_SCORE_L1
+              }),
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.CORAL_PREP_L2, SuperstructureState.CORAL_SCORE_L2,
+              }),
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.CORAL_PREP_L3, SuperstructureState.CORAL_SCORE_L3,
+              }),
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.CORAL_PREP_L4, SuperstructureState.CORAL_SCORE_L4
+              }),
+          new SuperstructureState[] {
+            SuperstructureState.CORAL_SCORE_L1,
+            SuperstructureState.CORAL_PREP_L1,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.CORAL_SCORE_L2,
+            SuperstructureState.CORAL_PREP_L2,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.CORAL_SCORE_L3,
+            SuperstructureState.CORAL_PREP_L3,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          new SuperstructureState[] {
+            SuperstructureState.CORAL_SCORE_L4,
+            SuperstructureState.CORAL_PREP_L4,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE
+          },
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.FLIPPED_CORAL_PREP_L1,
+                SuperstructureState.FLIPPED_CORAL_SCORE_L1
+              }),
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.FLIPPED_CORAL_PREP_L2,
+                SuperstructureState.FLIPPED_CORAL_SCORE_L2,
+              }),
+          withPrepStates(
+              new SuperstructureState[] {
+                SuperstructureState.FLIPPED_CORAL_PREP_L3,
+                SuperstructureState.FLIPPED_CORAL_SCORE_L3,
+              }),
           withPrepStates(
               new SuperstructureState[] {
                 SuperstructureState.FLIPPED_CORAL_PREP_L4,
@@ -350,3 +405,5 @@ public class StateGraph {
     return prepStates.toArray(new SuperstructureState[0]);
   }
 }
+
+// Fun fact: Akilan Anand and Adithya Anand are brothers

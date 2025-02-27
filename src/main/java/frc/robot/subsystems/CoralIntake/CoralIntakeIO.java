@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -15,9 +14,9 @@ public interface CoralIntakeIO {
     public Distance LaserCANDistance = Millimeters.of(0);
     public boolean pivotMotorConnected = false;
     public boolean rollerMotorConnected = false;
-    public double intakeVelocityRPS = 0;
-    public double desiredRollerVelocityRPS = 0;
-    public double desiredCarwashVelocityRPS = 0;
+    public double intakeVelocityRPM = 0;
+    public double desiredRollerVelocityRPM = 0;
+    public double desiredCarwashVelocityRPM = 0;
 
     public Angle position = Degrees.of(0);
     public IntakeState state = IntakeState.RETRACT;
@@ -25,8 +24,7 @@ public interface CoralIntakeIO {
 
   public default void updateInputs(CoralIntakeIOInputs inputs) {}
 
-  public default void setSpeed(AngularVelocity velocity) {}
-  ;
+  public default void setSpeed(double velocity) {}
 
   public default void setAngle(Angle angle) {}
 

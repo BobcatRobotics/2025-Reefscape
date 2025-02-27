@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import edu.wpi.first.units.measure.Angle;
 
 public enum IntakeState {
-  DEPLOY(14), // TODO find this
+  DEPLOY(12), // TODO find this
   RETRACT(0),
   UNKNOWN(-1);
 

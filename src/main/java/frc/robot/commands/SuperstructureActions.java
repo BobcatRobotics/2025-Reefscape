@@ -1,8 +1,11 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
@@ -126,5 +129,26 @@ public class SuperstructureActions {
 
   public static Command stow(Superstructure superstructure, IdleType idleType) {
     return superstructure.setState(idleType.state);
+  }
+
+  public static Command intakeCoralGround(Superstructure superstructure, CoralIntake intake) {
+    return // superstructure.setState(SuperstructureState.CORAL_HANDOFF)
+    Commands.run(
+            () -> {
+              intake.deploy();
+              // intake.runIn();
+            },
+            intake)
+        .finallyDo(
+            () -> {
+              intake.retract();
+              // intake.dampenCoral();
+            });
+  }
+
+
+  public static Command handoff(Superstructure superstructure, EndEffector endEffector){
+    return superstructure.setState(SuperstructureState.CORAL_HANDOFF)
+    .alongWith(endEffector.intakeCommand());
   }
 }
