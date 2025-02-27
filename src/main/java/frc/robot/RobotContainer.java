@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.struct.StructDescriptorDatabase;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -296,7 +297,16 @@ public class RobotContainer {
             () -> 0,
             () -> 0,
             () -> 0,
-            superstructure::getElevatorPercentage)); // operator controls
+            superstructure::getElevatorPercentage)); 
+            
+            
+    gp.a.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
+    gp.b.whileTrue(SuperstructureActions.handoff(superstructure, endEffector))
+    .onFalse(
+        superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+        .alongWith(intake.stopCommand()));
+
+    // operator controls
 
     // default commands
     endEffector.setDefaultCommand(endEffector.idleCommand());
