@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -136,19 +134,19 @@ public class SuperstructureActions {
     Commands.run(
             () -> {
               intake.deploy();
-              // intake.runIn();
+              intake.runIn();
             },
             intake)
         .finallyDo(
             () -> {
               intake.retract();
-              // intake.dampenCoral();
+              intake.dampenCoral();
             });
   }
 
-
-  public static Command handoff(Superstructure superstructure, EndEffector endEffector){
-    return superstructure.setState(SuperstructureState.CORAL_HANDOFF)
-    .alongWith(endEffector.intakeCommand());
+  public static Command handoff(Superstructure superstructure, EndEffector endEffector) {
+    return superstructure
+        .setState(SuperstructureState.CORAL_HANDOFF)
+        .alongWith(endEffector.intakeCommand());
   }
 }

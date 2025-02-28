@@ -17,6 +17,7 @@ public interface CoralIntakeIO {
     public double intakeVelocityRPM = 0;
     public double desiredRollerVelocityRPM = 0;
     public double desiredCarwashVelocityRPM = 0;
+    public double laserCanDistanceMilimeters = 0;
 
     public Angle position = Degrees.of(0);
     public IntakeState state = IntakeState.RETRACT;

@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.Minute;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -44,22 +46,22 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
   public CoralIntakeIOTalonFX(int rollerMotorID, int pivotMotorID, int laserCANID) {
 
-    // laser = new LaserCan(laserCANID);
+    laser = new LaserCan(laserCANID);
 
-    // try {
-    // laser.setRangingMode(RangingMode.SHORT);
-    // rangingAlert.set(false);
-    // } catch (ConfigurationFailedException e) {
-    // e.printStackTrace();
-    // rangingAlert.set(true);
-    // }
+    try {
+      laser.setRangingMode(RangingMode.SHORT);
+      rangingAlert.set(false);
+    } catch (ConfigurationFailedException e) {
+      e.printStackTrace();
+      rangingAlert.set(true);
+    }
 
     roller = new TalonFX(rollerMotorID);
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     roller.getConfigurator().apply(rollerConfig);
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    rollerConfig.CurrentLimits.StatorCurrentLimit = 80;
-    rollerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO check
+    rollerConfig.CurrentLimits.StatorCurrentLimit = 50;
+    rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // TODO check
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     rollerConfig.Slot0.kP = 0.3; // // TODO tune
     roller.getConfigurator().apply(rollerConfig);
@@ -68,7 +70,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
     pivot.getConfigurator().apply(pivotConfig);
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    pivotConfig.CurrentLimits.StatorCurrentLimit = 60;
+    pivotConfig.CurrentLimits.StatorCurrentLimit = 20;
     pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast; // TODO check
     pivotConfig.Slot0.kP = 1; // TODO tune
@@ -93,6 +95,8 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     inputs.rollerMotorConnected = roller.isConnected();
     inputs.state = currState;
     inputs.desiredRollerVelocityRPM = desiredRollerVelocity.in(Rotations.per(Minute));
+    inputs.laserCanDistanceMilimeters =
+        laser.getMeasurement() == null ? -1 : laser.getMeasurement().distance_mm;
   }
 
   @Override

@@ -47,27 +47,27 @@ public class AllianceFlipUtil {
     return new Pose3d(apply(pose.getTranslation()), apply(pose.getRotation()));
   }
 
-//   public static VehicleState apply(VehicleState state) {
-//     return shouldFlip()
-//         ? VehicleState.newBuilder()
-//             .setX(applyX(state.getX()))
-//             .setY(applyY(state.getY()))
-//             .setTheta(apply(Rotation2d.fromRadians(state.getTheta())).getRadians())
-//             .setVx(-state.getVx())
-//             .setVy(-state.getVy())
-//             .setOmega(state.getOmega())
-//             .addAllModuleForces(
-//                 state.getModuleForcesList().stream()
-//                     .map(
-//                         forces ->
-//                             ModuleForce.newBuilder()
-//                                 .setFx(-forces.getFx())
-//                                 .setFy(-forces.getFy())
-//                                 .build())
-//                     .toList())
-//             .build()
-//         : state;
-//   }
+  //   public static VehicleState apply(VehicleState state) {
+  //     return shouldFlip()
+  //         ? VehicleState.newBuilder()
+  //             .setX(applyX(state.getX()))
+  //             .setY(applyY(state.getY()))
+  //             .setTheta(apply(Rotation2d.fromRadians(state.getTheta())).getRadians())
+  //             .setVx(-state.getVx())
+  //             .setVy(-state.getVy())
+  //             .setOmega(state.getOmega())
+  //             .addAllModuleForces(
+  //                 state.getModuleForcesList().stream()
+  //                     .map(
+  //                         forces ->
+  //                             ModuleForce.newBuilder()
+  //                                 .setFx(-forces.getFx())
+  //                                 .setFy(-forces.getFy())
+  //                                 .build())
+  //                     .toList())
+  //             .build()
+  //         : state;
+  //   }
 
   public static boolean shouldFlip() {
     return DriverStation.getAlliance().isPresent()

@@ -6,8 +6,6 @@ package frc.robot.subsystems.EndEffector;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -74,15 +72,6 @@ public class EndEffector extends SubsystemBase {
             },
             this)
         .until(() -> inputs.hasPiece);
-  }
-
-  public Command intakeUntilCommand(BooleanSupplier condition) {
-    return new RunCommand(
-            () -> {
-              io.setSpeed(INTAKE_SPEED);
-            },
-            this)
-        .until(condition);
   }
 
   public void outtake() {

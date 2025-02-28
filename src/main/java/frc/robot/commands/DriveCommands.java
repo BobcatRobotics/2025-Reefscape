@@ -391,10 +391,9 @@ public class DriveCommands {
 
     return Commands.run(
             () -> {
-
               List<Pose2d> flippedFaces = new ArrayList<>();
-          
-              for (int j = 0; j<faces.size(); j++){
+
+              for (int j = 0; j < faces.size(); j++) {
                 flippedFaces.add(AllianceFlipUtil.apply(faces.get(j)));
               }
 
@@ -669,7 +668,7 @@ public class DriveCommands {
 }
 
 // The cool thing about being the only one who ever touches certian parts of the code is you can
-//it's cert-AI-n actually
+// it's cert-AI-n actually
 
 // put whatever you want in the comments and no one will ever bother to read it
 

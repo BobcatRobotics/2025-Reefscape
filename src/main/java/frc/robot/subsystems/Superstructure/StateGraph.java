@@ -247,10 +247,15 @@ public class StateGraph {
     return graph;
   }
 
+  // INTAKE LASER - 1
+  // END EFFECTOR -2
+
   private List<SuperstructureState[]> transitions =
       List.of(
           new SuperstructureState[] {
-            SuperstructureState.UNKNOWN, SuperstructureState.RIGHT_SIDE_UP_IDLE
+            SuperstructureState.UNKNOWN,
+            SuperstructureState.RIGHT_SIDE_UP_IDLE,
+            SuperstructureState.UPSIDE_DOWN_IDLE
           },
           new SuperstructureState[] {
             SuperstructureState.UPSIDE_DOWN_IDLE,

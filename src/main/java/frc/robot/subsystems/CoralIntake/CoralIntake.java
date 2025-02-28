@@ -50,7 +50,8 @@ public class CoralIntake extends SubsystemBase {
   public void stop() {
     io.stop();
   }
-  public Command stopCommand(){
+
+  public Command stopCommand() {
     return new InstantCommand(this::stop, this);
   }
 
@@ -59,7 +60,7 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public void dampenCoral() {
-    io.setSpeed(0.1);
+    io.setSpeed(0);
   }
 
   @Override

@@ -17,7 +17,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.struct.StructDescriptorDatabase;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -43,6 +42,7 @@ import frc.robot.subsystems.Drive.SwerveModuleIOSim;
 import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
+import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
 import frc.robot.subsystems.PhotonVision.Photon;
@@ -75,13 +75,13 @@ public class RobotContainer {
   public static final int ARM_ENCODER_ID = 6;
   // end effector ids
   public static final int END_EFFECTOR_TALON_ID = 2;
-  public static final int END_EFFECTOR_LASER_ID = 1;
+  public static final int END_EFFECTOR_LASER_ID = 2;
 
   // intake ids
   public static final int CARWASH_TALON_ID = 20;
   public static final int INTAKE_ROLLER_TALON_ID = 23;
   public static final int INTAKE_PIVOT_TALON_ID = 27;
-  public static final int INTAKE_LASER_ID = 0;
+  public static final int INTAKE_LASER_ID = 1;
 
   // Subsystems
   public final Vision limelightfl;
@@ -169,10 +169,9 @@ public class RobotContainer {
             new Superstructure(
                 new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
                 new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
-        // endEffector =
-        //     new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID,
-        // END_EFFECTOR_LASER_ID));
-        endEffector = new EndEffector(new EndEffectorIO() {});
+        endEffector =
+            new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
+        // endEffector = new EndEffector(new EndEffectorIO() {});
         intake =
             new CoralIntake(
                 new CoralIntakeIOTalonFX(
@@ -292,19 +291,15 @@ public class RobotContainer {
     // leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
     gp.a.whileTrue(
         DriveCommands.driveToCoral(
-            drive,
-            photon,
-            () -> 0,
-            () -> 0,
-            () -> 0,
-            superstructure::getElevatorPercentage)); 
-            
-            
+            drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
+
     gp.a.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
-    gp.b.whileTrue(SuperstructureActions.handoff(superstructure, endEffector))
-    .onFalse(
-        superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE)
-        .alongWith(intake.stopCommand()));
+    gp.b
+        .whileTrue(SuperstructureActions.handoff(superstructure, endEffector))
+        .onFalse(
+            superstructure
+                .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+                .alongWith(intake.stopCommand()));
 
     // operator controls
 
@@ -316,9 +311,9 @@ public class RobotContainer {
 
     // intake and go to hp pos
     joystick.bottomLeft.whileTrue(
-        endEffector
-            .intakeCommand()
-            .alongWith(superstructure.setState(SuperstructureState.HP_INTAKE)));
+        SuperstructureActions.intakeCoralGround(
+            superstructure,
+            intake)); // .alongWith(superstructure.setState(SuperstructureState.HP_INTAKE))
 
     // autoalign
     joystick.trigger.whileTrue(
