@@ -293,7 +293,7 @@ public class RobotContainer {
         DriveCommands.driveToCoral(
             drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
 
-    gp.a.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
+    // gp.a.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
     gp.b
         .whileTrue(SuperstructureActions.handoff(superstructure, endEffector))
         .onFalse(
@@ -311,6 +311,11 @@ public class RobotContainer {
 
     // intake and go to hp pos
     joystick.bottomLeft.whileTrue(
+        SuperstructureActions.intakeCoralGround(
+            superstructure,
+            intake)); // .alongWith(superstructure.setState(SuperstructureState.HP_INTAKE))
+
+    gp.x.whileTrue(
         SuperstructureActions.intakeCoralGround(
             superstructure,
             intake)); // .alongWith(superstructure.setState(SuperstructureState.HP_INTAKE))

@@ -564,12 +564,12 @@ public class DriveCommands {
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            0.5,
+            .1,
             0.0,
-            ANGLE_KD,
+            0,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
-    angleController.enableContinuousInput(-Math.PI, Math.PI);
-    LinearFilter omegaFilter = LinearFilter.movingAverage(15);
+    angleController.enableContinuousInput(-180, 180);
+    LinearFilter omegaFilter = LinearFilter.movingAverage(5);
 
     // ProfiledPIDController distanceController =
     //     new ProfiledPIDController(
@@ -605,7 +605,7 @@ public class DriveCommands {
               if (areaList.size() != 0) {
                 PhotonTrackedTarget target = result.targets.get(maxIndex);
 
-                omega = -target.yaw;
+                omega = target.yaw;
               }
               Logger.recordOutput("CoralDetect/yaw", omega);
               // double distToTag = distanceSupplier.getAsDouble();
@@ -618,19 +618,22 @@ public class DriveCommands {
               //     Logger.recordOutput("SingleTagAlign/filteredDistance", filteredDistance);
               // }
               // if (omega != 0) {
-              filteredOmega = omegaFilter.calculate(omega);
-              Logger.recordOutput("SingleTagAlign/filteredOmega", filteredOmega);
+              // filteredOmega = omegaFilter.calculate(omega);
               // }
-              // filteredOmega = omega;
+              filteredOmega = omega;
+              Logger.recordOutput("SingleTagAlign/filteredOmega", filteredOmega);
 
-              double omegaOutput =
-                  filteredOmega == 0 ? 0 : -angleController.calculate(filteredOmega, 0);
+              // double omegaOutput =
+              //     filteredOmega == 0 ? 0 : angleController.calculate(filteredOmega, 0);
+
+              double omegaOutput = angleController.calculate(filteredOmega, 0);
 
               Logger.recordOutput("CoralDetect/omegaOutput", omegaOutput);
+              Logger.recordOutput("CoralDetect/omegaError", angleController.getPositionError());
 
               double xOutput = 0;
               if (filteredOmega != 0) {
-                xOutput = .5 + (1 / filteredOmega);
+                xOutput = .5 + (1 / Math.abs(filteredOmega));
               } else if (filteredOmega == 0 && maxValue != 0) {
                 xOutput = .75;
               }
@@ -655,14 +658,14 @@ public class DriveCommands {
                       -xOutput, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) +
                       // xOutput,
                       0,
-                      omegaOutput * drive.getMaxAngularSpeedRadPerSec());
+                      omegaOutput); // * drive.getMaxAngularSpeedRadPerSec());
               drive.runVelocity(speeds);
             },
             drive)
         .unless(() -> !photon.hasCoral())
         .beforeStarting(
             () -> {
-              angleController.reset(drive.getPose().getRotation().getRadians());
+              angleController.reset(0);
             });
   }
 }
