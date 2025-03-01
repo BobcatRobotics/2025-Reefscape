@@ -324,6 +324,9 @@ public class RobotContainer {
     // default commands
     endEffector.setDefaultCommand(endEffector.idleCommand());
 
+    // outtake
+    joystick.thumb.whileTrue(endEffector.outtakeCommand());
+
     // autoalign
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
