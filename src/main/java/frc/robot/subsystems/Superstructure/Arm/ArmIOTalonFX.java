@@ -47,7 +47,7 @@ public class ArmIOTalonFX implements ArmIO {
 
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot0.kP = 45;
-    angleConfigs.Slot0.kI = 15;
+    angleConfigs.Slot0.kI = 5;
     angleConfigs.Slot0.kD = 10;
     angleConfigs.Slot0.kS = 5;
     angleConfigs.Slot0.kG = 6;
@@ -68,7 +68,8 @@ public class ArmIOTalonFX implements ArmIO {
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
     encoder.getConfigurator().apply(encoderConfig);
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    encoderConfig.MagnetSensor.MagnetOffset = -0.148193;
+    encoderConfig.MagnetSensor.MagnetOffset = 0.2;
+    encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     encoder.getConfigurator().apply(encoderConfig);
 
     controlMode = motor.getControlMode();
@@ -99,9 +100,10 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.controlMode = motor.getControlMode().getValue();
     inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
-    inputs.positionRotations = inputs.absolutePosition.getRotations();
+    inputs.positionDegrees = inputs.absolutePosition.getDegrees();
     inputs.desiredPositionRotation = inputs.state.rotations;
-
+    inputs.distanceToAlignment =
+        Math.abs(position.getValueAsDouble() - desiredState.rotations) * 360;
     // inputs.zone = getArmZone();
   }
 

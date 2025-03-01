@@ -1,6 +1,8 @@
 package frc.robot.subsystems.CoralIntake;
 
 import static edu.wpi.first.units.Units.Hertz;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Minute;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -19,12 +21,15 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
   public static double MAX_ROTATIONS = 14; // TODO slightly more than this
+
+  public static Distance LASER_THRESHOLD = Inches.of(1);
 
   private TalonFX roller;
   private TalonFX pivot;
@@ -90,13 +95,17 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   public void updateInputs(CoralIntakeIOInputs inputs) {
     BaseStatusSignal.refreshAll(rollerVelocity, position);
     inputs.intakeVelocityRPM = rollerVelocity.getValue().in(Rotations.per(Minute));
-    inputs.position = position.getValue();
+    inputs.positionRotations = position.getValue().in(Rotations);
     inputs.pivotMotorConnected = pivot.isConnected();
     inputs.rollerMotorConnected = roller.isConnected();
     inputs.state = currState;
     inputs.desiredRollerVelocityRPM = desiredRollerVelocity.in(Rotations.per(Minute));
     inputs.laserCanDistanceMilimeters =
         laser.getMeasurement() == null ? -1 : laser.getMeasurement().distance_mm;
+    inputs.hasPiece =
+        inputs.laserCanDistanceMilimeters == -1
+            ? false
+            : inputs.laserCanDistanceMilimeters < LASER_THRESHOLD.in(Millimeters);
   }
 
   @Override
@@ -121,16 +130,23 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   @Override
   public void retract() {
     pivot.setControl(positionRequest.withPosition((IntakeState.RETRACT.angle)));
+    currState = IntakeState.RETRACT;
   }
 
   @Override
-  public void deploy() {
-    pivot.setControl(positionRequest.withPosition((IntakeState.DEPLOY.angle)));
+  public void deploy(Angle trim) {
+    pivot.setControl(positionRequest.withPosition((IntakeState.DEPLOY.angle.plus(trim))));
+    currState = IntakeState.DEPLOY;
   }
 
   @Override
   public void stop() {
     roller.stopMotor();
+  }
+
+  @Override
+  public void zeroPosition() {
+    pivot.setPosition(0);
   }
 }
 

@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
@@ -47,22 +48,34 @@ public class Superstructure {
     return elevator.positionPercent();
   }
 
-  public void setScoringLevel(ScoringLevel level) {
+  public void recordScoringLevel(ScoringLevel level) {
     Logger.recordOutput("Auto/DesiredScoringLevel", level);
     scoringLevel = level;
   }
+
   /** only for use in commands */
   public ScoringLevel getScoringLevel() {
     return scoringLevel;
   }
 
-  /** ONLY USE FOR DECLARING COMMAND REQUIREMENTS!!! */
-  public Arm getArmRequirement() {
-    return arm;
+  public boolean isScoringLevelL1() {
+    return getScoringLevel() == ScoringLevel.L1;
   }
-  /** ONLY USE FOR DECLARING COMMAND REQUIREMENTS!!! */
-  public Elevator getElevatorRequirement() {
-    return elevator;
+
+  public boolean isScoringLevelL2() {
+    return getScoringLevel() == ScoringLevel.L2;
+  }
+
+  public boolean isScoringLevelL3() {
+    return getScoringLevel() == ScoringLevel.L3;
+  }
+
+  public boolean isScoringLevelL4() {
+    return getScoringLevel() == ScoringLevel.L4;
+  }
+
+  public boolean isScoringLevelNet() {
+    return getScoringLevel() == ScoringLevel.NET;
   }
 
   public SuperstructureState getState() {
@@ -72,6 +85,7 @@ public class Superstructure {
   public SequentialCommandGroup setState(SuperstructureState state) {
     List<SuperstructureState> states = findShortestPath(getState(), state);
     if (states == null) {
+      Logger.recordOutput("ur mom", true);
       return new SequentialCommandGroup();
     }
     SequentialCommandGroup result = new SequentialCommandGroup();
@@ -96,11 +110,13 @@ public class Superstructure {
   public List<SuperstructureState> findShortestPath(
       SuperstructureState start, SuperstructureState goal) {
 
-    // Queue to manage the paths to be explored. Each element in the queue is a list of states
+    // Queue to manage the paths to be explored. Each element in the queue is a list
+    // of states
     // representing a path.
     Queue<List<SuperstructureState>> queue = new LinkedList<>();
 
-    // Set to keep track of visited states to avoid revisiting them and getting stuck in loops.
+    // Set to keep track of visited states to avoid revisiting them and getting
+    // stuck in loops.
     Set<SuperstructureState> visited = new HashSet<>();
 
     // Start BFS with a path containing only the start node.
@@ -112,16 +128,17 @@ public class Superstructure {
       // Retrieve and remove the first path from the queue.
       List<SuperstructureState> path = queue.poll();
 
-      // Get the last state in the current path. This is the state we will explore next.
+      // Get the last state in the current path. This is the state we will explore
+      // next.
       SuperstructureState lastState = path.get(path.size() - 1);
 
       // Check if the last state in the current path is the goal state.
       if (lastState.equals(goal)) {
-        String pathString = "";
+        StringBuilder pathString = new StringBuilder("Start: " + start.name() + " Transition: ");
         for (SuperstructureState state : path) {
-          pathString.concat(state.toString() + ", ");
+          pathString.append(state.name()).append(", ");
         }
-        Logger.recordOutput("StatePath", pathString);
+        Logger.recordOutput("StatePath", pathString.toString() + " Goal: " + goal);
         // If it is, return the current path as it is the shortest path found.
         return path;
       }
@@ -133,7 +150,8 @@ public class Superstructure {
 
         // Explore all neighboring states of the last state.
         for (SuperstructureState neighbor : graph.getNeighbors(lastState)) {
-          // Create a new path by copying the current path and adding the neighbor state to it.
+          // Create a new path by copying the current path and adding the neighbor state
+          // to it.
           List<SuperstructureState> newPath = new ArrayList<>(path);
           newPath.add(neighbor);
 
@@ -143,28 +161,32 @@ public class Superstructure {
       }
     }
 
-    // If the queue is exhausted and no path to the goal state is found, return null.
+    // If the queue is exhausted and no path to the goal state is found, return
+    // null.
     return null;
   }
 
   // /**
-  //  * @return {@code False} if the elevator is high enough where the arm can't collide with the
-  //  *     intake
-  //  */
-  // public static boolean checkForArmCollision(ArmZone zone, ElevatorState elevatorState) {
-  //   if (isInIntakeZone(zone)) {
-  //     return elevatorState.pos.getRotations() <
+  // * @return {@code False} if the elevator is high enough where the arm can't
+  // collide with the
+  // * intake
+  // */
+  // public static boolean checkForArmCollision(ArmZone zone, ElevatorState
+  // elevatorState) {
+  // if (isInIntakeZone(zone)) {
+  // return elevatorState.pos.getRotations() <
   // Elevator.MIN_HEIGHT_INTAKE_AVOIDANCE.getRotations();
-  //   } else if (zone == ArmZone.BOTTOM_ZONE) {
-  //     return elevatorState.pos.getRotations() <
+  // } else if (zone == ArmZone.BOTTOM_ZONE) {
+  // return elevatorState.pos.getRotations() <
   // Elevator.MIN_HEIGHT_BOTTOM_AVOIDANCE.getRotations();
-  //   } else {
-  //     return false;
-  //   }
+  // } else {
+  // return false;
+  // }
   // }
 
-  // public static boolean checkForArmCollision(ArmState armState, ElevatorState elevatorState) {
-  //   return checkForArmCollision(armState.zone, elevatorState);
+  // public static boolean checkForArmCollision(ArmState armState, ElevatorState
+  // elevatorState) {
+  // return checkForArmCollision(armState.zone, elevatorState);
   // }
 
   /**
@@ -175,27 +197,28 @@ public class Superstructure {
   }
 
   // /**
-  //  * @param zone
-  //  * @return {@code true} if the given armzone is the coral or algae zone
-  //  */
+  // * @param zone
+  // * @return {@code true} if the given armzone is the coral or algae zone
+  // */
   // public static boolean isInIntakeZone(ArmZone zone) {
-  //   return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
+  // return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
   // }
 
   // /** see Assets\Docs\TopUpperLimit.png */
   // public static ArmZone getArmZone(Rotation2d position) {
-  //   double deg = position.getDegrees();
-  //   if (deg >= Arm.TOP_LOWER_LIMIT.getDegrees() && deg <= Arm.TOP_UPPER_LIMIT.getDegrees()) {
-  //     return ArmZone.TOP_ZONE;
-  //   } else if (deg > Arm.TOP_UPPER_LIMIT.getDegrees()
-  //       && deg < Arm.BOTTOM_LOWER_LIMIT.getDegrees()) {
-  //     return ArmZone.CORAL_INTAKE;
-  //   } else if (deg > Arm.BOTTOM_LOWER_LIMIT.getDegrees()
-  //       && deg < Arm.BOTTOM_UPPER_LIMIT.getDegrees()) {
-  //     return ArmZone.BOTTOM_ZONE;
-  //   } else {
-  //     return ArmZone.ALGAE_INTAKE;
-  //   }
+  // double deg = position.getDegrees();
+  // if (deg >= Arm.TOP_LOWER_LIMIT.getDegrees() && deg <=
+  // Arm.TOP_UPPER_LIMIT.getDegrees()) {
+  // return ArmZone.TOP_ZONE;
+  // } else if (deg > Arm.TOP_UPPER_LIMIT.getDegrees()
+  // && deg < Arm.BOTTOM_LOWER_LIMIT.getDegrees()) {
+  // return ArmZone.CORAL_INTAKE;
+  // } else if (deg > Arm.BOTTOM_LOWER_LIMIT.getDegrees()
+  // && deg < Arm.BOTTOM_UPPER_LIMIT.getDegrees()) {
+  // return ArmZone.BOTTOM_ZONE;
+  // } else {
+  // return ArmZone.ALGAE_INTAKE;
+  // }
   // }
 
   public boolean superstructureInTolerance(SuperstructureState goal) {
@@ -203,6 +226,7 @@ public class Superstructure {
   }
 
   private Command setSingleState(SuperstructureState goal) {
+
     return Commands.run(
             () -> {
               desiredTransitionState = goal;
@@ -219,6 +243,11 @@ public class Superstructure {
         .beforeStarting(
             () -> {
               visualizer.setDesiredSuperstructureState(goal);
-            });
+            })
+        .alongWith(
+            new InstantCommand(
+                () -> {
+                  Logger.recordOutput("Superstructure/CurrentState", goal);
+                }));
   }
 }

@@ -115,6 +115,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.positionRotations = inputs.rotPosition.getRotations();
     inputs.state = desiredState;
     inputs.heightMeters = inputs.positionRotations * Elevator.METERS_PER_ROTATION;
+    inputs.distanceToAlignment =
+        Math.abs(rotationalPosition.getValueAsDouble() - desiredState.pos.getRotations()) * 360;
   }
 
   @Override

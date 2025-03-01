@@ -1,14 +1,25 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Millimeters;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.IdleType;
 import frc.robot.util.ScoringLevel;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class SuperstructureActions {
   /**
@@ -27,8 +38,6 @@ public class SuperstructureActions {
             () -> {
               superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE);
             },
-            superstructure.getArmRequirement(),
-            superstructure.getElevatorRequirement(),
             endEffector)
         .andThen(
             // afterwards, start running the intake
@@ -47,73 +56,88 @@ public class SuperstructureActions {
 
   /** go to the desired level's corresponding prep position, */
   public static Command prepScore(
-      ScoringLevel level, Superstructure superstructure, EndEffector endEffector) {
-    Command result;
-    superstructure.setScoringLevel(level);
+      ScoringLevel level, boolean flipped, Superstructure superstructure, EndEffector endEffector) {
+    return superstructure
+        .setState(getCoralScoringPos(level, flipped))
+        .beforeStarting(
+            () -> {
+              superstructure.recordScoringLevel(level);
+            });
+  }
+
+  public static SuperstructureState getCoralScoringPos(ScoringLevel level, boolean flipped) {
     // determine which state to go to based on the desired level
     switch (level) {
       case L1:
-        // go to the desired state
-        result = superstructure.setState(SuperstructureState.CORAL_PREP_L1);
-        break;
+        return flipped
+            ? SuperstructureState.FLIPPED_CORAL_PREP_L1
+            : SuperstructureState.CORAL_PREP_L1;
       case L2:
-        result = superstructure.setState(SuperstructureState.CORAL_PREP_L2);
-        break;
+        return flipped
+            ? SuperstructureState.FLIPPED_CORAL_PREP_L2
+            : SuperstructureState.CORAL_PREP_L2;
       case L3:
-        result = superstructure.setState(SuperstructureState.CORAL_PREP_L3);
-        break;
+        return flipped
+            ? SuperstructureState.FLIPPED_CORAL_PREP_L3
+            : SuperstructureState.CORAL_PREP_L3;
       case L4:
-        result = superstructure.setState(SuperstructureState.CORAL_PREP_L4);
-        break;
+        return flipped
+            ? SuperstructureState.FLIPPED_CORAL_PREP_L4
+            : SuperstructureState.CORAL_PREP_L4;
       case NET:
-        result = superstructure.setState(SuperstructureState.NET_PREP);
-        break;
+        return flipped
+            ? SuperstructureState.FLIPPED_NET_PREP
+            : SuperstructureState.FLIPPED_NET_PREP;
       default:
-        result = superstructure.setState(SuperstructureState.CORAL_PREP_L4);
+        return flipped
+            ? SuperstructureState.FLIPPED_CORAL_PREP_L4
+            : SuperstructureState.CORAL_PREP_L4;
     }
-    result.addRequirements(
-        superstructure.getArmRequirement(), superstructure.getElevatorRequirement(), endEffector);
-    return result;
   }
 
   /** go to the desired level's corresponding prep position, */
   public static Command score(
       Superstructure superstructure, EndEffector endEffector, IdleType endIdle) {
-    Command result;
 
-    // determine which state to go to based on the desired level
-    switch (superstructure.getScoringLevel()) {
-      case L1:
-        // go to the desired state
-        result = superstructure.setState(SuperstructureState.CORAL_SCORE_L1);
-        break;
-      case L2:
-        result = superstructure.setState(SuperstructureState.CORAL_SCORE_L2);
-        break;
-      case L3:
-        result = superstructure.setState(SuperstructureState.CORAL_SCORE_L3);
-        break;
-      case L4:
-        result = superstructure.setState(SuperstructureState.CORAL_SCORE_L4);
-        break;
-      case NET:
-        result = superstructure.setState(SuperstructureState.NET_SCORE);
-        break;
-      default:
-        result = superstructure.setState(SuperstructureState.CORAL_PREP_L4);
-    }
+    // A cursed nest, four layers deep,
+    // A tangled web that makes me weep.
+    // Each check, another, down the chain,
+    // My sanity drifts—debugging's pain.
+    // Yet through this mess, it still prevails,
+    // A fragile beast that somehow sails.
+    // Four deep in logic, lost in despair,
+    // A nested hell beyond repair.
+    // If this, then that, then maybe so,
+    // My patience fades with each indent’s woe.
+    // Yet though it's cursed, it still must stay—
+    // Refactor dreams drift far away.
 
-    result.addRequirements(
-        superstructure.getArmRequirement(), superstructure.getElevatorRequirement(), endEffector);
-
-    return result
+    return new ConditionalCommand(
+            superstructure
+                .setState(SuperstructureState.CORAL_SCORE_L4)
+                .alongWith(
+                    new InstantCommand(
+                        () -> {
+                          Logger.recordOutput("hmm", Timer.getFPGATimestamp());
+                        })),
+            new ConditionalCommand(
+                superstructure.setState(SuperstructureState.CORAL_SCORE_L3),
+                new ConditionalCommand(
+                    superstructure.setState(SuperstructureState.CORAL_SCORE_L2),
+                    new ConditionalCommand(
+                        superstructure.setState(SuperstructureState.CORAL_SCORE_L1),
+                        superstructure.setState(SuperstructureState.NET_SCORE),
+                        superstructure::isScoringLevelL1),
+                    superstructure::isScoringLevelL2),
+                superstructure::isScoringLevelL3),
+            superstructure::isScoringLevelL4)
         .andThen(
             // if were scoring in the net, outtake until we dont have a peice
             // then go to idle
             superstructure.getScoringLevel() == ScoringLevel.NET
                 ? endEffector
                     .outtakeCommand()
-                    .until(() -> !endEffector.hasPiece())
+                    .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
                     .andThen(superstructure.setState(endIdle.state))
                 // else, outake and start going down immediately
                 : endEffector.outtakeCommand().raceWith(superstructure.setState(endIdle.state)))
@@ -129,24 +153,57 @@ public class SuperstructureActions {
     return superstructure.setState(idleType.state);
   }
 
-  public static Command intakeCoralGround(Superstructure superstructure, CoralIntake intake) {
+  public static Command intakeCoralGround(
+      Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
+    return
+    // .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+    new RunCommand(
+            () -> {
+              intake.deploy(trim.get());
+              intake.runIn();
+            },
+            intake)
+        .until(intake::hasPiece)
+        .andThen(
+            new ParallelDeadlineGroup(
+                new WaitCommand(1),
+                new RunCommand(
+                    () -> {
+                      intake.retract();
+                    },
+                    intake)))
+        .finallyDo(
+            () -> {
+              intake.retract();
+              intake.stop();
+            })
+        .handleInterrupt(
+            () -> {
+              intake.dampenCoral();
+            });
+  }
+
+  public static Command outtakeCoralGround(
+      Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
     return // superstructure.setState(SuperstructureState.CORAL_HANDOFF)
     Commands.run(
             () -> {
-              intake.deploy();
-              intake.runIn();
+              intake.deploy(trim.get());
+              intake.setSpeed(-0.4);
             },
             intake)
         .finallyDo(
             () -> {
               intake.retract();
-              intake.dampenCoral();
+              intake.stop();
             });
   }
 
   public static Command handoff(Superstructure superstructure, EndEffector endEffector) {
     return superstructure
         .setState(SuperstructureState.CORAL_HANDOFF)
-        .alongWith(endEffector.intakeCommand());
+        .alongWith(endEffector.intakeCommand())
+        .until(endEffector::hasPiece);
+    // .andThen(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
   }
 }

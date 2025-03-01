@@ -17,9 +17,12 @@ public class Arm extends SubsystemBase {
   // TODO remove?
   // public static final Rotation2d TOP_UPPER_LIMIT = Rotation2d.fromDegrees(0);
   // public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
-  // public static final Rotation2d BOTTOM_UPPER_LIMIT = Rotation2d.fromDegrees(0);
-  // public static final Rotation2d BOTTOM_LOWER_LIMIT = Rotation2d.fromDegrees(0);
-  // // the total length of the arm + end effector from the rotational joint, for kinematic use
+  // public static final Rotation2d BOTTOM_UPPER_LIMIT =
+  // Rotation2d.fromDegrees(0);
+  // public static final Rotation2d BOTTOM_LOWER_LIMIT =
+  // Rotation2d.fromDegrees(0);
+  // // the total length of the arm + end effector from the rotational joint, for
+  // kinematic use
   // public static final Distance LENGTH_TO_END_EFFECTOR = Meters.of(0);
 
   // TODO make this as small as possible
@@ -57,35 +60,43 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean inTolerance(SuperstructureState desiredState) {
+    if (desiredState.armState == ArmState.NO_OP) {
+      return true;
+    }
     return Math.abs(inputs.absolutePosition.getRotations() - desiredState.armState.rotations)
         < ARM_TOLERANCE.getRotations();
   }
 
   // public ArmZone getArmZone() {
-  //   return inputs.zone;
+  // return inputs.zone;
   // }
 
   // public boolean isInIntakeZone() {
-  //   return Superstructure.isInIntakeZone(inputs.zone);
+  // return Superstructure.isInIntakeZone(inputs.zone);
   // }
 
   // /**
-  //  * @return {@code false} if the the arm has to go through potential collision zones to get to
+  // * @return {@code false} if the the arm has to go through potential collision
+  // zones to get to
   // the
-  //  *     desired state from its current state, {@code true} if the current state and desired
+  // * desired state from its current state, {@code true} if the current state and
+  // desired
   // state
-  //  *     are in the same zone.
-  //  *     <p>note that if the elevator is high enough, this wont matter, since it will be out of
+  // * are in the same zone.
+  // * <p>note that if the elevator is high enough, this wont matter, since it
+  // will be out of
   // the
-  //  *     range of the intake and bellypan
-  //  */
+  // * range of the intake and bellypan
+  // */
   // public boolean willStayInZone(ArmState desiredState) {
-  //   return inputs.zone == desiredState.zone;
+  // return inputs.zone == desiredState.zone;
   // }
 
   public void setState(ArmState state) {
     desiredState = state;
-    io.setDesiredState(desiredState);
+    if (state != ArmState.NO_OP) {
+      io.setDesiredState(desiredState);
+    }
   }
 
   public ArmState getState() {

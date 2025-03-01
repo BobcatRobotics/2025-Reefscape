@@ -6,16 +6,15 @@ import frc.robot.subsystems.Superstructure.Elevator.ElevatorState;
 public enum SuperstructureState {
   UNKNOWN(ElevatorState.UNKNOWN, ArmState.UNKOWN),
 
-  UPSIDE_DOWN_IDLE(ElevatorState.IDLE_UPSIDE_DOWN, ArmState.UPSIDE_DOWN),
+  UPSIDE_DOWN_IDLE(ElevatorState.IDLE_UPSIDE_DOWN, ArmState.UPSIDE_DOWN_CCW),
   RIGHT_SIDE_UP_IDLE(ElevatorState.IDLE_RIGHT_SIDE_UP, ArmState.RIGHT_SIDE_UP),
 
   // Intermediate state between coral handoff and idle w/ coral, prevents collision
   // waiting for operator to confirm alignment, then bring arm down and outtake
-  ELEVATOR_SAFE_ZONE(ElevatorState.INTAKE_SAFE_ZONE, ArmState.RIGHT_SIDE_UP),
+  ELEVATOR_SAFE_ZONE(ElevatorState.INTAKE_SAFE_ZONE, ArmState.NO_OP),
 
   HP_INTAKE(ElevatorState.IDLE_RIGHT_SIDE_UP, ArmState.HP_INTAKE),
-  CORAL_HANDOFF(ElevatorState.CORAL_HANDOFF, ArmState.UPSIDE_DOWN),
-
+  CORAL_HANDOFF(ElevatorState.CORAL_HANDOFF, ArmState.UPSIDE_DOWN_CCW),
   CORAL_PREP_L1(ElevatorState.CORAL_L1, ArmState.CORAL_PREP_L1), // normal scoring side
   CORAL_PREP_L2(ElevatorState.CORAL_L2, ArmState.CORAL_PREP_L2),
   CORAL_PREP_L3(ElevatorState.CORAL_L3, ArmState.CORAL_PREP_L3),

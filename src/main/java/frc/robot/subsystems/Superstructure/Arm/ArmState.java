@@ -4,18 +4,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public enum ArmState {
-  UPSIDE_DOWN(270), // upside down, for quick pickup once game piece intook
-  RIGHT_SIDE_UP(25), // arm doesnt move from idle to handoff
+  UPSIDE_DOWN_CCW(270), // upside down, for quick pickup once game piece intook
+  RIGHT_SIDE_UP(90), // arm doesnt move from idle to handoff
   HP_INTAKE(0),
+  CORAL_PREP_L1(180 - 90),
+  CORAL_PREP_L2(180 - 90),
+  CORAL_PREP_L3(180 - 90),
+  CORAL_PREP_L4(180 - 90),
 
-  CORAL_SCORE_L1(180 - 0), // normal side
-  CORAL_SCORE_L2(180 - 0),
-  CORAL_SCORE_L3(180 - 0),
-  CORAL_SCORE_L4(180 - 0),
-  CORAL_PREP_L1(180 - 45),
-  CORAL_PREP_L2(180 - 45),
-  CORAL_PREP_L3(180 - 45),
-  CORAL_PREP_L4(180 - 60),
+  CORAL_SCORE_L1(180 - 45), // normal side
+  CORAL_SCORE_L2(180 - 45),
+  CORAL_SCORE_L3(180 - 45),
+  CORAL_SCORE_L4(180 - 45),
 
   FLIPPED_CORAL_SCORE_L1(0), // coral intake side
   FLIPPED_CORAL_SCORE_L2(0),
@@ -42,7 +42,7 @@ public enum ArmState {
   NET_PREP(25),
   FLIPPED_NET_SCORE(0),
   FLIPPED_NET_PREP(25),
-
+  NO_OP(0), // do nothing, maintain current pos
   UNKOWN(0); // arm isnt at a predefined state
 
   ArmState(double degrees) {

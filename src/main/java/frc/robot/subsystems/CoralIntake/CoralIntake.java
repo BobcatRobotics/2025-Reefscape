@@ -39,8 +39,8 @@ public class CoralIntake extends SubsystemBase {
     io.setAngle(angle);
   }
 
-  public void deploy() {
-    io.deploy();
+  public void deploy(Angle trim) {
+    io.deploy(trim);
   }
 
   public void retract() {
@@ -56,11 +56,19 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public void runIn() {
-    io.setSpeed(0.75);
+    io.setSpeed(0.60);
   }
 
   public void dampenCoral() {
-    io.setSpeed(0);
+    io.setSpeed(0.1);
+  }
+
+  public boolean hasPiece() {
+    return inputs.hasPiece;
+  }
+
+  public void zeroPosition() {
+    io.zeroPosition();
   }
 
   @Override

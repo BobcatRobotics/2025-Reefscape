@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.EndEffector;
 
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
-  public static double IDLE_SPEED = 60;
+  public static double IDLE_SPEED = 1;
   public static double INTAKE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
 
@@ -38,7 +38,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public Distance getDistanceToPiece() {
-    return Meters.of(inputs.laserCanDistanceMilimeters);
+    return Millimeters.of(inputs.laserCanDistanceMilimeters);
   }
 
   public boolean hasPiece() {

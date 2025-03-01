@@ -16,9 +16,10 @@ public interface ArmIO {
     public double torqueCurrentAmps = -1;
     public double velocityRotPerSec = -1;
     public boolean aligned = false;
-    public double positionRotations = 0;
+    public double positionDegrees = 0;
     public ControlModeValue controlMode = ControlModeValue.DisabledOutput;
     public double desiredPositionRotation = 0;
+    public double distanceToAlignment = 0;
   }
 
   /** Updates the set of loggable inputs. */

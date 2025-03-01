@@ -18,6 +18,8 @@ public interface ElevatorIO {
     /** is the elevator at its desired state? */
     boolean aligned = false;
 
+    double distanceToAlignment = 0;
+
     ControlModeValue controlMode = ControlModeValue.DisabledOutput;
 
     boolean motorConnected = false;

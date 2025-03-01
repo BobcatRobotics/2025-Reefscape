@@ -1,6 +1,5 @@
 package frc.robot.subsystems.CoralIntake;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.units.measure.Angle;
@@ -19,7 +18,7 @@ public interface CoralIntakeIO {
     public double desiredCarwashVelocityRPM = 0;
     public double laserCanDistanceMilimeters = 0;
 
-    public Angle position = Degrees.of(0);
+    public double positionRotations = 0;
     public IntakeState state = IntakeState.RETRACT;
   }
 
@@ -31,9 +30,11 @@ public interface CoralIntakeIO {
 
   public default void setState(IntakeState state) {}
 
-  public default void deploy() {}
+  public default void deploy(Angle trim) {}
 
   public default void retract() {}
 
   public default void stop() {}
+
+  public default void zeroPosition() {}
 }
