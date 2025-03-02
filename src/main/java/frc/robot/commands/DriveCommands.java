@@ -566,10 +566,10 @@ public class DriveCommands {
         new ProfiledPIDController(
             .1,
             0.0,
-            0,
+            0.0,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-180, 180);
-    LinearFilter omegaFilter = LinearFilter.movingAverage(5);
+    LinearFilter omegaFilter = LinearFilter.movingAverage(8);
 
     // ProfiledPIDController distanceController =
     //     new ProfiledPIDController(
@@ -618,9 +618,9 @@ public class DriveCommands {
               //     Logger.recordOutput("SingleTagAlign/filteredDistance", filteredDistance);
               // }
               // if (omega != 0) {
-              // filteredOmega = omegaFilter.calculate(omega);
+              filteredOmega = omegaFilter.calculate(omega);
               // }
-              filteredOmega = omega;
+              // filteredOmega = omega;
               Logger.recordOutput("SingleTagAlign/filteredOmega", filteredOmega);
 
               // double omegaOutput =

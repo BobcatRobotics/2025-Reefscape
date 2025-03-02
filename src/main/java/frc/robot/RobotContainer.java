@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -324,9 +325,6 @@ public class RobotContainer {
     // default commands
     endEffector.setDefaultCommand(endEffector.idleCommand());
 
-    // outtake
-    joystick.thumb.whileTrue(endEffector.outtakeCommand());
-
     // autoalign
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
@@ -361,11 +359,11 @@ public class RobotContainer {
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
 
     // intake
-    joystick.bottomLeft.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
-    joystick.bottomRight.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
+    // joystick.bottomLeft.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
+    // joystick.bottomRight.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
 
-    // joystick.bottomLeft.whileTrue(
-    //     SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
+    joystick.bottomLeft.whileTrue(
+        SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
 
     // death stars
     joystick.bottom9.whileTrue(
@@ -410,6 +408,20 @@ public class RobotContainer {
     //             () -> {
     //               climber.setDutyCycle(0);
     //             }));
+
+    joystick.bottom12.whileTrue(
+        DriveCommands.driveToCoral(
+                drive,
+                photon,
+                () -> -leftRuffy.yAxis.getAsDouble(),
+                leftRuffy.xAxis,
+                () -> -rightRuffy.xAxis.getAsDouble(),
+                superstructure::getElevatorPercentage)
+            .beforeStarting(
+                new RunCommand(() -> intake.deploy(Rotations.of(0)))
+                    .withDeadline(new WaitCommand(0.5)))
+            .withDeadline(
+                SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier)));
   }
 
   /**
