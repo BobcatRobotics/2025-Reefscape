@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.ScoringLevel;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
   public static double IDLE_SPEED = 1;
-  public static double INTAKE_SPEED = 1000;
+  public static double INTAKE_CORAL_SPEED = 500;
   public static double OUTTAKE_SPEED = -300;
+  public static double CORAL_SCORE_SPEED = -5;
 
   private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;
@@ -62,16 +64,17 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void intake() {
-    io.setSpeed(INTAKE_SPEED);
+    io.setSpeed(INTAKE_CORAL_SPEED);
   }
 
-  public Command intakeCommand() {
+  public Command intakeCoralCommand() {
     return new RunCommand(
             () -> {
-              io.setSpeed(INTAKE_SPEED);
+              io.setSpeed(INTAKE_CORAL_SPEED);
             },
             this)
-        .until(() -> inputs.hasPiece);
+        .until(() -> inputs.hasPiece)
+        .andThen(idleCommand());
   }
 
   public void outtake() {
@@ -82,6 +85,21 @@ public class EndEffector extends SubsystemBase {
     return new RunCommand(
         () -> {
           io.setSpeed(OUTTAKE_SPEED);
+        },
+        this);
+  }
+
+  public Command coralOut(ScoringLevel level) {
+    if (level == ScoringLevel.L1) {
+      return new RunCommand(
+          () -> {
+            io.setSpeed(OUTTAKE_SPEED);
+          },
+          this);
+    }
+    return new RunCommand(
+        () -> {
+          io.setSpeed(CORAL_SCORE_SPEED);
         },
         this);
   }

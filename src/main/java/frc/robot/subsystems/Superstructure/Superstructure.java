@@ -7,7 +7,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.util.ScoringLevel;
@@ -29,9 +28,6 @@ public class Superstructure {
   private Arm arm;
   private Elevator elevator;
   private ScoringLevel scoringLevel = ScoringLevel.L1;
-
-  private SuperstructureState desiredState = SuperstructureState.UNKNOWN;
-  private SuperstructureState desiredTransitionState = SuperstructureState.UNKNOWN;
 
   private final RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
@@ -82,20 +78,35 @@ public class Superstructure {
     return currentState;
   }
 
-  public SequentialCommandGroup setState(SuperstructureState state) {
-    List<SuperstructureState> states = findShortestPath(getState(), state);
-    if (states == null) {
-      Logger.recordOutput("ur mom", true);
-      return new SequentialCommandGroup();
-    }
-    SequentialCommandGroup result = new SequentialCommandGroup();
+  public Command setState(SuperstructureState goal) {
 
-    for (SuperstructureState desiredState : states) {
-      if (desiredState != currentState) {
-        result.addCommands(setSingleState(desiredState));
-      }
-    }
-    return result;
+    return Commands.run(
+            () -> {
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
+
+              if (arm.getDesiredState() != goal.armState) {
+                arm.setState(nextState.armState);
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
+
+                elevator.setState(nextState.elevatorState);
+              }
+
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
+        .until(() -> getState() == goal)
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+            });
   }
 
   /**
@@ -134,11 +145,11 @@ public class Superstructure {
 
       // Check if the last state in the current path is the goal state.
       if (lastState.equals(goal)) {
-        StringBuilder pathString = new StringBuilder("Start: " + start.name() + " Transition: ");
+        StringBuilder pathString = new StringBuilder("Transition: ");
         for (SuperstructureState state : path) {
           pathString.append(state.name()).append(", ");
         }
-        Logger.recordOutput("StatePath", pathString.toString() + " Goal: " + goal);
+        Logger.recordOutput("StatePath", pathString.toString());
         // If it is, return the current path as it is the shortest path found.
         return path;
       }
@@ -166,7 +177,16 @@ public class Superstructure {
     return null;
   }
 
-  // /**
+  public SuperstructureState nextStateInPath(
+      SuperstructureState current, SuperstructureState goal) {
+    List<SuperstructureState> path = findShortestPath(current, goal);
+    // If there's no path or we're already at the goal, return current.
+    if (path == null || path.size() < 2) {
+      return current;
+    }
+    // Otherwise, the next state along the optimal path is at index 1.
+    return path.get(1);
+  } // /**
   // * @return {@code False} if the elevator is high enough where the arm can't
   // collide with the
   // * intake
@@ -229,7 +249,6 @@ public class Superstructure {
 
     return Commands.run(
             () -> {
-              desiredTransitionState = goal;
               arm.setState(goal.armState);
               elevator.setState(goal.elevatorState);
             },

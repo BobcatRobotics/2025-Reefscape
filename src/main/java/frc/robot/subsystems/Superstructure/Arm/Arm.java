@@ -67,6 +67,10 @@ public class Arm extends SubsystemBase {
         < ARM_TOLERANCE.getRotations();
   }
 
+  public ArmState getDesiredState() {
+    return desiredState;
+  }
+
   // public ArmZone getArmZone() {
   // return inputs.zone;
   // }

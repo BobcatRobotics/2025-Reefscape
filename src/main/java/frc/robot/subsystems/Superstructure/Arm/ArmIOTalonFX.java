@@ -6,7 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
@@ -28,7 +28,7 @@ public class ArmIOTalonFX implements ArmIO {
 
   private TalonFX motor;
   private CANcoder encoder;
-  private PositionTorqueCurrentFOC angleRequest = new PositionTorqueCurrentFOC(0);
+  private MotionMagicTorqueCurrentFOC angleRequest = new MotionMagicTorqueCurrentFOC(0);
 
   private StatusSignal<Angle> position;
   private StatusSignal<Current> torqueCurrentAmps;
@@ -46,11 +46,13 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-    angleConfigs.Slot0.kP = 45;
-    angleConfigs.Slot0.kI = 5;
+    angleConfigs.Slot0.kP = 25;
+    angleConfigs.Slot0.kI = 0;
     angleConfigs.Slot0.kD = 10;
     angleConfigs.Slot0.kS = 5;
     angleConfigs.Slot0.kG = 6;
+    angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.5;
+    angleConfigs.MotionMagic.MotionMagicAcceleration = 1;
 
     angleConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
@@ -62,6 +64,8 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ARM_MIN_ANGLE.getRotations();
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    angleConfigs.CurrentLimits.StatorCurrentLimit = 60;
+    angleConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
     motor.getConfigurator().apply(angleConfigs);
 
     encoder = new CANcoder(encoderID);

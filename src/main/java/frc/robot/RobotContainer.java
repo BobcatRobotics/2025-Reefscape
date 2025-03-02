@@ -359,8 +359,9 @@ public class RobotContainer {
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
 
     // intake
-    // joystick.bottomLeft.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
-    // joystick.bottomRight.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
+    joystick.bottomLeft.onTrue(
+        SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
+    joystick.bottomRight.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
 
     joystick.bottomLeft.whileTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));

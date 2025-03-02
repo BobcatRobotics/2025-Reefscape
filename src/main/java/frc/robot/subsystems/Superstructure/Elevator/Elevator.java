@@ -44,6 +44,8 @@ public class Elevator extends SubsystemBase {
 
   private RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
+  private ElevatorState desiredState = ElevatorState.UNKNOWN;
+
   public Elevator(ElevatorIO io) {
     this.io = io;
   }
@@ -61,11 +63,16 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setState(ElevatorState desiredState) {
+    this.desiredState = desiredState;
     io.setDesiredState(desiredState);
   }
 
   public ElevatorState getState() {
     return inputs.state;
+  }
+
+  public ElevatorState getDesiredState() {
+    return desiredState;
   }
 
   public boolean inTolerance() {

@@ -245,6 +245,8 @@ public class StateGraph {
     // create list of all possible transitions
     // first element in list is the parent, the following elements
     // are all the children, or possible transitions from the parent state
+
+    // IF TWO PATHS HAVE SAME LENGTH, FIRST ELEMENT IN LIST IS PRIORITIZED
     List<SuperstructureState[]> transitions =
         List.of(
             new SuperstructureState[] {
@@ -261,7 +263,8 @@ public class StateGraph {
               SuperstructureState.CORAL_HANDOFF,
               SuperstructureState.INTAKE_ALGAE_GROUND,
               SuperstructureState.ALGAE_PREP_L2,
-              SuperstructureState.ALGAE_PREP_L3
+              SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.ELEVATOR_SAFE_ZONE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_HANDOFF,
@@ -271,7 +274,7 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.UPSIDE_DOWN_IDLE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
             },
             new SuperstructureState[] {
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
@@ -344,18 +347,27 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L2,
-              SuperstructureState.CORAL_PREP_L2,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.POST_CORAL_SCORE_L2,
+              SuperstructureState.CORAL_PREP_L2
+            },
+            new SuperstructureState[] {
+              SuperstructureState.POST_CORAL_SCORE_L2, SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L3,
-              SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.POST_CORAL_SCORE_L3,
+              SuperstructureState.CORAL_PREP_L3
+            },
+            new SuperstructureState[] {
+              SuperstructureState.POST_CORAL_SCORE_L3, SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L4,
-              SuperstructureState.CORAL_PREP_L4,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.POST_CORAL_SCORE_L4,
+              SuperstructureState.CORAL_PREP_L4
+            },
+            new SuperstructureState[] {
+              SuperstructureState.POST_CORAL_SCORE_L4, SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE, SuperstructureState.ALGAE_SCORE_PROCESSOR
@@ -394,14 +406,11 @@ public class StateGraph {
     // for each set of transitions
     for (SuperstructureState[] transition : transitions) {
       SuperstructureState parent = transition[0];
-      System.out.print("Transitions: ");
       // for each transition in the set
       for (int i = 1; i < transition.length; i++) {
-        System.out.print(transition[i].name() + " ");
         // add the edge to the graph
         graph.addTransition(parent, transition[i]);
       }
-      System.out.println(" ");
     }
 
     return graph;

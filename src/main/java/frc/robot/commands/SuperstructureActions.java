@@ -3,12 +3,10 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,40 +17,8 @@ import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.IdleType;
 import frc.robot.util.ScoringLevel;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 public class SuperstructureActions {
-  /**
-   * Picks up a peice that is indexed in the carwash
-   *
-   * <p>This command assumes that the peice is already there, it will NOT check to see if a peice is
-   * indexed
-   *
-   * <p>After it picks up the peice, the arm will flip around to the coral idle spot
-   *
-   * <p>END STATE: RIGHT_SIDE_UP_IDLE
-   */
-  public static Command intakeFromGround(Superstructure superstructure, EndEffector endEffector) {
-    return Commands.run(
-            // go to ground intake prep state if were not there already
-            () -> {
-              superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE);
-            },
-            endEffector)
-        .andThen(
-            // afterwards, start running the intake
-            endEffector
-                .intakeCommand()
-                // and go to the handoff position
-                .alongWith(
-                    superstructure
-                        .setState(SuperstructureState.CORAL_HANDOFF)
-                        // untill the end effector has the peice or 5 seconds pass
-                        .until(() -> endEffector.hasPiece())
-                        .withTimeout(5)))
-        // once we have a peice, go to the idle with coral position
-        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE));
-  }
 
   /** go to the desired level's corresponding prep position, */
   public static Command prepScore(
@@ -113,13 +79,7 @@ public class SuperstructureActions {
     // Refactor dreams drift far away.
 
     return new ConditionalCommand(
-            superstructure
-                .setState(SuperstructureState.CORAL_SCORE_L4)
-                .alongWith(
-                    new InstantCommand(
-                        () -> {
-                          Logger.recordOutput("hmm", Timer.getFPGATimestamp());
-                        })),
+            superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
             new ConditionalCommand(
                 superstructure.setState(SuperstructureState.CORAL_SCORE_L3),
                 new ConditionalCommand(
@@ -140,7 +100,9 @@ public class SuperstructureActions {
                     .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
                     .andThen(superstructure.setState(endIdle.state))
                 // else, outake and start going down immediately
-                : endEffector.outtakeCommand().raceWith(superstructure.setState(endIdle.state)))
+                : endEffector
+                    .coralOut(superstructure.getScoringLevel())
+                    .raceWith(superstructure.setState(endIdle.state)))
         .withInterruptBehavior(
             InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
   }
@@ -153,16 +115,25 @@ public class SuperstructureActions {
     return superstructure.setState(idleType.state);
   }
 
+  /**
+   * Picks up a peice that is indexed in the carwash
+   *
+   * <p>This command assumes that the peice is already there, it will NOT check to see if a peice is
+   * indexed
+   *
+   * <p>After it picks up the peice, the arm will flip around to the coral idle spot
+   */
   public static Command intakeCoralGround(
       Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
-    return
-    // .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
-    new RunCommand(
-            () -> {
-              intake.deploy(trim.get());
-              intake.runIn();
-            },
-            intake)
+    return superstructure
+        .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+        .alongWith(
+            new RunCommand(
+                () -> {
+                  intake.deploy(trim.get());
+                  intake.runIn();
+                },
+                intake))
         .until(intake::hasPiece)
         .andThen(
             new ParallelDeadlineGroup(
@@ -202,8 +173,11 @@ public class SuperstructureActions {
   public static Command handoff(Superstructure superstructure, EndEffector endEffector) {
     return superstructure
         .setState(SuperstructureState.CORAL_HANDOFF)
-        .alongWith(endEffector.intakeCommand())
-        .until(endEffector::hasPiece);
-    // .andThen(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
+        .alongWith(endEffector.intakeCoralCommand())
+        .until(endEffector::hasPiece)
+        .andThen(
+            superstructure
+                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
+                .alongWith(endEffector.idleCommand()));
   }
 }

@@ -7,14 +7,14 @@ public enum ArmState {
   UPSIDE_DOWN_CCW(270), // upside down, for quick pickup once game piece intook
   RIGHT_SIDE_UP(90), // arm doesnt move from idle to handoff
   HP_INTAKE(0),
-  CORAL_PREP_L1(180 - 90),
+  CORAL_PREP_L1(180 + 45),
   CORAL_PREP_L2(180 - 90),
   CORAL_PREP_L3(180 - 90),
   CORAL_PREP_L4(180 - 90),
 
-  CORAL_SCORE_L1(180 - 45), // normal side
-  CORAL_SCORE_L2(180 - 45),
-  CORAL_SCORE_L3(180 - 45),
+  CORAL_SCORE_L1(180 + 45), // normal side
+  CORAL_SCORE_L2(180 - 35),
+  CORAL_SCORE_L3(180 - 35),
   CORAL_SCORE_L4(180 - 45),
 
   FLIPPED_CORAL_SCORE_L1(0), // coral intake side
@@ -24,7 +24,7 @@ public enum ArmState {
   FLIPPED_CORAL_PREP_L1(45),
   FLIPPED_CORAL_PREP_L2(45),
   FLIPPED_CORAL_PREP_L3(45),
-  FLIPPED_CORAL_PREP_L4(60),
+  FLIPPED_CORAL_PREP_L4(75),
 
   ALGAE_PREP_L2(180 - 0),
   ALGAE_PREP_L3(180 - 0),
