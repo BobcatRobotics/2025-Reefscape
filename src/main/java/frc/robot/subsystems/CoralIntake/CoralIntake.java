@@ -1,20 +1,81 @@
 package frc.robot.subsystems.CoralIntake;
 
-import static edu.wpi.first.units.Units.Meters;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.units.measure.Distance;
+public class CoralIntake extends SubsystemBase {
+  public static double GEAR_RATIO = 33.98 / 1; // TODO find this!
 
-public class CoralIntake {
-  private boolean deployed;
+  /** the mazimum travel distance of the elevator */
+  public static final Rotation2d RANGE_OF_MOTION = Rotation2d.fromDegrees(125);
 
-  /** Distance between minimum elevator position and top of the coral intake */
-  public static final Distance CORAL_INTAKE_HEIGHT = Meters.of(0);
+  private final Alert rollerDisconnectedAlert =
+      new Alert("Intake roller motor disconnected!", AlertType.kWarning);
+  private final Alert pivotDisconnectedAlert =
+      new Alert("Intake pivot motor disconnected!", AlertType.kWarning);
 
-  public CoralIntake() {}
+  private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
+  private CoralIntakeIO io;
 
-  public void setState(IntakeState state) {}
+  public CoralIntake(CoralIntakeIO io) {
+    this.io = io;
+  }
 
-  public boolean deployed() {
-    return deployed;
+  public void setState(IntakeState state) {
+    io.setState(state);
+  }
+
+  public void setSpeed(double speed) {
+    io.setSpeed(speed);
+  }
+
+  public void setAngle(Angle angle) {
+    io.setAngle(angle);
+  }
+
+  public void deploy(Angle trim) {
+    io.deploy(trim);
+  }
+
+  public void retract() {
+    io.retract();
+  }
+
+  public void stop() {
+    io.stop();
+  }
+
+  public Command stopCommand() {
+    return new InstantCommand(this::stop, this);
+  }
+
+  public void runIn() {
+    io.setSpeed(0.60);
+  }
+
+  public void dampenCoral() {
+    io.setSpeed(0.1);
+  }
+
+  public boolean hasPiece() {
+    return inputs.hasPiece;
+  }
+
+  public void zeroPosition() {
+    io.zeroPosition();
+  }
+
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("CoralIntake", inputs);
+    rollerDisconnectedAlert.set(!inputs.rollerMotorConnected);
+    pivotDisconnectedAlert.set(!inputs.rollerMotorConnected);
   }
 }

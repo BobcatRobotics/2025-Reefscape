@@ -31,6 +31,7 @@ public final class Constants {
   public static final double loopPeriodSecs = 0.02;
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final RobotType CURRENT_ROBOT = RobotType.k2025;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -55,8 +56,60 @@ public final class Constants {
     public static final int horPixles = 1280;
   }
 
-  public static final class LimelightConstants {
-    public static final String name = "limelight";
+  public static final class LimelightFLConstants {
+    public static final String name = "limelight-fl";
+    public static final VisionObservation.LLTYPE limelightType = LLTYPE.LL3G;
+    public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+    public static final int detectorPiplineIndex = 2;
+    public static final int apriltagPipelineIndex = 1;
+    public static final double filterTimeConstant =
+        0.1; // in seconds, inputs occuring over a time period
+    // significantly shorter than this will be thrown out
+    public static final Vector<N3> visionMeasurementStdDevs =
+        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+    public static final limelightConstants constants =
+        new limelightConstants(
+            name,
+            limelightType,
+            Limelight4Constants.verticalFOV,
+            Limelight4Constants.horizontalFOV,
+            limelightMountHeight,
+            detectorPiplineIndex,
+            apriltagPipelineIndex,
+            Limelight4Constants.horPixles,
+            visionMeasurementStdDevs);
+
+    public static final String ip = "10.1.77.11";
+  }
+
+  public static final class LimelightFRConstants {
+    public static final String name = "limelight-fr";
+    public static final VisionObservation.LLTYPE limelightType = LLTYPE.LL3G;
+    public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+    public static final int detectorPiplineIndex = 2;
+    public static final int apriltagPipelineIndex = 1;
+    public static final double filterTimeConstant =
+        0.1; // in seconds, inputs occuring over a time period
+    // significantly shorter than this will be thrown out
+    public static final Vector<N3> visionMeasurementStdDevs =
+        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+    public static final limelightConstants constants =
+        new limelightConstants(
+            name,
+            limelightType,
+            Limelight4Constants.verticalFOV,
+            Limelight4Constants.horizontalFOV,
+            limelightMountHeight,
+            detectorPiplineIndex,
+            apriltagPipelineIndex,
+            Limelight4Constants.horPixles,
+            visionMeasurementStdDevs);
+
+    public static final String ip = "10.1.77.11";
+  }
+
+  public static final class LimelightBLConstants {
+    public static final String name = "limelight-bl";
     public static final VisionObservation.LLTYPE limelightType = LLTYPE.LL4;
     public static final double limelightMountHeight = Units.inchesToMeters(20.5);
     public static final int detectorPiplineIndex = 2;
@@ -80,4 +133,36 @@ public final class Constants {
 
     public static final String ip = "10.1.77.11";
   }
+
+  public static final class LimelightBRConstants {
+    public static final String name = "limelight-br";
+    public static final VisionObservation.LLTYPE limelightType = LLTYPE.LL4;
+    public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+    public static final int detectorPiplineIndex = 2;
+    public static final int apriltagPipelineIndex = 1;
+    public static final double filterTimeConstant =
+        0.1; // in seconds, inputs occuring over a time period
+    // significantly shorter than this will be thrown out
+    public static final Vector<N3> visionMeasurementStdDevs =
+        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+    public static final limelightConstants constants =
+        new limelightConstants(
+            name,
+            limelightType,
+            Limelight4Constants.verticalFOV,
+            Limelight4Constants.horizontalFOV,
+            limelightMountHeight,
+            detectorPiplineIndex,
+            apriltagPipelineIndex,
+            Limelight4Constants.horPixles,
+            visionMeasurementStdDevs);
+
+    public static final String ip = "10.1.77.11";
+  }
+}
+
+enum RobotType {
+  k2023,
+  k2024,
+  k2025
 }

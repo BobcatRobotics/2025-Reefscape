@@ -1,18 +1,15 @@
 package frc.robot.subsystems.Superstructure;
 
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Arm.Arm;
-import frc.robot.subsystems.Arm.ArmState;
-import frc.robot.subsystems.Arm.ArmZone;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorState;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Superstructure.Arm.Arm;
+import frc.robot.subsystems.Superstructure.Elevator.Elevator;
+import frc.robot.util.ScoringLevel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,11 +22,14 @@ import org.littletonrobotics.junction.Logger;
 public class Superstructure {
   public static final Distance ELEVATOR_TOLERANCE = Inches.of(0.5);
   public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(1.5);
-  StateGraph graph = StateGraph.getInstance();
+  private final StateGraph graph = StateGraph.getInstance();
 
-  private SuperstructureState currentState = SuperstructureState.RIGHT_SIDE_UP_IDLE;
+  private SuperstructureState currentState = SuperstructureState.UNKNOWN;
   private Arm arm;
   private Elevator elevator;
+  private ScoringLevel scoringLevel = ScoringLevel.L1;
+
+  private final RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
   /** A class representing the Arm-Elevator superstructure */
   public Superstructure(Arm arm, Elevator elevator) {
@@ -37,22 +37,76 @@ public class Superstructure {
     this.elevator = elevator;
   }
 
+  /**
+   * @return the position of the elevator, expressed as a percentage of its max travel, [0,1]
+   */
+  public double getElevatorPercentage() {
+    return elevator.positionPercent();
+  }
+
+  public void recordScoringLevel(ScoringLevel level) {
+    Logger.recordOutput("Auto/DesiredScoringLevel", level);
+    scoringLevel = level;
+  }
+
+  /** only for use in commands */
+  public ScoringLevel getScoringLevel() {
+    return scoringLevel;
+  }
+
+  public boolean isScoringLevelL1() {
+    return getScoringLevel() == ScoringLevel.L1;
+  }
+
+  public boolean isScoringLevelL2() {
+    return getScoringLevel() == ScoringLevel.L2;
+  }
+
+  public boolean isScoringLevelL3() {
+    return getScoringLevel() == ScoringLevel.L3;
+  }
+
+  public boolean isScoringLevelL4() {
+    return getScoringLevel() == ScoringLevel.L4;
+  }
+
+  public boolean isScoringLevelNet() {
+    return getScoringLevel() == ScoringLevel.NET;
+  }
+
   public SuperstructureState getState() {
     return currentState;
   }
 
-  public SequentialCommandGroup setState(SuperstructureState state) {
-    List<SuperstructureState> states = findShortestPath(getState(), state);
-    Logger.recordOutput("states", states.toString());
+  public Command setState(SuperstructureState goal) {
 
-    SequentialCommandGroup result = new SequentialCommandGroup();
+    return Commands.run(
+            () -> {
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
 
-    for (SuperstructureState desiredState : states) {
-      if (desiredState != currentState) {
-        result.addCommands(setSingleState(desiredState));
-      }
-    }
-    return result;
+              if (arm.getDesiredState() != goal.armState) {
+                arm.setState(nextState.armState);
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
+
+                elevator.setState(nextState.elevatorState);
+              }
+
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
+        .until(() -> getState() == goal)
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+            });
   }
 
   /**
@@ -67,11 +121,13 @@ public class Superstructure {
   public List<SuperstructureState> findShortestPath(
       SuperstructureState start, SuperstructureState goal) {
 
-    // Queue to manage the paths to be explored. Each element in the queue is a list of states
+    // Queue to manage the paths to be explored. Each element in the queue is a list
+    // of states
     // representing a path.
     Queue<List<SuperstructureState>> queue = new LinkedList<>();
 
-    // Set to keep track of visited states to avoid revisiting them and getting stuck in loops.
+    // Set to keep track of visited states to avoid revisiting them and getting
+    // stuck in loops.
     Set<SuperstructureState> visited = new HashSet<>();
 
     // Start BFS with a path containing only the start node.
@@ -83,11 +139,17 @@ public class Superstructure {
       // Retrieve and remove the first path from the queue.
       List<SuperstructureState> path = queue.poll();
 
-      // Get the last state in the current path. This is the state we will explore next.
+      // Get the last state in the current path. This is the state we will explore
+      // next.
       SuperstructureState lastState = path.get(path.size() - 1);
 
       // Check if the last state in the current path is the goal state.
       if (lastState.equals(goal)) {
+        StringBuilder pathString = new StringBuilder("Transition: ");
+        for (SuperstructureState state : path) {
+          pathString.append(state.name()).append(", ");
+        }
+        Logger.recordOutput("StatePath", pathString.toString());
         // If it is, return the current path as it is the shortest path found.
         return path;
       }
@@ -99,7 +161,8 @@ public class Superstructure {
 
         // Explore all neighboring states of the last state.
         for (SuperstructureState neighbor : graph.getNeighbors(lastState)) {
-          // Create a new path by copying the current path and adding the neighbor state to it.
+          // Create a new path by copying the current path and adding the neighbor state
+          // to it.
           List<SuperstructureState> newPath = new ArrayList<>(path);
           newPath.add(neighbor);
 
@@ -109,100 +172,81 @@ public class Superstructure {
       }
     }
 
-    // If the queue is exhausted and no path to the goal state is found, return null.
+    // If the queue is exhausted and no path to the goal state is found, return
+    // null.
     return null;
   }
 
-  /**
-   * @return {@code False} if the elevator is high enough where the arm can't collide with the
-   *     intake
-   */
-  public static boolean checkForArmCollision(ArmZone zone, ElevatorState elevatorState) {
-    if (isInIntakeZone(zone)) {
-      return elevatorState.heightMeters < Elevator.MIN_HEIGHT_INTAKE_AVOIDANCE.in(Meters);
-    } else if (zone == ArmZone.BOTTOM_ZONE) {
-      return elevatorState.heightMeters < Elevator.MIN_HEIGHT_BOTTOM_AVOIDANCE.in(Meters);
-    } else {
-      return false;
+  public SuperstructureState nextStateInPath(
+      SuperstructureState current, SuperstructureState goal) {
+    List<SuperstructureState> path = findShortestPath(current, goal);
+    // If there's no path or we're already at the goal, return current.
+    if (path == null || path.size() < 2) {
+      return current;
     }
-  }
+    // Otherwise, the next state along the optimal path is at index 1.
+    return path.get(1);
+  } // /**
+  // * @return {@code False} if the elevator is high enough where the arm can't
+  // collide with the
+  // * intake
+  // */
+  // public static boolean checkForArmCollision(ArmZone zone, ElevatorState
+  // elevatorState) {
+  // if (isInIntakeZone(zone)) {
+  // return elevatorState.pos.getRotations() <
+  // Elevator.MIN_HEIGHT_INTAKE_AVOIDANCE.getRotations();
+  // } else if (zone == ArmZone.BOTTOM_ZONE) {
+  // return elevatorState.pos.getRotations() <
+  // Elevator.MIN_HEIGHT_BOTTOM_AVOIDANCE.getRotations();
+  // } else {
+  // return false;
+  // }
+  // }
 
-  public static boolean checkForArmCollision(ArmState armState, ElevatorState elevatorState) {
-    return checkForArmCollision(armState.zone, elevatorState);
-  }
-
-  public boolean armInTolerance() {
-    return Math.abs(currentState.armState.degrees - arm.getPos().getDegrees())
-        < ARM_TOLERANCE.getDegrees();
-  }
-
-  public boolean elevatorInTolerance() {
-    return Math.abs(currentState.elevatorState.heightMeters - elevator.getPos().baseUnitMagnitude())
-        < ARM_TOLERANCE.getDegrees();
-  }
+  // public static boolean checkForArmCollision(ArmState armState, ElevatorState
+  // elevatorState) {
+  // return checkForArmCollision(armState.zone, elevatorState);
+  // }
 
   /**
    * @return {@code true} if the arm and elevator are within the tolerances for their current states
    */
   public boolean superstructureInTolerance() {
-    return elevatorInTolerance() && armInTolerance();
+    return elevator.inTolerance() && arm.inTolerance();
   }
 
-  /**
-   * @return {@code true} if the elevator is at or above the min position where the arm can swing
-   *     freely without hitting the intake
-   */
-  public boolean elevatorAboveIntakeMinimum() {
-    return elevator.getPos().baseUnitMagnitude()
-        >= Elevator.MIN_HEIGHT_INTAKE_AVOIDANCE.baseUnitMagnitude();
-  }
+  // /**
+  // * @param zone
+  // * @return {@code true} if the given armzone is the coral or algae zone
+  // */
+  // public static boolean isInIntakeZone(ArmZone zone) {
+  // return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
+  // }
 
-  /**
-   * @return {@code true} if the elevator is at or above the min position where the arm can swing
-   *     freely without hitting the floor
-   *     <p>WARNING: the elevator may still be able to hit the intake at this height
-   */
-  public boolean elevatorAboveFloorMinimum() {
-    return elevator.getPos().baseUnitMagnitude()
-        >= Elevator.MIN_HEIGHT_BOTTOM_AVOIDANCE.baseUnitMagnitude();
-  }
-
-  /**
-   * @param zone
-   * @return {@code true} if the given armzone is the coral or algae zone
-   */
-  public static boolean isInIntakeZone(ArmZone zone) {
-    return zone == ArmZone.CORAL_INTAKE || zone == ArmZone.ALGAE_INTAKE;
-  }
-
-  public static ArmZone getArmZone(SuperstructureState goal) {
-    return goal.armState.zone;
-  }
-
-  /** see Assets\Docs\TopUpperLimit.png */
-  public static ArmZone getArmZone(Rotation2d position) {
-    double deg = position.getDegrees();
-    if (deg >= Arm.TOP_LOWER_LIMIT.getDegrees() && deg <= Arm.TOP_UPPER_LIMIT.getDegrees()) {
-      return ArmZone.TOP_ZONE;
-    } else if (deg > Arm.TOP_UPPER_LIMIT.getDegrees()
-        && deg < Arm.BOTTOM_LOWER_LIMIT.getDegrees()) {
-      return ArmZone.CORAL_INTAKE;
-    } else if (deg > Arm.BOTTOM_LOWER_LIMIT.getDegrees()
-        && deg < Arm.BOTTOM_UPPER_LIMIT.getDegrees()) {
-      return ArmZone.BOTTOM_ZONE;
-    } else {
-      return ArmZone.ALGAE_INTAKE;
-    }
-  }
+  // /** see Assets\Docs\TopUpperLimit.png */
+  // public static ArmZone getArmZone(Rotation2d position) {
+  // double deg = position.getDegrees();
+  // if (deg >= Arm.TOP_LOWER_LIMIT.getDegrees() && deg <=
+  // Arm.TOP_UPPER_LIMIT.getDegrees()) {
+  // return ArmZone.TOP_ZONE;
+  // } else if (deg > Arm.TOP_UPPER_LIMIT.getDegrees()
+  // && deg < Arm.BOTTOM_LOWER_LIMIT.getDegrees()) {
+  // return ArmZone.CORAL_INTAKE;
+  // } else if (deg > Arm.BOTTOM_LOWER_LIMIT.getDegrees()
+  // && deg < Arm.BOTTOM_UPPER_LIMIT.getDegrees()) {
+  // return ArmZone.BOTTOM_ZONE;
+  // } else {
+  // return ArmZone.ALGAE_INTAKE;
+  // }
+  // }
 
   public boolean superstructureInTolerance(SuperstructureState goal) {
-    return (Math.abs(goal.armState.degrees - arm.getPos().getDegrees())
-            < ARM_TOLERANCE.getDegrees())
-        && (Math.abs(goal.elevatorState.heightMeters - elevator.getPos().baseUnitMagnitude())
-            < ELEVATOR_TOLERANCE.baseUnitMagnitude());
+    return arm.inTolerance(goal) && elevator.inTolerance(goal);
   }
 
   private Command setSingleState(SuperstructureState goal) {
+
     return Commands.run(
             () -> {
               arm.setState(goal.armState);
@@ -214,6 +258,15 @@ public class Superstructure {
         .finallyDo(
             () -> {
               currentState = goal;
-            });
+            })
+        .beforeStarting(
+            () -> {
+              visualizer.setDesiredSuperstructureState(goal);
+            })
+        .alongWith(
+            new InstantCommand(
+                () -> {
+                  Logger.recordOutput("Superstructure/CurrentState", goal);
+                }));
   }
 }

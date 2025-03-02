@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import au.grapplerobotics.CanBridge;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
@@ -21,7 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.Constants;
-import frc.robot.Constants.TunerConstants24;
+import frc.robot.Constants.Constants.LimelightFLConstants;
+import frc.robot.Constants.TunerConstants25;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -40,6 +42,7 @@ public class Robot extends LoggedRobot {
   RobotContainer robotContainer;
 
   public Robot() {
+    CanBridge.runTCP();
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -86,10 +89,10 @@ public class Robot extends LoggedRobot {
     // Check for valid swerve config
     var modules =
         new SwerveModuleConstants[] {
-          TunerConstants24.FrontLeft,
-          TunerConstants24.FrontRight,
-          TunerConstants24.BackLeft,
-          TunerConstants24.BackRight
+          TunerConstants25.FrontLeft,
+          TunerConstants25.FrontRight,
+          TunerConstants25.BackLeft,
+          TunerConstants25.BackRight
         };
     for (var constants : modules) {
       if (constants.DriveMotorType != DriveMotorArrangement.TalonFX_Integrated
@@ -128,15 +131,27 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    robotContainer.limelight.resetGyroLL4(robotContainer.drive);
+    // robotContainer.limelight.resetGyroLL4(robotContainer.drive);
     // System.out.println(FieldConstants.Reef.offsetPositions.size());
     // System.out.println(FieldConstants.Reef.centerFaces[0].getX());
+
+    robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
+    robotContainer.updateControllerAlerts();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     // robotContainer.limelight.resetGyroLL4();
+    robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -152,6 +167,11 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
     // robotContainer.limelight.resetGyroLL4();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
