@@ -507,9 +507,9 @@ public class DriveCommands {
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      (linearVelocity.getX() + xOutput) * drive.getMaxLinearSpeedMetersPerSec(),
-                      (linearVelocity.getY() + yOutput) * drive.getMaxLinearSpeedMetersPerSec(),
-                      (omegaOutput + omegaOverride) * drive.getMaxAngularSpeedRadPerSec());
+                      (xOutput*(1-linearVelocity.getX())) + (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (yOutput*(1-linearVelocity.getY())) + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (omegaOutput*(1-omegaOverride))+ (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
                       && DriverStation.getAlliance().get() == Alliance.Red;
