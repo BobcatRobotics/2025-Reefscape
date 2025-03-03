@@ -31,21 +31,24 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     inputs.ledMode = currentLedMode;
     // inputs.camMode = currentCamMode;
-    inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(name);
-    inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(name);
-    inputs.ta = LimelightHelpers.getTA(name);
-    inputs.tv = LimelightHelpers.getTV(name);
-    inputs.tx = LimelightHelpers.getTX(name); // TODO add limelight disconnect alert
-    inputs.ty = LimelightHelpers.getTY(name);
-    inputs.fiducialID = LimelightHelpers.getFiducialID(name);
-    String llClass = LimelightHelpers.getNeuralClassID(name);
-    inputs.tClass = llClass.isEmpty() ? 0 : Double.parseDouble(llClass);
+    if (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name) != null) {
+      inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(name);
+      inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(name);
+      inputs.ta = LimelightHelpers.getTA(name);
+      inputs.tv = LimelightHelpers.getTV(name);
+      inputs.tx = LimelightHelpers.getTX(name); // TODO add limelight disconnect alert
+      inputs.ty = LimelightHelpers.getTY(name);
+      inputs.fiducialID = LimelightHelpers.getFiducialID(name);
+      String llClass = LimelightHelpers.getNeuralClassID(name);
+      inputs.tClass = llClass.isEmpty() ? 0 : Double.parseDouble(llClass);
+      inputs.botPoseMG2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).pose;
+      inputs.tagCount = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).tagCount;
+      inputs.avgTagDist = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).avgTagDist;
+      inputs.botPose3d = LimelightHelpers.getBotPose3d_wpiBlue(name);
+      inputs.timestamp =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).timestampSeconds;
+    }
     inputs.name = name;
-    inputs.botPoseMG2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).pose;
-    inputs.tagCount = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).tagCount;
-    inputs.avgTagDist = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).avgTagDist;
-    inputs.botPose3d = LimelightHelpers.getBotPose3d_wpiBlue(name);
-    inputs.timestamp = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name).timestampSeconds;
     inputs.limelightType = limelightType;
   }
 

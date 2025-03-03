@@ -77,13 +77,12 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
+    // apriltagPipeline = inputs.pipelineID == 0;
+
+    io.updateInputs(inputs); // TODO fix
     Logger.processInputs("Limelight" + inputs.name, inputs);
 
-    // apriltagPipeline = inputs.pipelineID == 0;
     if (getBotPoseMG2() != null) {
-      io.updateInputs(inputs);
-      Logger.processInputs("Limelight" + inputs.name, inputs);
       LimelightHelpers.RawFiducial[] rawTrackedTags =
           LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
       List<Integer> trackedTagID = new ArrayList<Integer>();
@@ -138,16 +137,8 @@ public class Vision extends SubsystemBase {
         thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
       }
 
-      if (inputs.limelightType == LLTYPE.LL4) {
+      if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
         if (getPoseValidMG2(swerve.getRotation())) {
-          swerve.updatePose(
-              new VisionObservation(
-                  getBotPoseMG2(),
-                  getPoseTimestampMG2(),
-                  VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
-        }
-      } else {
-        if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
           swerve.updatePose(
               new VisionObservation(
                   getBotPoseMG2(),
@@ -160,12 +151,32 @@ public class Vision extends SubsystemBase {
         && DriverStation.isDSAttached()
         && getBotPoseMG2() != null) {
       LimelightHelpers.SetIMUMode(inputs.name, 4);
+      if (inputs.tagCount < 2) {
+        xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
+        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
+      } else {
+        xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
+        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
+      }
       io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
+      if (getPoseValidMG2(swerve.getRotation())) {
+        swerve.updatePose(
+            new VisionObservation(
+                getBotPoseMG2(),
+                getPoseTimestampMG2(),
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+      }
     }
   }
 
   public Pose2d getBotPoseMG2() {
-    return inputs.botPoseMG2;
+    // return inputs.botPoseMG2;
+
+    if (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name) != null) {
+      return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).pose;
+    } else {
+      return null;
+    }
   }
 
   public void resetGyroLL4() {
