@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.650572082379863,
+        "y": 6.391104118993135
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.703621190482034,
+        "y": 5.547066057483808
+      },
+      "isLocked": false,
+      "linkedName": "MVP pickup second"
+    },
+    {
+      "anchor": {
+        "x": 3.0990274599542333,
+        "y": 3.9747997711670466
+      },
+      "prevControl": {
+        "x": 3.0522205038792456,
+        "y": 4.220378900701692
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "MVP",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -48.13966014782024
+  },
+  "useDefaultConstraints": true
+}

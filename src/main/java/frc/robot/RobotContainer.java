@@ -17,6 +17,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+<<<<<<< Updated upstream
+=======
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+>>>>>>> Stashed changes
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -162,6 +167,7 @@ public class RobotContainer {
             .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
+<<<<<<< Updated upstream
     //   rightStick.button.whileTrue(
     //       DriveCommands.singleTagAlign(
     //           drive,
@@ -169,6 +175,21 @@ public class RobotContainer {
     //           () -> 0,
     //           () -> Rotation2d.fromDegrees(0)));
     // }
+=======
+    // Switch to X pattern when X button is pressed
+    // leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
+    gp.a.whileTrue(
+        DriveCommands.driveToCoral(
+            drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
+
+    gp.a.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
+    gp.b
+        .whileTrue(SuperstructureActions.handoff(superstructure, endEffector))
+        .onFalse(
+            superstructure
+                .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+                .alongWith(intake.stopCommand()));
+>>>>>>> Stashed changes
 
     //   rightStick.button.whileTrue(
     //       DriveCommands.driveToReef(drive, leftStick.xAxis, leftStick.yAxis, rightStick.yAxis));

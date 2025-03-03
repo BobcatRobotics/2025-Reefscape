@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.6185000000000003,
+        "y": 4.0055000000000005
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.894416705558383,
+        "y": 4.200645905160158
+      },
+      "isLocked": false,
+      "linkedName": "Popsicle4End"
+    },
+    {
+      "anchor": {
+        "x": 3.2370000000000005,
+        "y": 4.26875
+      },
+      "prevControl": {
+        "x": 2.039727948740482,
+        "y": 4.067710435578992
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -178.87669728592462
+  },
+  "reversed": false,
+  "folder": "Popsicle",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
