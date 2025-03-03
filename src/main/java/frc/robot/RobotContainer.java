@@ -54,7 +54,6 @@ import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
-import frc.robot.subsystems.Limelight.VisionIOLimelight;
 import frc.robot.subsystems.PhotonVision.Photon;
 import frc.robot.subsystems.PhotonVision.PhotonIO;
 import frc.robot.subsystems.PhotonVision.PhotonIOPhoton;
@@ -145,21 +144,25 @@ public class RobotContainer {
                 new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
-        limelightfl =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightFLConstants.constants));
-        limelightfr =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightFRConstants.constants));
-        limelightbl =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightBLConstants.constants));
-        limelightbr =
-            new Vision(drive, new VisionIOLimelight(Constants.LimelightBRConstants.constants));
+        // limelightfl =
+        // new Vision(drive, new
+        // VisionIOLimelight(Constants.LimelightFLConstants.constants));
+        // limelightfr =
+        // new Vision(drive, new
+        // VisionIOLimelight(Constants.LimelightFRConstants.constants));
+        // limelightbl =
+        // new Vision(drive, new
+        // VisionIOLimelight(Constants.LimelightBLConstants.constants));
+        // limelightbr =
+        // new Vision(drive, new
+        // VisionIOLimelight(Constants.LimelightBRConstants.constants));
 
         photon = new Photon(new PhotonIOPhoton("arducam"), "arducam");
         // photon = new Photon(new PhotonIO() {});
-        // limelightfl = new Vision(drive, new VisionIO() {});
-        // limelightfr = new Vision(drive, new VisionIO() {});
-        // limelightbl = new Vision(drive, new VisionIO() {});
-        // limelightbr = new Vision(drive, new VisionIO() {});
+        limelightfl = new Vision(drive, new VisionIO() {});
+        limelightfr = new Vision(drive, new VisionIO() {});
+        limelightbl = new Vision(drive, new VisionIO() {});
+        limelightbr = new Vision(drive, new VisionIO() {});
 
         climber = new Climber(new ClimberIOTalonFX(CLIMBER_TALON_ID));
 
@@ -298,7 +301,7 @@ public class RobotContainer {
     rightRuffy.button.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive).andThen(()-> limelightbl.resetGyroLL4()).andThen(()-> limelightbr.resetGyroLL4())
+                drive)
             // .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
