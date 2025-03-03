@@ -16,62 +16,34 @@ import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.IdleType;
 import frc.robot.util.ScoringLevel;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class SuperstructureActions {
 
   /** go to the desired level's corresponding prep position, */
   public static Command prepScore(
-      ScoringLevel level, boolean flipped, Superstructure superstructure, EndEffector endEffector) {
-    return superstructure
-        .setState(getCoralScoringPos(level, flipped))
+      ScoringLevel level, BooleanSupplier flipped, Superstructure superstructure, EndEffector endEffector) {
+    return superstructure.goToCoralPrepPos(level, flipped)
         .beforeStarting(
             () -> {
               superstructure.recordScoringLevel(level);
             });
   }
 
-  public static SuperstructureState getCoralScoringPos(ScoringLevel level, boolean flipped) {
-    // determine which state to go to based on the desired level
-    switch (level) {
-      case L1:
-        return flipped
-            ? SuperstructureState.FLIPPED_CORAL_PREP_L1
-            : SuperstructureState.CORAL_PREP_L1;
-      case L2:
-        return flipped
-            ? SuperstructureState.FLIPPED_CORAL_PREP_L2
-            : SuperstructureState.CORAL_PREP_L2;
-      case L3:
-        return flipped
-            ? SuperstructureState.FLIPPED_CORAL_PREP_L3
-            : SuperstructureState.CORAL_PREP_L3;
-      case L4:
-        return flipped
-            ? SuperstructureState.FLIPPED_CORAL_PREP_L4
-            : SuperstructureState.CORAL_PREP_L4;
-      case NET:
-        return flipped
-            ? SuperstructureState.FLIPPED_NET_PREP
-            : SuperstructureState.FLIPPED_NET_PREP;
-      default:
-        return flipped
-            ? SuperstructureState.FLIPPED_CORAL_PREP_L4
-            : SuperstructureState.CORAL_PREP_L4;
-    }
-  }
 
   /** go to the desired level's corresponding prep position, */
   public static Command score(
       Superstructure superstructure, EndEffector endEffector, IdleType endIdle) {
 
-    // A cursed nest, four layers deep,
+    // A cursed nest, six layers deep,
     // A tangled web that makes me weep.
     // Each check, another, down the chain,
     // My sanity drifts—debugging's pain.
     // Yet through this mess, it still prevails,
     // A fragile beast that somehow sails.
-    // Four deep in logic, lost in despair,
+    // Six deep in logic, lost in despair,
     // A nested hell beyond repair.
     // If this, then that, then maybe so,
     // My patience fades with each indent’s woe.
@@ -86,17 +58,23 @@ public class SuperstructureActions {
                     superstructure.setState(SuperstructureState.CORAL_SCORE_L2),
                     new ConditionalCommand(
                         superstructure.setState(SuperstructureState.CORAL_SCORE_L1),
-                        superstructure.setState(SuperstructureState.NET_SCORE),
-                        superstructure::isScoringLevelL1),
-                    superstructure::isScoringLevelL2),
-                superstructure::isScoringLevelL3),
-            superstructure::isScoringLevelL4)
+                        new ConditionalCommand(
+                          superstructure.setState(SuperstructureState.NET_SCORE),
+                          new ConditionalCommand(
+                            superstructure.setState(SuperstructureState.ALGAE_GRAB_L3),
+                            superstructure.setState(SuperstructureState.ALGAE_GRAB_L2),
+                             superstructure::isScoringLevelAlgaeL3),
+                          superstructure::isScoringLevelNet),
+                        superstructure::isScoringLevelCoralL1),
+                    superstructure::isScoringLevelCoralL2),
+                superstructure::isScoringLevelCoralL3),
+            superstructure::isScoringLevelCoralL4)
         .andThen(
             // if were scoring in the net, outtake until we dont have a peice
             // then go to idle
             superstructure.getScoringLevel() == ScoringLevel.NET
                 ? endEffector
-                    .outtakeCommand()
+                    .outtakeFastCommand()
                     .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
                     .andThen(superstructure.setState(endIdle.state))
                 // else, outake and start going down immediately
@@ -154,6 +132,13 @@ public class SuperstructureActions {
             });
   }
 
+  public static Command intakeAlgaeGround(Superstructure superstructure, EndEffector endEffector){
+    return superstructure.setState(SuperstructureState.INTAKE_ALGAE_GROUND)
+    .alongWith(endEffector.intakeAlgaeCommand())
+    .andThen(superstructure.setState(SuperstructureState.IDLE_ALGAE))
+    ;
+  }
+
   public static Command outtakeCoralGround(
       Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
     return // superstructure.setState(SuperstructureState.CORAL_HANDOFF)
@@ -178,6 +163,6 @@ public class SuperstructureActions {
         .andThen(
             superstructure
                 .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
-                .alongWith(endEffector.idleCommand()));
+                .alongWith(endEffector.idleCoralCommand()));
   }
 }

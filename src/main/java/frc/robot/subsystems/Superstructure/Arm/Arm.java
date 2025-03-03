@@ -96,10 +96,10 @@ public class Arm extends SubsystemBase {
   // return inputs.zone == desiredState.zone;
   // }
 
-  public void setState(ArmState state) {
+  public void setState(ArmState state, boolean flipped) {
     desiredState = state;
     if (state != ArmState.NO_OP) {
-      io.setDesiredState(desiredState);
+      io.setDesiredState(desiredState, flipped);
     }
   }
 

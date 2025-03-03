@@ -27,15 +27,6 @@ public enum SuperstructureState {
   CORAL_SCORE_L4(ElevatorState.CORAL_L4, ArmState.CORAL_SCORE_L4),
   POST_CORAL_SCORE_L4(ElevatorState.POST_CORAL_L4, ArmState.CORAL_SCORE_L4),
 
-  FLIPPED_CORAL_PREP_L1(
-      ElevatorState.CORAL_L1, ArmState.FLIPPED_CORAL_PREP_L1), // coral intake side
-  FLIPPED_CORAL_PREP_L2(ElevatorState.CORAL_L2, ArmState.FLIPPED_CORAL_PREP_L2),
-  FLIPPED_CORAL_PREP_L3(ElevatorState.CORAL_L3, ArmState.FLIPPED_CORAL_PREP_L3),
-  FLIPPED_CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.FLIPPED_CORAL_PREP_L4),
-  FLIPPED_CORAL_SCORE_L1(ElevatorState.CORAL_L1, ArmState.FLIPPED_CORAL_SCORE_L1),
-  FLIPPED_CORAL_SCORE_L2(ElevatorState.CORAL_L2, ArmState.FLIPPED_CORAL_SCORE_L2),
-  FLIPPED_CORAL_SCORE_L3(ElevatorState.CORAL_L3, ArmState.FLIPPED_CORAL_SCORE_L3),
-  FLIPPED_CORAL_SCORE_L4(ElevatorState.CORAL_L4, ArmState.FLIPPED_CORAL_SCORE_L4),
 
   IDLE_ALGAE(ElevatorState.IDLE_ALGAE, ArmState.IDLE_ALGAE),
   ALGAE_SCORE_PROCESSOR(ElevatorState.ALGAE_SCORE_PROCESSOR, ArmState.ALGAE_SCORE_PROCESSOR),
@@ -43,17 +34,11 @@ public enum SuperstructureState {
 
   ALGAE_PREP_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L2),
   ALGAE_PREP_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L3),
-  ALGAE_SCORE_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L2),
-  ALGAE_SCORE_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L3),
-  FLIPPED_ALGAE_PREP_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L2),
-  FLIPPED_ALGAE_PREP_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L3),
-  FLIPPED_ALGAE_SCORE_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L2),
-  FLIPPED_ALGAE_SCORE_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L3),
+  ALGAE_GRAB_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L2),
+  ALGAE_GRAB_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L3),
 
   NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
-  NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP),
-  FLIPPED_NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
-  FLIPPED_NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP);
+  NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP);
 
   SuperstructureState(ElevatorState elevatorState, ArmState armState) {
     this.armState = armState;

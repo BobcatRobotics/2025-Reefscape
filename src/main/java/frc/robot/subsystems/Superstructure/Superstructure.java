@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure {
@@ -27,7 +29,7 @@ public class Superstructure {
   private SuperstructureState currentState = SuperstructureState.UNKNOWN;
   private Arm arm;
   private Elevator elevator;
-  private ScoringLevel scoringLevel = ScoringLevel.L1;
+  private ScoringLevel scoringLevel = ScoringLevel.CORAL_L1;
 
   private final RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
@@ -38,7 +40,8 @@ public class Superstructure {
   }
 
   /**
-   * @return the position of the elevator, expressed as a percentage of its max travel, [0,1]
+   * @return the position of the elevator, expressed as a percentage of its max
+   *         travel, [0,1]
    */
   public double getElevatorPercentage() {
     return elevator.positionPercent();
@@ -54,24 +57,31 @@ public class Superstructure {
     return scoringLevel;
   }
 
-  public boolean isScoringLevelL1() {
-    return getScoringLevel() == ScoringLevel.L1;
+  public boolean isScoringLevelCoralL1() {
+    return getScoringLevel() == ScoringLevel.CORAL_L1;
   }
 
-  public boolean isScoringLevelL2() {
-    return getScoringLevel() == ScoringLevel.L2;
+  public boolean isScoringLevelCoralL2() {
+    return getScoringLevel() == ScoringLevel.CORAL_L2;
   }
 
-  public boolean isScoringLevelL3() {
-    return getScoringLevel() == ScoringLevel.L3;
+  public boolean isScoringLevelCoralL3() {
+    return getScoringLevel() == ScoringLevel.CORAL_L3;
   }
 
-  public boolean isScoringLevelL4() {
-    return getScoringLevel() == ScoringLevel.L4;
+  public boolean isScoringLevelCoralL4() {
+    return getScoringLevel() == ScoringLevel.CORAL_L4;
   }
 
   public boolean isScoringLevelNet() {
     return getScoringLevel() == ScoringLevel.NET;
+  }
+
+  public boolean isScoringLevelAlgaeL2(){
+    return getScoringLevel() == ScoringLevel.ALGAE_L2;
+  }
+  public boolean isScoringLevelAlgaeL3(){
+    return getScoringLevel() == ScoringLevel.ALGAE_L2;
   }
 
   public SuperstructureState getState() {
@@ -81,27 +91,58 @@ public class Superstructure {
   public Command setState(SuperstructureState goal) {
 
     return Commands.run(
+        () -> {
+          visualizer.setDesiredSuperstructureState(goal);
+          Logger.recordOutput("Superstructure/CurrentState", currentState);
+          Logger.recordOutput("Superstructure/DesiredState", goal);
+          SuperstructureState nextState = nextStateInPath(currentState, goal);
+          Logger.recordOutput("Superstructure/NextState", nextState);
+
+          if (arm.getDesiredState() != goal.armState) {
+            arm.setState(nextState.armState, false);
+          }
+          if (elevator.getDesiredState() != goal.elevatorState) {
+
+            elevator.setState(nextState.elevatorState);
+          }
+
+          if (superstructureInTolerance(nextState)) {
+            currentState = nextState;
+          }
+        },
+        arm,
+        elevator)
+        .until(() -> getState() == goal)
+        .finallyDo(
             () -> {
-              visualizer.setDesiredSuperstructureState(goal);
               Logger.recordOutput("Superstructure/CurrentState", currentState);
-              Logger.recordOutput("Superstructure/DesiredState", goal);
-              SuperstructureState nextState = nextStateInPath(currentState, goal);
-              Logger.recordOutput("Superstructure/NextState", nextState);
+            });
+  }
 
-              if (arm.getDesiredState() != goal.armState) {
-                arm.setState(nextState.armState);
-              }
-              if (elevator.getDesiredState() != goal.elevatorState) {
+  public Command setState(SuperstructureState goal, BooleanSupplier armFlipped) {
 
-                elevator.setState(nextState.elevatorState);
-              }
+    return Commands.run(
+        () -> {
+          visualizer.setDesiredSuperstructureState(goal);
+          Logger.recordOutput("Superstructure/CurrentState", currentState);
+          Logger.recordOutput("Superstructure/DesiredState", goal);
+          SuperstructureState nextState = nextStateInPath(currentState, goal);
+          Logger.recordOutput("Superstructure/NextState", nextState);
 
-              if (superstructureInTolerance(nextState)) {
-                currentState = nextState;
-              }
-            },
-            arm,
-            elevator)
+          if (arm.getDesiredState() != goal.armState) {
+            arm.setState(nextState.armState, armFlipped.getAsBoolean());
+          }
+          if (elevator.getDesiredState() != goal.elevatorState) {
+
+            elevator.setState(nextState.elevatorState);
+          }
+
+          if (superstructureInTolerance(nextState)) {
+            currentState = nextState;
+          }
+        },
+        arm,
+        elevator)
         .until(() -> getState() == goal)
         .finallyDo(
             () -> {
@@ -110,13 +151,15 @@ public class Superstructure {
   }
 
   /**
-   * Performs a breadth-first search of all possible states to find the shortest path from the start
+   * Performs a breadth-first search of all possible states to find the shortest
+   * path from the start
    * state to the goal state.
    *
    * @param start Current state
-   * @param goal desired goal state
-   * @return A list of states representing the shortest path from start to goal, {@code null} if no
-   *     path exists.
+   * @param goal  desired goal state
+   * @return A list of states representing the shortest path from start to goal,
+   *         {@code null} if no
+   *         path exists.
    */
   public List<SuperstructureState> findShortestPath(
       SuperstructureState start, SuperstructureState goal) {
@@ -210,7 +253,8 @@ public class Superstructure {
   // }
 
   /**
-   * @return {@code true} if the arm and elevator are within the tolerances for their current states
+   * @return {@code true} if the arm and elevator are within the tolerances for
+   *         their current states
    */
   public boolean superstructureInTolerance() {
     return elevator.inTolerance() && arm.inTolerance();
@@ -245,15 +289,15 @@ public class Superstructure {
     return arm.inTolerance(goal) && elevator.inTolerance(goal);
   }
 
-  private Command setSingleState(SuperstructureState goal) {
+  private Command setSingleState(SuperstructureState goal, boolean flipped) {
 
     return Commands.run(
-            () -> {
-              arm.setState(goal.armState);
-              elevator.setState(goal.elevatorState);
-            },
-            arm,
-            elevator)
+        () -> {
+          arm.setState(goal.armState, flipped);
+          elevator.setState(goal.elevatorState);
+        },
+        arm,
+        elevator)
         .until(() -> superstructureInTolerance(goal))
         .finallyDo(
             () -> {
@@ -268,5 +312,27 @@ public class Superstructure {
                 () -> {
                   Logger.recordOutput("Superstructure/CurrentState", goal);
                 }));
+  }
+
+  public Command goToCoralPrepPos(ScoringLevel level, BooleanSupplier flipped) {
+    switch (level) {
+      case CORAL_L1:
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+      case CORAL_L2:
+        return setState(SuperstructureState.CORAL_PREP_L2, flipped);
+      case CORAL_L3:
+        return setState(SuperstructureState.CORAL_PREP_L3, flipped);
+      case CORAL_L4:
+        return setState(SuperstructureState.CORAL_PREP_L4, flipped);
+      case NET:
+        return setState(SuperstructureState.NET_PREP, flipped);
+      case ALGAE_L2:
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
+      case ALGAE_L3:
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
+      default:
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+    }
+
   }
 }

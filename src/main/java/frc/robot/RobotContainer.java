@@ -324,7 +324,8 @@ public class RobotContainer {
     // operator controls
 
     // default commands
-    endEffector.setDefaultCommand(endEffector.idleCommand());
+    endEffector.setDefaultCommand(endEffector.idleCoralCommand());
+    climber.setDefaultCommand(climber.idleIn());
 
     // autoalign
     joystick.trigger.whileTrue(
@@ -338,19 +339,19 @@ public class RobotContainer {
 
     // reef levels
     buttonBoard.l1.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.L1, false, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l2.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.L2, false, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l3.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.L3, false, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l4.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.L4, false, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.net.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.NET, false, superstructure, endEffector));
+        SuperstructureActions.prepScore(ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector));
 
     // score
     joystick.thumb.onTrue(
@@ -359,13 +360,17 @@ public class RobotContainer {
     // stow
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
 
-    // intake
+    // intake from ground
     joystick.bottomLeft.onTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
+    // handoff
     joystick.bottomRight.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
 
-    joystick.bottomLeft.whileTrue(
-        SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
+    // intake algae from ground
+    joystick.topRight.onTrue(
+        SuperstructureActions.intakeAlgaeGround(superstructure, endEffector)
+    );
+
 
     // death stars
     joystick.bottom9.whileTrue(
@@ -382,34 +387,12 @@ public class RobotContainer {
     // zero intake
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
 
-    // climber testing
-    // joystick
-    //     .bottomLeft
-    //     .whileTrue(
-    //         new RunCommand(
-    //             () -> {
-    //               climber.setDutyCycle(-0.5);
-    //             },
-    //             climber))
-    //     .onFalse(
-    //         new InstantCommand(
-    //             () -> {
-    //               climber.setDutyCycle(0);
-    //             }));
-
-    // joystick
-    //     .bottomRight
-    //     .whileTrue(
-    //         new RunCommand(
-    //             () -> {
-    //               climber.setDutyCycle(0.5);
-    //             },
-    //             climber))
-    //     .onFalse(
-    //         new InstantCommand(
-    //             () -> {
-    //               climber.setDutyCycle(0);
-    //             }));
+    // climber
+    joystick.bottom7.whileTrue(new 
+    RunCommand(() -> {
+        climber.setDutyCycle(joystick.getY()); // TODO maybe invert
+    }, 
+    climber));
 
     joystick.bottom12.whileTrue(
         DriveCommands.driveToCoral(
