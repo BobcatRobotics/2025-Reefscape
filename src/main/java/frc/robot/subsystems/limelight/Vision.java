@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
   private double xyStdDev;
   private double thetaStdDev;
   private AprilTagFieldLayout aprilTagFieldLayout =
-      AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   public Vision(Drive swerve, VisionIO io) {
     this.io = io;
@@ -69,58 +69,25 @@ public class Vision extends SubsystemBase {
     io.setPipeline(inputs.name, id);
   }
 
+  public void throttleSet(int skippedFrames) {
+    if (getBotPoseMG2() != null) {
+      LimelightHelpers.SetThrottle(inputs.name, skippedFrames);
+    }
+  }
+
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
+    // apriltagPipeline = inputs.pipelineID == 0;
+
+    io.updateInputs(inputs); // TODO fix
     Logger.processInputs("Limelight" + inputs.name, inputs);
-    LimelightHelpers.SetFiducialIDFiltersOverride(
-        inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
-    apriltagPipeline = inputs.pipelineID == 0;
-
-    if (inputs.limelightType != LLTYPE.LL4 && DriverStation.isDSAttached()) {
-      if (DriverStation.getAlliance().isPresent()
-          && DriverStation.getAlliance().get() == Alliance.Red) {
-        // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
-        Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
-        io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
-
-      } else {
-        // io.setRobotOrientationMG2(swerve.getRotation());
-        io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
-      }
-    }
-
-    if (inputs.tagCount < 2) {
-      xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
-      thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
-    } else {
-      xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
-      thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
-    }
-
-    if (inputs.limelightType == LLTYPE.LL4) {
-      if (getPoseValidMG2(swerve.getRotation())) {
-        swerve.updatePose(
-            new VisionObservation(
-                getBotPoseMG2(),
-                getPoseTimestampMG2(),
-                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
-      }
-    } else {
-      if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
-        swerve.updatePose(
-            new VisionObservation(
-                getBotPoseMG2(),
-                getPoseTimestampMG2(),
-                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
-      }
-    }
-
-    if (inputs.name != "sim") {
+    if (getBotPoseMG2() != null) {
       LimelightHelpers.RawFiducial[] rawTrackedTags =
           LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
       List<Integer> trackedTagID = new ArrayList<Integer>();
+      LimelightHelpers.SetFiducialIDFiltersOverride(
+          inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
       for (int i = 0; i < rawTrackedTags.length; i++) {
         trackedTagID.add(rawTrackedTags[i].id);
@@ -133,27 +100,100 @@ public class Vision extends SubsystemBase {
 
       Logger.recordOutput("limelight" + inputs.name + "/visionTargets", trackedTagPoses);
     }
+    ;
+
+    if (inputs.limelightType != LLTYPE.LL4
+        && DriverStation.isDSAttached()
+        && getBotPoseMG2() != null) {
+
+      if (DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+        // System.out.println("red");
+        // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
+        LimelightHelpers.SetFiducialIDFiltersOverride(
+            inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
+        Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
+        io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
+
+      } else {
+        // System.out.println("blue");
+        // io.setRobotOrientationMG2(
+        //     new Rotation3d(swerve.getPose().getRotation().getRadians(), 0, 0), new Rotation3d());
+        io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
+        // Logger.recordOutput(
+        //     "Odometry/swerveRotationY", Units.radiansToDegrees(swerve.getRotation3d().getZ()));
+        // Logger.recordOutput("Odometry/swerveRotationRateY", swerve.getRotationRate().getZ());
+        // Logger.recordOutput("Odometry/swerveRotationP", swerve.getRotation3d().getX());
+        // Logger.recordOutput("Odometry/swerveRotationRateP", swerve.getRotationRate().getX());
+        // Logger.recordOutput("Odometry/swerveRotationR", swerve.getRotation3d().getY());
+        // Logger.recordOutput("Odometry/swerveRotationRateR", swerve.getRotationRate().getY());
+      }
+
+      if (inputs.tagCount < 2) {
+        xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
+        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
+      } else {
+        xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
+        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
+      }
+
+      if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
+        if (getPoseValidMG2(swerve.getRotation())) {
+          swerve.updatePose(
+              new VisionObservation(
+                  getBotPoseMG2(),
+                  getPoseTimestampMG2(),
+                  VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+        }
+      }
+
+    } else if (inputs.limelightType == LLTYPE.LL4
+        && DriverStation.isDSAttached()
+        && getBotPoseMG2() != null) {
+      LimelightHelpers.SetIMUMode(inputs.name, 4);
+      if (inputs.tagCount < 2) {
+        xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
+        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
+      } else {
+        xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
+        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
+      }
+      io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
+      if (getPoseValidMG2(swerve.getRotation())) {
+        swerve.updatePose(
+            new VisionObservation(
+                getBotPoseMG2(),
+                getPoseTimestampMG2(),
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+      }
+    }
   }
 
   public Pose2d getBotPoseMG2() {
-    return inputs.botPoseMG2;
+    // return inputs.botPoseMG2;
+
+    if (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name) != null) {
+      return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).pose;
+    } else {
+      return null;
+    }
   }
 
-  public void resetGyroLL4(Drive drive) {
-    if (DriverStation.isDSAttached()) {
+  public void resetGyroLL4() {
+    if (DriverStation.isDSAttached() && getBotPoseMG2() != null) {
       LimelightHelpers.SetIMUMode(inputs.name, 1);
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
         // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
-        Rotation3d gyro = drive.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
-        io.setRobotOrientationMG2(gyro, drive.getRotationRate());
+        Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
+        io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
 
       } else {
         // io.setRobotOrientationMG2(swerve.getRotation());
-        io.setRobotOrientationMG2(drive.getRotation3d(), drive.getRotationRate());
+        io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
       }
 
-      LimelightHelpers.SetIMUMode(inputs.name, 2);
+      LimelightHelpers.SetIMUMode(inputs.name, 4);
     }
   }
 

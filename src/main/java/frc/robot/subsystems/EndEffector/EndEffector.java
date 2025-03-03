@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.EndEffector;
 
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
@@ -12,13 +12,17 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.BooleanSupplier;
+import frc.robot.util.ScoringLevel;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
-  public static double IDLE_SPEED = 60;
-  public static double INTAKE_SPEED = 1000;
+  public static double CORAL_IDLE_SPEED = 1;
+  public static double ALGAE_IDLE_SPEED = 5;
+  public static double INTAKE_CORAL_SPEED = 500;  
+  public static double INTAKE_ALGAE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
+  public static double OUTTAKE_FAST_SPEED = -1000;
+  public static double CORAL_SCORE_SPEED = -5;
 
   private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;
@@ -39,7 +43,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public Distance getDistanceToPiece() {
-    return Meters.of(inputs.laserCanDistanceMilimeters);
+    return Millimeters.of(inputs.laserCanDistanceMilimeters);
   }
 
   public boolean hasPiece() {
@@ -51,38 +55,49 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void idle() {
-    io.setSpeed(IDLE_SPEED);
+    io.setSpeed(CORAL_IDLE_SPEED);
   }
 
-  public Command idleCommand() {
+  public Command idleCoralCommand() {
     return new RunCommand(
         () -> {
-          io.setSpeed(IDLE_SPEED);
+          io.setSpeed(CORAL_IDLE_SPEED);
         },
         this);
   }
 
-  public void intake() {
-    io.setSpeed(INTAKE_SPEED);
+  public Command idleAlgaeCommand() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(ALGAE_IDLE_SPEED);
+        },
+        this);
   }
 
-  public Command intakeCommand() {
-    return new RunCommand(
-            () -> {
-              io.setSpeed(INTAKE_SPEED);
-            },
-            this)
-        .until(() -> inputs.hasPiece);
+  public void intakeCoral() {
+    io.setSpeed(INTAKE_CORAL_SPEED);
   }
 
-  public Command intakeUntilCommand(BooleanSupplier condition) {
+  public Command intakeCoralCommand() {
     return new RunCommand(
             () -> {
-              io.setSpeed(INTAKE_SPEED);
+              io.setSpeed(INTAKE_CORAL_SPEED);
             },
             this)
-        .until(condition);
+        .until(() -> inputs.hasPiece)
+        .andThen(idleCoralCommand());
   }
+  
+  public Command intakeAlgaeCommand() {
+    return new RunCommand(
+            () -> {
+              io.setSpeed(INTAKE_ALGAE_SPEED);
+            },
+            this)
+        .until(() -> inputs.hasPiece)
+        .andThen(idleAlgaeCommand());
+  }
+
 
   public void outtake() {
     io.setSpeed(OUTTAKE_SPEED);
@@ -92,6 +107,30 @@ public class EndEffector extends SubsystemBase {
     return new RunCommand(
         () -> {
           io.setSpeed(OUTTAKE_SPEED);
+        },
+        this);
+  }
+  public Command outtakeFastCommand() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(OUTTAKE_FAST_SPEED);
+        },
+        this);
+  }
+
+  public Command coralOut(ScoringLevel level) {
+    //if were scoring in l1 we need to actually shoot out the coral
+    if (level == ScoringLevel.CORAL_L1) {
+      return new RunCommand(
+          () -> {
+            io.setSpeed(OUTTAKE_SPEED);
+          },
+          this);
+    }
+
+    return new RunCommand(
+        () -> {
+          io.setSpeed(CORAL_SCORE_SPEED);
         },
         this);
   }
