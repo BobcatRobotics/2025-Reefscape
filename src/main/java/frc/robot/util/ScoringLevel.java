@@ -1,9 +1,11 @@
 package frc.robot.util;
 
 public enum ScoringLevel {
-  L1, // trough
-  L2,
-  L3,
-  L4,
+  CORAL_L1, // trough
+  CORAL_L2,
+  CORAL_L3,
+  CORAL_L4,
+  ALGAE_L2,
+  ALGAE_L3,
   NET
 }

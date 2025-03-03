@@ -104,6 +104,8 @@ public class Drive extends SubsystemBase {
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
+  private ScoreSide desiredScoreSide = ScoreSide.FRONT;
+
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
@@ -225,6 +227,16 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+  }
+
+  public void setDesiredScoringSide(ScoreSide side){
+    desiredScoreSide = side;
+  }
+  public ScoreSide getDesiredScoringSide(){
+    return desiredScoreSide;
+  }
+  public boolean isCoralSideDesired(){
+    return desiredScoreSide == ScoreSide.CORAL_INTAKE;
   }
 
   /**

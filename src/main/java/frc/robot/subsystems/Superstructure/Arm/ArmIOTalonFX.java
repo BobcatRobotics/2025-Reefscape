@@ -121,8 +121,9 @@ public class ArmIOTalonFX implements ArmIO {
    * @param state the desired state
    */
   @Override
-  public void setDesiredState(ArmState state) {
+  public void setDesiredState(ArmState state, boolean flipped) {
     desiredState = state;
+    double rotations = flipped ? 0.5 - state.rotations : state.rotations;
     motor.setControl(angleRequest.withPosition(state.rotations));
   }
 }

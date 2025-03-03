@@ -16,9 +16,12 @@ import frc.robot.util.ScoringLevel;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
-  public static double IDLE_SPEED = 1;
-  public static double INTAKE_CORAL_SPEED = 500;
+  public static double CORAL_IDLE_SPEED = 1;
+  public static double ALGAE_IDLE_SPEED = 5;
+  public static double INTAKE_CORAL_SPEED = 500;  
+  public static double INTAKE_ALGAE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
+  public static double OUTTAKE_FAST_SPEED = -1000;
   public static double CORAL_SCORE_SPEED = -5;
 
   private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
@@ -52,18 +55,26 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void idle() {
-    io.setSpeed(IDLE_SPEED);
+    io.setSpeed(CORAL_IDLE_SPEED);
   }
 
-  public Command idleCommand() {
+  public Command idleCoralCommand() {
     return new RunCommand(
         () -> {
-          io.setSpeed(IDLE_SPEED);
+          io.setSpeed(CORAL_IDLE_SPEED);
         },
         this);
   }
 
-  public void intake() {
+  public Command idleAlgaeCommand() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(ALGAE_IDLE_SPEED);
+        },
+        this);
+  }
+
+  public void intakeCoral() {
     io.setSpeed(INTAKE_CORAL_SPEED);
   }
 
@@ -74,8 +85,19 @@ public class EndEffector extends SubsystemBase {
             },
             this)
         .until(() -> inputs.hasPiece)
-        .andThen(idleCommand());
+        .andThen(idleCoralCommand());
   }
+  
+  public Command intakeAlgaeCommand() {
+    return new RunCommand(
+            () -> {
+              io.setSpeed(INTAKE_ALGAE_SPEED);
+            },
+            this)
+        .until(() -> inputs.hasPiece)
+        .andThen(idleAlgaeCommand());
+  }
+
 
   public void outtake() {
     io.setSpeed(OUTTAKE_SPEED);
@@ -88,15 +110,24 @@ public class EndEffector extends SubsystemBase {
         },
         this);
   }
+  public Command outtakeFastCommand() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(OUTTAKE_FAST_SPEED);
+        },
+        this);
+  }
 
   public Command coralOut(ScoringLevel level) {
-    if (level == ScoringLevel.L1) {
+    //if were scoring in l1 we need to actually shoot out the coral
+    if (level == ScoringLevel.CORAL_L1) {
       return new RunCommand(
           () -> {
             io.setSpeed(OUTTAKE_SPEED);
           },
           this);
     }
+
     return new RunCommand(
         () -> {
           io.setSpeed(CORAL_SCORE_SPEED);

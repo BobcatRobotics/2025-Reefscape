@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.Drive;
+import frc.robot.subsystems.Drive.ScoreSide;
 import frc.robot.subsystems.PhotonVision.Photon;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RotationUtil;
@@ -428,12 +429,14 @@ public class DriveCommands {
               double transformY = 0;
 
               Rotation2d closestRotation = new Rotation2d();
-              if (poseDirection.getRotation().getRadians()
-                      - RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians()
+              if (Math.abs(poseDirection.getRotation().getRadians()
+                      - RotationUtil.wrapRot2d(drive.getPose().getRotation()).getRadians())
                   <= Math.PI / 2) {
+                drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = poseDirection.getRotation();
                 transformY = -END_EFFECTOR_BIAS.in(Meters);
               } else {
+                drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
                 closestRotation = poseDirection.getRotation().unaryMinus();
                 transformY = END_EFFECTOR_BIAS.in(Meters);
               }
@@ -529,7 +532,14 @@ public class DriveCommands {
               xController.reset(drive.getPose().getX());
               yController.reset(drive.getPose().getY());
               angleController.reset(drive.getPose().getRotation().getRadians());
-            });
+            }).finallyDo(
+              //if were not autoaligning, always use the front side
+              () -> {
+                drive.setDesiredScoringSide(
+                  ScoreSide.FRONT
+                );
+              }
+            );
   }
 
   public static Command driveToReef(
