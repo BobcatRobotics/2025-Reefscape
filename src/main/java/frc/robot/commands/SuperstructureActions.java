@@ -16,7 +16,6 @@ import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.IdleType;
 import frc.robot.util.ScoringLevel;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -24,18 +23,21 @@ public class SuperstructureActions {
 
   /** go to the desired level's corresponding prep position, */
   public static Command prepScore(
-      ScoringLevel level, BooleanSupplier flipped, Superstructure superstructure, EndEffector endEffector) {
-    return superstructure.goToCoralPrepPos(level, flipped)
+      ScoringLevel level,
+      BooleanSupplier flipped,
+      Superstructure superstructure,
+      EndEffector endEffector) {
+    return superstructure
+        .goToCoralPrepPos(level, flipped)
         .beforeStarting(
             () -> {
               superstructure.recordScoringLevel(level);
             });
   }
 
-
   /** go to the desired level's corresponding prep position, */
   public static Command score(
-      Superstructure superstructure, EndEffector endEffector, IdleType endIdle) {
+      Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped) {
 
     // A cursed nest, six layers deep,
     // A tangled web that makes me weep.
@@ -51,20 +53,25 @@ public class SuperstructureActions {
     // Refactor dreams drift far away.
 
     return new ConditionalCommand(
-            superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
+            superstructure.setState(SuperstructureState.CORAL_SCORE_L4, flipped.getAsBoolean()),
             new ConditionalCommand(
-                superstructure.setState(SuperstructureState.CORAL_SCORE_L3),
+                superstructure.setState(SuperstructureState.CORAL_SCORE_L3, flipped.getAsBoolean()),
                 new ConditionalCommand(
-                    superstructure.setState(SuperstructureState.CORAL_SCORE_L2),
+                    superstructure.setState(
+                        SuperstructureState.CORAL_SCORE_L2, flipped.getAsBoolean()),
                     new ConditionalCommand(
-                        superstructure.setState(SuperstructureState.CORAL_SCORE_L1),
+                        superstructure.setState(
+                            SuperstructureState.CORAL_SCORE_L1, flipped.getAsBoolean()),
                         new ConditionalCommand(
-                          superstructure.setState(SuperstructureState.NET_SCORE),
-                          new ConditionalCommand(
-                            superstructure.setState(SuperstructureState.ALGAE_GRAB_L3),
-                            superstructure.setState(SuperstructureState.ALGAE_GRAB_L2),
-                             superstructure::isScoringLevelAlgaeL3),
-                          superstructure::isScoringLevelNet),
+                            superstructure.setState(
+                                SuperstructureState.NET_SCORE, flipped.getAsBoolean()),
+                            new ConditionalCommand(
+                                superstructure.setState(
+                                    SuperstructureState.ALGAE_GRAB_L3, flipped.getAsBoolean()),
+                                superstructure.setState(
+                                    SuperstructureState.ALGAE_GRAB_L2, flipped.getAsBoolean()),
+                                superstructure::isScoringLevelAlgaeL3),
+                            superstructure::isScoringLevelNet),
                         superstructure::isScoringLevelCoralL1),
                     superstructure::isScoringLevelCoralL2),
                 superstructure::isScoringLevelCoralL3),
@@ -76,11 +83,11 @@ public class SuperstructureActions {
                 ? endEffector
                     .outtakeFastCommand()
                     .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
-                    .andThen(superstructure.setState(endIdle.state))
+                    .andThen(superstructure.setState(IdleType.UPRIGHT.state))
                 // else, outake and start going down immediately
                 : endEffector
                     .coralOut(superstructure.getScoringLevel())
-                    .raceWith(superstructure.setState(endIdle.state)))
+                    .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
         .withInterruptBehavior(
             InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
   }
@@ -132,11 +139,11 @@ public class SuperstructureActions {
             });
   }
 
-  public static Command intakeAlgaeGround(Superstructure superstructure, EndEffector endEffector){
-    return superstructure.setState(SuperstructureState.INTAKE_ALGAE_GROUND)
-    .alongWith(endEffector.intakeAlgaeCommand())
-    .andThen(superstructure.setState(SuperstructureState.IDLE_ALGAE))
-    ;
+  public static Command intakeAlgaeGround(Superstructure superstructure, EndEffector endEffector) {
+    return superstructure
+        .setState(SuperstructureState.INTAKE_ALGAE_GROUND)
+        .alongWith(endEffector.intakeAlgaeCommand())
+        .andThen(superstructure.setState(SuperstructureState.IDLE_ALGAE));
   }
 
   public static Command outtakeCoralGround(

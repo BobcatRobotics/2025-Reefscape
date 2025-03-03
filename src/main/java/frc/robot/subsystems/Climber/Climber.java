@@ -33,8 +33,7 @@ public class Climber extends SubsystemBase {
     io.setPosition(pos);
   }
 
-  public Command idleIn(){
-    return Commands.run(
-      () -> io.setDutyCycle(-0.02), this); //TODO tune
+  public Command idleIn() {
+    return Commands.run(() -> io.setDutyCycle(-0.02), this); // TODO tune
   }
 }

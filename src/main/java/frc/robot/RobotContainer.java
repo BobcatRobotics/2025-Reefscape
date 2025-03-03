@@ -66,7 +66,6 @@ import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-import frc.robot.util.IdleType;
 import frc.robot.util.ScoringLevel;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -300,10 +299,11 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
             .andThen(
-                () -> {
-                  limelightbl.resetGyroLL4();
-                  limelightbr.resetGyroLL4();
-                })
+                Commands.runOnce(
+                    () -> {
+                      //   limelightbl.resetGyroLL4();
+                      //   limelightbr.resetGyroLL4();
+                    }))
             .ignoringDisable(true));
 
     // Switch to X pattern when X button is pressed
@@ -327,35 +327,43 @@ public class RobotContainer {
     endEffector.setDefaultCommand(endEffector.idleCoralCommand());
     climber.setDefaultCommand(climber.idleIn());
 
+    double aidenAlignStrength = 1;
     // autoalign
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
             drive,
-            leftRuffy.xAxis,
-            leftRuffy.yAxis,
+            () -> leftRuffy.yAxis.getAsDouble(),
+            () -> -leftRuffy.xAxis.getAsDouble(),
             rightRuffy.xAxis,
             joystick.povRight(),
-            joystick.povLeft()));
+            joystick.povLeft(),
+            () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
 
     // reef levels
     buttonBoard.l1.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l2.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l3.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l4.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.net.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector));
 
     // score
     joystick.thumb.onTrue(
-        SuperstructureActions.score(superstructure, endEffector, IdleType.UPRIGHT));
+        SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
 
     // stow
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
@@ -367,10 +375,7 @@ public class RobotContainer {
     joystick.bottomRight.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
 
     // intake algae from ground
-    joystick.topRight.onTrue(
-        SuperstructureActions.intakeAlgaeGround(superstructure, endEffector)
-    );
-
+    joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
 
     // death stars
     joystick.bottom9.whileTrue(
@@ -388,11 +393,12 @@ public class RobotContainer {
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
 
     // climber
-    joystick.bottom7.whileTrue(new 
-    RunCommand(() -> {
-        climber.setDutyCycle(joystick.getY()); // TODO maybe invert
-    }, 
-    climber));
+    joystick.bottom7.whileTrue(
+        new RunCommand(
+            () -> {
+              climber.setDutyCycle(joystick.getY()); // TODO maybe invert
+            },
+            climber));
 
     joystick.bottom12.whileTrue(
         DriveCommands.driveToCoral(

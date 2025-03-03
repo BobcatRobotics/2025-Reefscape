@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure {
@@ -40,8 +39,7 @@ public class Superstructure {
   }
 
   /**
-   * @return the position of the elevator, expressed as a percentage of its max
-   *         travel, [0,1]
+   * @return the position of the elevator, expressed as a percentage of its max travel, [0,1]
    */
   public double getElevatorPercentage() {
     return elevator.positionPercent();
@@ -77,10 +75,11 @@ public class Superstructure {
     return getScoringLevel() == ScoringLevel.NET;
   }
 
-  public boolean isScoringLevelAlgaeL2(){
+  public boolean isScoringLevelAlgaeL2() {
     return getScoringLevel() == ScoringLevel.ALGAE_L2;
   }
-  public boolean isScoringLevelAlgaeL3(){
+
+  public boolean isScoringLevelAlgaeL3() {
     return getScoringLevel() == ScoringLevel.ALGAE_L2;
   }
 
@@ -91,27 +90,27 @@ public class Superstructure {
   public Command setState(SuperstructureState goal) {
 
     return Commands.run(
-        () -> {
-          visualizer.setDesiredSuperstructureState(goal);
-          Logger.recordOutput("Superstructure/CurrentState", currentState);
-          Logger.recordOutput("Superstructure/DesiredState", goal);
-          SuperstructureState nextState = nextStateInPath(currentState, goal);
-          Logger.recordOutput("Superstructure/NextState", nextState);
+            () -> {
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
 
-          if (arm.getDesiredState() != goal.armState) {
-            arm.setState(nextState.armState, false);
-          }
-          if (elevator.getDesiredState() != goal.elevatorState) {
+              if (arm.getDesiredState() != goal.armState) {
+                arm.setState(nextState.armState, false);
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
 
-            elevator.setState(nextState.elevatorState);
-          }
+                elevator.setState(nextState.elevatorState);
+              }
 
-          if (superstructureInTolerance(nextState)) {
-            currentState = nextState;
-          }
-        },
-        arm,
-        elevator)
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
         .until(() -> getState() == goal)
         .finallyDo(
             () -> {
@@ -119,30 +118,31 @@ public class Superstructure {
             });
   }
 
-  public Command setState(SuperstructureState goal, BooleanSupplier armFlipped) {
+  public Command setState(SuperstructureState goal, boolean armFlipped) {
 
     return Commands.run(
-        () -> {
-          visualizer.setDesiredSuperstructureState(goal);
-          Logger.recordOutput("Superstructure/CurrentState", currentState);
-          Logger.recordOutput("Superstructure/DesiredState", goal);
-          SuperstructureState nextState = nextStateInPath(currentState, goal);
-          Logger.recordOutput("Superstructure/NextState", nextState);
+            () -> {
+              Logger.recordOutput("Superstructure/IsFlippingArm", armFlipped);
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
 
-          if (arm.getDesiredState() != goal.armState) {
-            arm.setState(nextState.armState, armFlipped.getAsBoolean());
-          }
-          if (elevator.getDesiredState() != goal.elevatorState) {
+              if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
+                arm.setState(nextState.armState, armFlipped);
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
 
-            elevator.setState(nextState.elevatorState);
-          }
+                elevator.setState(nextState.elevatorState);
+              }
 
-          if (superstructureInTolerance(nextState)) {
-            currentState = nextState;
-          }
-        },
-        arm,
-        elevator)
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
         .until(() -> getState() == goal)
         .finallyDo(
             () -> {
@@ -151,15 +151,13 @@ public class Superstructure {
   }
 
   /**
-   * Performs a breadth-first search of all possible states to find the shortest
-   * path from the start
+   * Performs a breadth-first search of all possible states to find the shortest path from the start
    * state to the goal state.
    *
    * @param start Current state
-   * @param goal  desired goal state
-   * @return A list of states representing the shortest path from start to goal,
-   *         {@code null} if no
-   *         path exists.
+   * @param goal desired goal state
+   * @return A list of states representing the shortest path from start to goal, {@code null} if no
+   *     path exists.
    */
   public List<SuperstructureState> findShortestPath(
       SuperstructureState start, SuperstructureState goal) {
@@ -253,8 +251,7 @@ public class Superstructure {
   // }
 
   /**
-   * @return {@code true} if the arm and elevator are within the tolerances for
-   *         their current states
+   * @return {@code true} if the arm and elevator are within the tolerances for their current states
    */
   public boolean superstructureInTolerance() {
     return elevator.inTolerance() && arm.inTolerance();
@@ -292,12 +289,12 @@ public class Superstructure {
   private Command setSingleState(SuperstructureState goal, boolean flipped) {
 
     return Commands.run(
-        () -> {
-          arm.setState(goal.armState, flipped);
-          elevator.setState(goal.elevatorState);
-        },
-        arm,
-        elevator)
+            () -> {
+              arm.setState(goal.armState, flipped);
+              elevator.setState(goal.elevatorState);
+            },
+            arm,
+            elevator)
         .until(() -> superstructureInTolerance(goal))
         .finallyDo(
             () -> {
@@ -317,22 +314,21 @@ public class Superstructure {
   public Command goToCoralPrepPos(ScoringLevel level, BooleanSupplier flipped) {
     switch (level) {
       case CORAL_L1:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
       case CORAL_L2:
-        return setState(SuperstructureState.CORAL_PREP_L2, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L2, flipped.getAsBoolean());
       case CORAL_L3:
-        return setState(SuperstructureState.CORAL_PREP_L3, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L3, flipped.getAsBoolean());
       case CORAL_L4:
-        return setState(SuperstructureState.CORAL_PREP_L4, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L4, flipped.getAsBoolean());
       case NET:
-        return setState(SuperstructureState.NET_PREP, flipped);
+        return setState(SuperstructureState.NET_PREP, flipped.getAsBoolean());
       case ALGAE_L2:
-        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
       case ALGAE_L3:
-        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
       default:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
     }
-
   }
 }

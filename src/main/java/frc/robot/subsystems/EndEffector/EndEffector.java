@@ -18,7 +18,7 @@ import org.littletonrobotics.junction.Logger;
 public class EndEffector extends SubsystemBase {
   public static double CORAL_IDLE_SPEED = 1;
   public static double ALGAE_IDLE_SPEED = 5;
-  public static double INTAKE_CORAL_SPEED = 500;  
+  public static double INTAKE_CORAL_SPEED = 500;
   public static double INTAKE_ALGAE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
   public static double OUTTAKE_FAST_SPEED = -1000;
@@ -87,7 +87,7 @@ public class EndEffector extends SubsystemBase {
         .until(() -> inputs.hasPiece)
         .andThen(idleCoralCommand());
   }
-  
+
   public Command intakeAlgaeCommand() {
     return new RunCommand(
             () -> {
@@ -97,7 +97,6 @@ public class EndEffector extends SubsystemBase {
         .until(() -> inputs.hasPiece)
         .andThen(idleAlgaeCommand());
   }
-
 
   public void outtake() {
     io.setSpeed(OUTTAKE_SPEED);
@@ -110,6 +109,7 @@ public class EndEffector extends SubsystemBase {
         },
         this);
   }
+
   public Command outtakeFastCommand() {
     return new RunCommand(
         () -> {
@@ -119,7 +119,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public Command coralOut(ScoringLevel level) {
-    //if were scoring in l1 we need to actually shoot out the coral
+    // if were scoring in l1 we need to actually shoot out the coral
     if (level == ScoringLevel.CORAL_L1) {
       return new RunCommand(
           () -> {

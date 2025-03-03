@@ -63,38 +63,15 @@ public class Arm extends SubsystemBase {
     if (desiredState.armState == ArmState.NO_OP) {
       return true;
     }
-    return Math.abs(inputs.absolutePosition.getRotations() - desiredState.armState.rotations)
+    double rotations =
+        inputs.flipped ? 0.5 - desiredState.armState.rotations : desiredState.armState.rotations;
+    return Math.abs(inputs.absolutePosition.getRotations() - rotations)
         < ARM_TOLERANCE.getRotations();
   }
 
   public ArmState getDesiredState() {
     return desiredState;
   }
-
-  // public ArmZone getArmZone() {
-  // return inputs.zone;
-  // }
-
-  // public boolean isInIntakeZone() {
-  // return Superstructure.isInIntakeZone(inputs.zone);
-  // }
-
-  // /**
-  // * @return {@code false} if the the arm has to go through potential collision
-  // zones to get to
-  // the
-  // * desired state from its current state, {@code true} if the current state and
-  // desired
-  // state
-  // * are in the same zone.
-  // * <p>note that if the elevator is high enough, this wont matter, since it
-  // will be out of
-  // the
-  // * range of the intake and bellypan
-  // */
-  // public boolean willStayInZone(ArmState desiredState) {
-  // return inputs.zone == desiredState.zone;
-  // }
 
   public void setState(ArmState state, boolean flipped) {
     desiredState = state;
@@ -105,5 +82,9 @@ public class Arm extends SubsystemBase {
 
   public ArmState getState() {
     return inputs.state;
+  }
+
+  public boolean isFlipped() {
+    return inputs.flipped;
   }
 }
