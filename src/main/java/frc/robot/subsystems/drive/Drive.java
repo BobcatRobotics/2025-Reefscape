@@ -245,8 +245,8 @@ public class Drive extends SubsystemBase {
   public double getAdjustY() {
     return reefAlignAdjustY;
   }
-
-  public boolean isCoralSideDesired() {
+ 
+public boolean isCoralSideDesired() {
     return desiredScoreSide == ScoreSide.CORAL_INTAKE;
   }
 

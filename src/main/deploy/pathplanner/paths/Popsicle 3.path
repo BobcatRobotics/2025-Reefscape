@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1672768878718545,
-        "y": 5.1960996240601505
+        "x": 1.7355,
+        "y": 5.84825
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.551487414187644,
-        "y": 5.547740274599541
+        "x": 2.7449218719997805,
+        "y": 5.704335484563903
       },
       "isLocked": false,
-      "linkedName": "MVP score first"
+      "linkedName": "Popsicle2End"
     },
     {
       "anchor": {
-        "x": 2.650572082379863,
-        "y": 6.391104118993135
+        "x": 3.8025,
+        "y": 5.097499999999999
       },
       "prevControl": {
-        "x": 3.4203089244851252,
-        "y": 5.828861556064073
+        "x": 3.5581761822576947,
+        "y": 5.150470483137541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MVP pickup second"
+      "linkedName": "Popsicle3End"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -48.13966014782024
+    "rotation": 120.06858282186231
   },
   "reversed": false,
-  "folder": "MVP",
+  "folder": "Popsicle",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -121.200562821265
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
