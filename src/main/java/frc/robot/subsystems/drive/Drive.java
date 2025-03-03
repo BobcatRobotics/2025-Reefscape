@@ -229,13 +229,15 @@ public class Drive extends SubsystemBase {
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
 
-  public void setDesiredScoringSide(ScoreSide side){
+  public void setDesiredScoringSide(ScoreSide side) {
     desiredScoreSide = side;
   }
-  public ScoreSide getDesiredScoringSide(){
+
+  public ScoreSide getDesiredScoringSide() {
     return desiredScoreSide;
   }
-  public boolean isCoralSideDesired(){
+
+  public boolean isCoralSideDesired() {
     return desiredScoreSide == ScoreSide.CORAL_INTAKE;
   }
 

@@ -339,19 +339,24 @@ public class RobotContainer {
 
     // reef levels
     buttonBoard.l1.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l2.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l3.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l4.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.net.onTrue(
-        SuperstructureActions.prepScore(ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector));
+        SuperstructureActions.prepScore(
+            ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector));
 
     // score
     joystick.thumb.onTrue(
@@ -367,10 +372,7 @@ public class RobotContainer {
     joystick.bottomRight.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
 
     // intake algae from ground
-    joystick.topRight.onTrue(
-        SuperstructureActions.intakeAlgaeGround(superstructure, endEffector)
-    );
-
+    joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
 
     // death stars
     joystick.bottom9.whileTrue(
@@ -388,11 +390,12 @@ public class RobotContainer {
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
 
     // climber
-    joystick.bottom7.whileTrue(new 
-    RunCommand(() -> {
-        climber.setDutyCycle(joystick.getY()); // TODO maybe invert
-    }, 
-    climber));
+    joystick.bottom7.whileTrue(
+        new RunCommand(
+            () -> {
+              climber.setDutyCycle(joystick.getY()); // TODO maybe invert
+            },
+            climber));
 
     joystick.bottom12.whileTrue(
         DriveCommands.driveToCoral(
