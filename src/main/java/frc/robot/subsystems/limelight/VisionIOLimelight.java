@@ -6,6 +6,7 @@ package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.util.DSUtil;
 import frc.robot.util.RotationUtil;
@@ -103,12 +104,12 @@ public class VisionIOLimelight implements VisionIO {
 
     LimelightHelpers.SetRobotOrientation(
         name,
-        gyroval.getZ(),
-        rateval.getZ(),
-        gyroval.getY(),
-        rateval.getY(),
-        gyroval.getX(),
-        rateval.getX());
+        Units.radiansToDegrees(gyroval.getZ()),
+        Units.radiansToDegrees(rateval.getZ()),
+        Units.radiansToDegrees(gyroval.getY()),
+        Units.radiansToDegrees(rateval.getY()),
+        Units.radiansToDegrees(gyroval.getX()),
+        Units.radiansToDegrees(rateval.getX()));
   }
 
   @Override

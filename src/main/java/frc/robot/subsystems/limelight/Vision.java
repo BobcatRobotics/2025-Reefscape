@@ -76,20 +76,30 @@ public class Vision extends SubsystemBase {
     LimelightHelpers.SetFiducialIDFiltersOverride(
         inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
-    apriltagPipeline = inputs.pipelineID == 0;
+    // apriltagPipeline = inputs.pipelineID == 0;
 
     if (inputs.limelightType != LLTYPE.LL4
         && DriverStation.isDSAttached()
         && getBotPoseMG2() != null) {
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
+        // System.out.println("red");
         // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
         Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
         io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
 
       } else {
-        // io.setRobotOrientationMG2(swerve.getRotation());
+        // System.out.println("blue");
+        // io.setRobotOrientationMG2(
+        //     new Rotation3d(swerve.getPose().getRotation().getRadians(), 0, 0), new Rotation3d());
         io.setRobotOrientationMG2(swerve.getRotation3d(), swerve.getRotationRate());
+        Logger.recordOutput(
+            "Odometry/swerveRotationY", Units.radiansToDegrees(swerve.getRotation3d().getZ()));
+        Logger.recordOutput("Odometry/swerveRotationRateY", swerve.getRotationRate().getZ());
+        Logger.recordOutput("Odometry/swerveRotationP", swerve.getRotation3d().getX());
+        Logger.recordOutput("Odometry/swerveRotationRateP", swerve.getRotationRate().getX());
+        Logger.recordOutput("Odometry/swerveRotationR", swerve.getRotation3d().getY());
+        Logger.recordOutput("Odometry/swerveRotationRateR", swerve.getRotationRate().getY());
       }
     }
 

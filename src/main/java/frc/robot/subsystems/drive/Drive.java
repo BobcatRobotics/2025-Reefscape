@@ -344,7 +344,9 @@ public class Drive extends SubsystemBase {
 
   public Rotation3d getRotation3d() {
     return new Rotation3d(
-        gyroInputs.pitch.getRadians(), gyroInputs.roll.getRadians(), gyroInputs.yaw.getRadians());
+        gyroInputs.pitch.getRadians(),
+        gyroInputs.roll.getRadians(),
+        poseEstimator.getEstimatedPosition().getRotation().getRadians());
   }
 
   public Rotation3d getRotationRate() {
