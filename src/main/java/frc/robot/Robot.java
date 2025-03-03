@@ -135,10 +135,21 @@ public class Robot extends LoggedRobot {
     // System.out.println(FieldConstants.Reef.offsetPositions.size());
     // System.out.println(FieldConstants.Reef.centerFaces[0].getX());
 
+    robotContainer.limelightbl.throttleSet(5);
+    robotContainer.limelightbr.throttleSet(5);
+    robotContainer.limelightfl.throttleSet(5);
+    robotContainer.limelightfr.throttleSet(5);
+
     robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+
+    robotContainer.limelightbl.resetGyroLL4();
+    robotContainer.limelightbr.resetGyroLL4();
+
+    
+
 
     robotContainer.updateControllerAlerts();
   }
@@ -151,6 +162,11 @@ public class Robot extends LoggedRobot {
     robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
+    robotContainer.limelightbl.throttleSet(0);
+    robotContainer.limelightbr.throttleSet(0);
+    robotContainer.limelightfl.throttleSet(0);
+    robotContainer.limelightfr.throttleSet(0);
+
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -162,11 +178,18 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+  }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    robotContainer.limelightbl.throttleSet(0);
+    robotContainer.limelightbr.throttleSet(0);
+    robotContainer.limelightfl.throttleSet(0);
+    robotContainer.limelightfr.throttleSet(0);
+
     robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);

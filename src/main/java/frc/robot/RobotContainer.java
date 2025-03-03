@@ -298,7 +298,7 @@ public class RobotContainer {
     rightRuffy.button.onTrue(
         Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
+                drive).andThen(()-> limelightbl.resetGyroLL4()).andThen(()-> limelightbr.resetGyroLL4())
             // .alongWith(Commands.runOnce(() -> limelight.resetGyroLL4(drive)))
             .ignoringDisable(true));
 
