@@ -66,7 +66,6 @@ import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-import frc.robot.util.IdleType;
 import frc.robot.util.ScoringLevel;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -300,10 +299,11 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive)
             .andThen(
-                () -> {
-                  limelightbl.resetGyroLL4();
-                  limelightbr.resetGyroLL4();
-                })
+                Commands.runOnce(
+                    () -> {
+                      //   limelightbl.resetGyroLL4();
+                      //   limelightbr.resetGyroLL4();
+                    }))
             .ignoringDisable(true));
 
     // Switch to X pattern when X button is pressed
@@ -327,15 +327,18 @@ public class RobotContainer {
     endEffector.setDefaultCommand(endEffector.idleCoralCommand());
     climber.setDefaultCommand(climber.idleIn());
 
+    double aidenAlignStrength = 1;
     // autoalign
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
             drive,
-            leftRuffy.xAxis,
-            leftRuffy.yAxis,
+            () -> leftRuffy.yAxis.getAsDouble(),
+            () -> -leftRuffy.xAxis.getAsDouble(),
             rightRuffy.xAxis,
             joystick.povRight(),
-            joystick.povLeft()));
+            joystick.povLeft(),
+            () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
 
     // reef levels
     buttonBoard.l1.onTrue(
@@ -360,7 +363,7 @@ public class RobotContainer {
 
     // score
     joystick.thumb.onTrue(
-        SuperstructureActions.score(superstructure, endEffector, IdleType.UPRIGHT));
+        SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
 
     // stow
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));

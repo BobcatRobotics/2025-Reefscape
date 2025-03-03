@@ -118,18 +118,19 @@ public class Superstructure {
             });
   }
 
-  public Command setState(SuperstructureState goal, BooleanSupplier armFlipped) {
+  public Command setState(SuperstructureState goal, boolean armFlipped) {
 
     return Commands.run(
             () -> {
+              Logger.recordOutput("Superstructure/IsFlippingArm", armFlipped);
               visualizer.setDesiredSuperstructureState(goal);
               Logger.recordOutput("Superstructure/CurrentState", currentState);
               Logger.recordOutput("Superstructure/DesiredState", goal);
               SuperstructureState nextState = nextStateInPath(currentState, goal);
               Logger.recordOutput("Superstructure/NextState", nextState);
 
-              if (arm.getDesiredState() != goal.armState) {
-                arm.setState(nextState.armState, armFlipped.getAsBoolean());
+              if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
+                arm.setState(nextState.armState, armFlipped);
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
 
@@ -313,21 +314,21 @@ public class Superstructure {
   public Command goToCoralPrepPos(ScoringLevel level, BooleanSupplier flipped) {
     switch (level) {
       case CORAL_L1:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
       case CORAL_L2:
-        return setState(SuperstructureState.CORAL_PREP_L2, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L2, flipped.getAsBoolean());
       case CORAL_L3:
-        return setState(SuperstructureState.CORAL_PREP_L3, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L3, flipped.getAsBoolean());
       case CORAL_L4:
-        return setState(SuperstructureState.CORAL_PREP_L4, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L4, flipped.getAsBoolean());
       case NET:
-        return setState(SuperstructureState.NET_PREP, flipped);
+        return setState(SuperstructureState.NET_PREP, flipped.getAsBoolean());
       case ALGAE_L2:
-        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
       case ALGAE_L3:
-        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
       default:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
     }
   }
 }

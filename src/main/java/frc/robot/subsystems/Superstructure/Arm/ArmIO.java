@@ -20,6 +20,7 @@ public interface ArmIO {
     public ControlModeValue controlMode = ControlModeValue.DisabledOutput;
     public double desiredPositionRotation = 0;
     public double distanceToAlignment = 0;
+    public boolean flipped = false;
   }
 
   /** Updates the set of loggable inputs. */

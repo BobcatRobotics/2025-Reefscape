@@ -105,6 +105,7 @@ public class Drive extends SubsystemBase {
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private ScoreSide desiredScoreSide = ScoreSide.FRONT;
+  private double reefAlignAdjustY = 0;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -237,7 +238,15 @@ public class Drive extends SubsystemBase {
     return desiredScoreSide;
   }
 
-  public boolean isCoralSideDesired() {
+  public void setAdjustY(double y) {
+    reefAlignAdjustY = y;
+  }
+
+  public double getAdjustY() {
+    return reefAlignAdjustY;
+  }
+ 
+public boolean isCoralSideDesired() {
     return desiredScoreSide == ScoreSide.CORAL_INTAKE;
   }
 

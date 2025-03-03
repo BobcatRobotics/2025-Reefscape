@@ -37,7 +37,7 @@ public class SuperstructureActions {
 
   /** go to the desired level's corresponding prep position, */
   public static Command score(
-      Superstructure superstructure, EndEffector endEffector, IdleType endIdle) {
+      Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped) {
 
     // A cursed nest, six layers deep,
     // A tangled web that makes me weep.
@@ -53,18 +53,23 @@ public class SuperstructureActions {
     // Refactor dreams drift far away.
 
     return new ConditionalCommand(
-            superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
+            superstructure.setState(SuperstructureState.CORAL_SCORE_L4, flipped.getAsBoolean()),
             new ConditionalCommand(
-                superstructure.setState(SuperstructureState.CORAL_SCORE_L3),
+                superstructure.setState(SuperstructureState.CORAL_SCORE_L3, flipped.getAsBoolean()),
                 new ConditionalCommand(
-                    superstructure.setState(SuperstructureState.CORAL_SCORE_L2),
+                    superstructure.setState(
+                        SuperstructureState.CORAL_SCORE_L2, flipped.getAsBoolean()),
                     new ConditionalCommand(
-                        superstructure.setState(SuperstructureState.CORAL_SCORE_L1),
+                        superstructure.setState(
+                            SuperstructureState.CORAL_SCORE_L1, flipped.getAsBoolean()),
                         new ConditionalCommand(
-                            superstructure.setState(SuperstructureState.NET_SCORE),
+                            superstructure.setState(
+                                SuperstructureState.NET_SCORE, flipped.getAsBoolean()),
                             new ConditionalCommand(
-                                superstructure.setState(SuperstructureState.ALGAE_GRAB_L3),
-                                superstructure.setState(SuperstructureState.ALGAE_GRAB_L2),
+                                superstructure.setState(
+                                    SuperstructureState.ALGAE_GRAB_L3, flipped.getAsBoolean()),
+                                superstructure.setState(
+                                    SuperstructureState.ALGAE_GRAB_L2, flipped.getAsBoolean()),
                                 superstructure::isScoringLevelAlgaeL3),
                             superstructure::isScoringLevelNet),
                         superstructure::isScoringLevelCoralL1),
@@ -78,11 +83,11 @@ public class SuperstructureActions {
                 ? endEffector
                     .outtakeFastCommand()
                     .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
-                    .andThen(superstructure.setState(endIdle.state))
+                    .andThen(superstructure.setState(IdleType.UPRIGHT.state))
                 // else, outake and start going down immediately
                 : endEffector
                     .coralOut(superstructure.getScoringLevel())
-                    .raceWith(superstructure.setState(endIdle.state)))
+                    .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
         .withInterruptBehavior(
             InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
   }

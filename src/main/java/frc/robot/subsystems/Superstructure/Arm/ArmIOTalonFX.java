@@ -36,6 +36,7 @@ public class ArmIOTalonFX implements ArmIO {
   private StatusSignal<ControlModeValue> controlMode;
 
   private ArmState desiredState = ArmState.UNKOWN;
+  private boolean flipped = false;
 
   public ArmIOTalonFX(int falconID, int encoderID) {
 
@@ -106,8 +107,9 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.positionDegrees = inputs.absolutePosition.getDegrees();
     inputs.desiredPositionRotation = inputs.state.rotations;
-    inputs.distanceToAlignment =
-        Math.abs(position.getValueAsDouble() - desiredState.rotations) * 360;
+    inputs.flipped = flipped;
+    double rotations = flipped ? 0.5 - desiredState.rotations : desiredState.rotations;
+    inputs.distanceToAlignment = Math.abs(position.getValueAsDouble() - rotations) * 360;
     // inputs.zone = getArmZone();
   }
 
@@ -122,8 +124,9 @@ public class ArmIOTalonFX implements ArmIO {
    */
   @Override
   public void setDesiredState(ArmState state, boolean flipped) {
+    this.flipped = flipped;
     desiredState = state;
     double rotations = flipped ? 0.5 - state.rotations : state.rotations;
-    motor.setControl(angleRequest.withPosition(state.rotations));
+    motor.setControl(angleRequest.withPosition(rotations));
   }
 }
