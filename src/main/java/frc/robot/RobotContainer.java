@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -239,6 +240,7 @@ public class RobotContainer {
     registerCommands();
     // autobuilder handles 'do nothing' command
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser.addOption("Popsicle", new PathPlannerAuto("Popsicle"));
 
     // Set up SysId routines
     // drivetrain

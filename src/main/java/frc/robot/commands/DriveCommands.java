@@ -422,16 +422,20 @@ public class DriveCommands {
               // nearestFace.plus(new Transform2d(xOffset, yOffset, new Rotation2d()));
               // Logger.recordOutput("reef_face/offset", offsetFace);
               int faceIndex = -1;
-              for (int i = 0; i < FieldConstants.Reef.centerFaces.length; i++) {
-                if (FieldConstants.Reef.centerFaces[i] == nearestFace) {
+              for (int i = 0; i < flippedFaces.size(); i++) {
+                if ( flippedFaces.get(i)==nearestFace) {
                   faceIndex = i;
                   break;
                 }
               }
 
               Pose2d poseDirection =
-                  new Pose2d(
-                      FieldConstants.Reef.center, Rotation2d.fromDegrees(180 - (60 * faceIndex)));
+              AllianceFlipUtil.apply(new Pose2d(
+                (FieldConstants.Reef.center), (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
+
+              Logger.recordOutput("reef_face/poseDirection", poseDirection);
+              Logger.recordOutput("reef_face/faceIndex", faceIndex);
+
 
               double diff =
                   RotationUtil.wrapRot2d(drive.getPose().getRotation())
@@ -509,9 +513,9 @@ public class DriveCommands {
                           + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
                       (omegaOutput * (1 - omegaOverride))
                           + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
-              boolean isFlipped =
-                  DriverStation.getAlliance().isPresent()
-                      && DriverStation.getAlliance().get() == Alliance.Red;
+              boolean isFlipped = false;
+                  // DriverStation.getAlliance().isPresent()
+                  //     && DriverStation.getAlliance().get() == Alliance.Red;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                           speeds,
