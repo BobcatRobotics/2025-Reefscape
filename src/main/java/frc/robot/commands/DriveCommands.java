@@ -423,19 +423,20 @@ public class DriveCommands {
               // Logger.recordOutput("reef_face/offset", offsetFace);
               int faceIndex = -1;
               for (int i = 0; i < flippedFaces.size(); i++) {
-                if ( flippedFaces.get(i)==nearestFace) {
+                if (flippedFaces.get(i) == nearestFace) {
                   faceIndex = i;
                   break;
                 }
               }
 
               Pose2d poseDirection =
-              AllianceFlipUtil.apply(new Pose2d(
-                (FieldConstants.Reef.center), (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
+                  AllianceFlipUtil.apply(
+                      new Pose2d(
+                          (FieldConstants.Reef.center),
+                          (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
 
               Logger.recordOutput("reef_face/poseDirection", poseDirection);
               Logger.recordOutput("reef_face/faceIndex", faceIndex);
-
 
               double diff =
                   RotationUtil.wrapRot2d(drive.getPose().getRotation())
@@ -514,8 +515,8 @@ public class DriveCommands {
                       (omegaOutput * (1 - omegaOverride))
                           + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
               boolean isFlipped = false;
-                  // DriverStation.getAlliance().isPresent()
-                  //     && DriverStation.getAlliance().get() == Alliance.Red;
+              // DriverStation.getAlliance().isPresent()
+              //     && DriverStation.getAlliance().get() == Alliance.Red;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                           speeds,
@@ -656,11 +657,287 @@ public class DriveCommands {
               angleController.reset(0);
             });
   }
+
+  public static Command driveToProcessor(
+      Drive drive,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier rotationSupplier,
+      DoubleSupplier aidenAlignX,
+      DoubleSupplier aidenAlignY) {
+
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            2,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    ProfiledPIDController xController =
+        new ProfiledPIDController(3, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+
+    ProfiledPIDController yController =
+        new ProfiledPIDController(2, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+
+    return Commands.run(
+            () -> {
+              Pose2d nearestFace = AllianceFlipUtil.apply(FieldConstants.Processor.centerFace);
+              Logger.recordOutput("processor_face/raw", nearestFace);
+
+              // List<Map<ReefHeight, Pose3d>> offsetPositions =
+              // FieldConstants.Reef.branchPositions;
+
+              // double xOffset =
+              // ALIGN_DISTANCE.baseUnitMagnitude()
+              // * Math.cos(nearestFace.getRotation().getRadians());
+              // double yOffset =
+              // ALIGN_DISTANCE.baseUnitMagnitude()
+              // * Math.sin(nearestFace.getRotation().getRadians());
+
+              // Pose2d offsetFace =
+              // nearestFace.plus(new Transform2d(xOffset, yOffset, new Rotation2d()));
+              // Logger.recordOutput("reef_face/offset", offsetFace);
+
+              double adjustX = ALIGN_DISTANCE.in(Meters);
+
+              double transformY = -END_EFFECTOR_BIAS.in(Meters);
+              // double adjustY = Units.inchesToMeters(0);
+
+              Pose2d offsetFace =
+                  new Pose2d(
+                      nearestFace
+                          .transformBy(new Transform2d(adjustX, transformY, new Rotation2d()))
+                          .getTranslation(),
+                      nearestFace.getRotation());
+
+              Logger.recordOutput("processor_face/adjustY", drive.getAdjustY());
+
+              Logger.recordOutput("processor_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("reef_face/offset", offsetFace);
+
+              double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
+              double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
+              double omegaOutput =
+                  angleController.calculate(
+                      drive.getPose().getRotation().getRadians(),
+                      offsetFace.getRotation().getRadians() + Math.PI);
+
+              Logger.recordOutput("processor_face/xError", xController.getPositionError());
+              Logger.recordOutput("processor_face/xPID", xOutput);
+              Logger.recordOutput("processor_face/yError", yController.getPositionError());
+              Logger.recordOutput("processor_face/yPID", yOutput);
+              Logger.recordOutput("processor_face/omegaError", angleController.getPositionError());
+              Logger.recordOutput("processor_face/omegaPID", omegaOutput);
+
+              // double omegaOutput =
+              // angleController.calculate(
+              // drive.getPose().getRotation().getRadians(),
+              // nearestFace.getRotation().getRadians());
+
+              // double omegaOutput = 0;
+
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+              // Apply rotation deadband
+              double omegaOverride =
+                  MathUtil.applyDeadband(rotationSupplier.getAsDouble(), DEADBAND);
+
+              // Square rotation value for more precise control
+              omegaOverride = Math.copySign(omegaOverride * omegaOverride, omegaOverride);
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      (xOutput * (1 - linearVelocity.getX()))
+                          + (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (yOutput * (1 - linearVelocity.getY()))
+                          + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (omegaOutput * (1 - omegaOverride))
+                          + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
+              boolean isFlipped = false;
+              // DriverStation.getAlliance().isPresent()
+              //     && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                          speeds,
+                          isFlipped
+                              ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                              : drive.getRotation())
+                      // AidenAlign
+                      .plus(
+                          new ChassisSpeeds(
+                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0)));
+            },
+            drive)
+        .beforeStarting(
+            () -> {
+              xController.reset(drive.getPose().getX());
+              yController.reset(drive.getPose().getY());
+              angleController.reset(drive.getPose().getRotation().getRadians());
+            })
+        .finallyDo(
+            // if were not autoaligning, always use the front side, reset adjustY
+            () -> {
+              // drive.setDesiredScoringSide(ScoreSide.FRONT);
+              // drive.setAdjustY(0);
+            });
+  }
+
+  public static Command driveToBarge(
+      Drive drive,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier rotationSupplier,
+      DoubleSupplier aidenAlignX,
+      DoubleSupplier aidenAlignY) {
+
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            2,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // ProfiledPIDController xController =
+    //     new ProfiledPIDController(3, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+
+    // ProfiledPIDController yController =
+    //     new ProfiledPIDController(2, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+
+    return Commands.run(
+            () -> {
+              // Pose2d nearestFace = AllianceFlipUtil.apply(FieldConstants.Processor.centerFace);
+              // Logger.recordOutput("processor_face/raw", nearestFace);
+
+              // List<Map<ReefHeight, Pose3d>> offsetPositions =
+              // FieldConstants.Reef.branchPositions;
+
+              // double xOffset =
+              // ALIGN_DISTANCE.baseUnitMagnitude()
+              // * Math.cos(nearestFace.getRotation().getRadians());
+              // double yOffset =
+              // ALIGN_DISTANCE.baseUnitMagnitude()
+              // * Math.sin(nearestFace.getRotation().getRadians());
+
+              // Pose2d offsetFace =
+              // nearestFace.plus(new Transform2d(xOffset, yOffset, new Rotation2d()));
+              // Logger.recordOutput("reef_face/offset", offsetFace);
+
+              // double adjustX = ALIGN_DISTANCE.in(Meters);
+
+              // double transformY = -END_EFFECTOR_BIAS.in(Meters);
+              // double adjustY = Units.inchesToMeters(0);
+
+              // Pose2d offsetFace =
+              //     new Pose2d(
+              //         nearestFace
+              //             .transformBy(new Transform2d(adjustX, transformY, new Rotation2d()))
+              //             .getTranslation(),
+              //         nearestFace.getRotation());
+
+              // Logger.recordOutput("processor_face/adjustY", drive.getAdjustY());
+
+              // Logger.recordOutput("processor_face/adjustY", drive.getAdjustY());
+              // Logger.recordOutput("reef_face/offset", offsetFace);
+
+              // double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
+              // double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
+
+              Rotation2d omegaGoal = new Rotation2d(AllianceFlipUtil.shouldFlip() ? Math.PI : 0);
+
+              double diff =
+                  RotationUtil.wrapRot2d(drive.getPose().getRotation())
+                      .minus(omegaGoal)
+                      .getDegrees();
+
+
+              Rotation2d closestRotation =
+                  drive.getPose().getRotation().minus(Rotation2d.fromDegrees(diff));
+
+              if (Math.abs(diff) >= 90) { // use coral side
+                drive.setDesiredScoringSide(ScoreSide.FRONT);
+                closestRotation = closestRotation.plus(Rotation2d.k180deg);
+              } else { // use front
+                drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
+              }
+
+
+
+
+              double omegaOutput =
+                  angleController.calculate(drive.getPose().getRotation().getRadians(), closestRotation.getRadians());
+
+              // Logger.recordOutput("processor_face/xError", xController.getPositionError());
+              // Logger.recordOutput("processor_face/xPID", xOutput);
+              // Logger.recordOutput("processor_face/yError", yController.getPositionError());
+              // Logger.recordOutput("processor_face/yPID", yOutput);
+              Logger.recordOutput("barge/omegaError", angleController.getPositionError());
+              Logger.recordOutput("barge/omegaPID", omegaOutput);
+
+              // double omegaOutput =
+              // angleController.calculate(
+              // drive.getPose().getRotation().getRadians(),
+              // nearestFace.getRotation().getRadians());
+
+              // double omegaOutput = 0;
+
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+              // Apply rotation deadband
+              double omegaOverride =
+                  MathUtil.applyDeadband(rotationSupplier.getAsDouble(), DEADBAND);
+
+              // Square rotation value for more precise control
+              omegaOverride = Math.copySign(omegaOverride * omegaOverride, omegaOverride);
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (omegaOutput * (1 - omegaOverride))
+                          + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
+              boolean isFlipped = false;
+              // DriverStation.getAlliance().isPresent()
+              //     && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                          speeds,
+                          isFlipped
+                              ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                              : drive.getRotation())
+                      // AidenAlign
+                      .plus(
+                          new ChassisSpeeds(
+                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0)));
+            },
+            drive)
+        .beforeStarting(
+            () -> {
+              // xController.reset(drive.getPose().getX());
+              // yController.reset(drive.getPose().getY());
+              angleController.reset(drive.getPose().getRotation().getRadians());
+            })
+        .finallyDo(
+            // if were not autoaligning, always use the front side, reset adjustY
+            () -> {
+              drive.setDesiredScoringSide(ScoreSide.FRONT);
+              // drive.setAdjustY(0);
+            });
+  }
 }
 
 // The cool thing about being the only one who ever touches certian parts of the
 // code is you can
 // put whatever you want in the comments and no one will ever bother to read it
+
+// certAIn actually
 
 // ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 // ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⠛⠛⠛⠛⠛⢛⣿⠿⠟⠛⠛⠛⠛⠛⠛⠿⠿⣿⣟⠛⠛⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⣛
