@@ -264,6 +264,25 @@ public class RobotContainer {
         new ParallelCommandGroup(
             superstructure.setState(SuperstructureState.CORAL_SCORE_L1),
             endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
+
+    NamedCommands.registerCommand("stopOverride", Commands.run(() -> drive.clearPPOverride()));
+    NamedCommands.registerCommand("AutoalignCCW", DriveCommands.driveToReefAuto(drive, true));
+    NamedCommands.registerCommand("AutoalignCW", DriveCommands.driveToReefAuto(drive, false));
+    // NamedCommands.registerCommand(
+    //     "Prep Coral L4", superstructure.setState(SuperstructureState.CORAL_PREP_L4));
+    // NamedCommands.registerCommand(
+    //     "Score Coral L4",
+    //     new ParallelCommandGroup(
+    //         superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
+    //         endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
+
+    NamedCommands.registerCommand(
+        "Prep Coral L4", Commands.run(()-> limelightbl.resetGyroLL4()));
+    NamedCommands.registerCommand(
+        "Score Coral L4",
+            Commands.run(()-> limelightbl.resetGyroLL4()));
+        
+
   }
 
   public void updateControllerAlerts() {
@@ -314,17 +333,16 @@ public class RobotContainer {
 
     double aidenAlignStrength = 1;
     // autoalign
-    joystick.trigger
-        .whileTrue(
-            DriveCommands.driveToReef(
-                drive,
-                () -> leftRuffy.yAxis.getAsDouble(),
-                () -> -leftRuffy.xAxis.getAsDouble(),
-                () -> -rightRuffy.xAxis.getAsDouble(),
-                joystick.povRight(),
-                joystick.povLeft(),
-                () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-                () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    joystick.trigger.whileTrue(
+        DriveCommands.driveToReef(
+            drive,
+            () -> leftRuffy.yAxis.getAsDouble(),
+            () -> -leftRuffy.xAxis.getAsDouble(),
+            () -> -rightRuffy.xAxis.getAsDouble(),
+            joystick.povRight(),
+            joystick.povLeft(),
+            () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
 
     // reef levels
     buttonBoard.l1.onTrue(
@@ -406,30 +424,30 @@ public class RobotContainer {
             .withDeadline(
                 SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier)));
 
-//     rightRuffy
-//         .axisGreaterThan(1, .5)
-//         .whileTrue(
-//             DriveCommands.driveToBarge(
-//                 drive,
-//                 () -> leftRuffy.yAxis.getAsDouble(),
-//                 () -> -leftRuffy.xAxis.getAsDouble(),
-//                 () -> -rightRuffy.xAxis.getAsDouble(),
-//                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-//                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
-//   }
+    //     rightRuffy
+    //         .axisGreaterThan(1, .5)
+    //         .whileTrue(
+    //             DriveCommands.driveToBarge(
+    //                 drive,
+    //                 () -> leftRuffy.yAxis.getAsDouble(),
+    //                 () -> -leftRuffy.xAxis.getAsDouble(),
+    //                 () -> -rightRuffy.xAxis.getAsDouble(),
+    //                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+    //                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    //   }
 
-//     rightRuffy
-//         .axisGreaterThan(1, .5)
-//         .whileTrue(
-//             DriveCommands.driveToProcessor(
-//                 drive,
-//                 () -> leftRuffy.yAxis.getAsDouble(),
-//                 () -> -leftRuffy.xAxis.getAsDouble(),
-//                 () -> -rightRuffy.xAxis.getAsDouble(),
-//                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-//                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    //     rightRuffy
+    //         .axisGreaterThan(1, .5)
+    //         .whileTrue(
+    //             DriveCommands.driveToProcessor(
+    //                 drive,
+    //                 () -> leftRuffy.yAxis.getAsDouble(),
+    //                 () -> -leftRuffy.xAxis.getAsDouble(),
+    //                 () -> -rightRuffy.xAxis.getAsDouble(),
+    //                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+    //                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+
   }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

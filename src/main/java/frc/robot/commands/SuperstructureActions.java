@@ -41,16 +41,17 @@ public class SuperstructureActions {
       Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped) {
 
     return new ConditionalCommand(
-      endEffector.intakeAlgaeCommand()
-      .until(endEffector::hasPiece)
-      .andThen(endEffector.idleAlgaeCommand()),
-      stupidNestedConditional(superstructure, endEffector, flipped),
-       superstructure::isAlgaeScoringLevel);
-    
+        endEffector
+            .intakeAlgaeCommand()
+            .until(endEffector::hasPiece)
+            .andThen(endEffector.idleAlgaeCommand()),
+        stupidNestedConditional(superstructure, endEffector, flipped),
+        superstructure::isAlgaeScoringLevel);
   }
 
-  private static Command stupidNestedConditional(Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped){
-    
+  private static Command stupidNestedConditional(
+      Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped) {
+
     // A cursed nest, six layers deep,
     // A tangled web that makes me weep.
     // Each check, another, down the chain,
@@ -65,41 +66,42 @@ public class SuperstructureActions {
     // Refactor dreams drift far away.
 
     return new ConditionalCommand(
-      superstructure.setState(SuperstructureState.CORAL_SCORE_L4, flipped.getAsBoolean()),
-      new ConditionalCommand(
-          superstructure.setState(SuperstructureState.CORAL_SCORE_L3, flipped.getAsBoolean()),
-          new ConditionalCommand(
-              superstructure.setState(
-                  SuperstructureState.CORAL_SCORE_L2, flipped.getAsBoolean()),
-              new ConditionalCommand(
-                  superstructure.setState(
-                      SuperstructureState.CORAL_SCORE_L1, flipped.getAsBoolean()),
-                  new ConditionalCommand(
-                      superstructure.setState(
-                          SuperstructureState.NET_SCORE, flipped.getAsBoolean()),
-                      endEffector.intakeAlgaeCommand().until(endEffector::hasPiece),
-                      superstructure::isScoringLevelNet),
-                  superstructure::isScoringLevelCoralL1),
-              superstructure::isScoringLevelCoralL2),
-          superstructure::isScoringLevelCoralL3),
-      superstructure::isScoringLevelCoralL4)
-  .andThen(
-      // if were scoring in the net, outtake until we dont have a peice
-      // then go to idle
-      superstructure.getScoringLevel() == ScoringLevel.NET
-          ? endEffector
-              .outtakeFastCommand()
-              .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
-              .andThen(superstructure.setState(IdleType.UPRIGHT.state))
-          // else, outake and start going down immediately
-          : superstructure.isAlgaeScoringLevel()
-              ? endEffector.idleAlgaeCommand()
-              : endEffector
-                  .coralOut(superstructure.getScoringLevel())
-                  .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
-  .withInterruptBehavior(
-      InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
+            superstructure.setState(SuperstructureState.CORAL_SCORE_L4, flipped.getAsBoolean()),
+            new ConditionalCommand(
+                superstructure.setState(SuperstructureState.CORAL_SCORE_L3, flipped.getAsBoolean()),
+                new ConditionalCommand(
+                    superstructure.setState(
+                        SuperstructureState.CORAL_SCORE_L2, flipped.getAsBoolean()),
+                    new ConditionalCommand(
+                        superstructure.setState(
+                            SuperstructureState.CORAL_SCORE_L1, flipped.getAsBoolean()),
+                        new ConditionalCommand(
+                            superstructure.setState(
+                                SuperstructureState.NET_SCORE, flipped.getAsBoolean()),
+                            endEffector.intakeAlgaeCommand().until(endEffector::hasPiece),
+                            superstructure::isScoringLevelNet),
+                        superstructure::isScoringLevelCoralL1),
+                    superstructure::isScoringLevelCoralL2),
+                superstructure::isScoringLevelCoralL3),
+            superstructure::isScoringLevelCoralL4)
+        .andThen(
+            // if were scoring in the net, outtake until we dont have a peice
+            // then go to idle
+            superstructure.getScoringLevel() == ScoringLevel.NET
+                ? endEffector
+                    .outtakeFastCommand()
+                    .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
+                    .andThen(superstructure.setState(IdleType.UPRIGHT.state))
+                // else, outake and start going down immediately
+                : superstructure.isAlgaeScoringLevel()
+                    ? endEffector.idleAlgaeCommand()
+                    : endEffector
+                        .coralOut(superstructure.getScoringLevel())
+                        .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
+        .withInterruptBehavior(
+            InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
   }
+
   public static Command stow(Superstructure superstructure) {
     return superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE);
   }
