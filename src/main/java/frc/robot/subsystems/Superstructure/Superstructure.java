@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.util.ScoringLevel;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure {
@@ -46,13 +46,17 @@ public class Superstructure {
   }
 
   public void recordScoringLevel(ScoringLevel level) {
-    Logger.recordOutput("Auto/DesiredScoringLevel", level);
+    Logger.recordOutput("Superstructure/DesiredScoringLevel", level);
     scoringLevel = level;
   }
 
   /** only for use in commands */
   public ScoringLevel getScoringLevel() {
     return scoringLevel;
+  }
+
+  public boolean isAlgaeScoringLevel() {
+    return getScoringLevel() == ScoringLevel.ALGAE_L2 || getScoringLevel() == ScoringLevel.ALGAE_L3;
   }
 
   public boolean isScoringLevelCoralL1() {
@@ -190,7 +194,7 @@ public class Superstructure {
         for (SuperstructureState state : path) {
           pathString.append(state.name()).append(", ");
         }
-        Logger.recordOutput("StatePath", pathString.toString());
+        Logger.recordOutput("Superstructure/StatePath", pathString.toString());
         // If it is, return the current path as it is the shortest path found.
         return path;
       }
@@ -282,36 +286,12 @@ public class Superstructure {
   // }
   // }
 
+  @AutoLogOutput(key = "Superstructure/inTolerance")
   public boolean superstructureInTolerance(SuperstructureState goal) {
     return arm.inTolerance(goal) && elevator.inTolerance(goal);
   }
 
-  private Command setSingleState(SuperstructureState goal, boolean flipped) {
-
-    return Commands.run(
-            () -> {
-              arm.setState(goal.armState, flipped);
-              elevator.setState(goal.elevatorState);
-            },
-            arm,
-            elevator)
-        .until(() -> superstructureInTolerance(goal))
-        .finallyDo(
-            () -> {
-              currentState = goal;
-            })
-        .beforeStarting(
-            () -> {
-              visualizer.setDesiredSuperstructureState(goal);
-            })
-        .alongWith(
-            new InstantCommand(
-                () -> {
-                  Logger.recordOutput("Superstructure/CurrentState", goal);
-                }));
-  }
-
-  public Command goToCoralPrepPos(ScoringLevel level, BooleanSupplier flipped) {
+  public Command goToPrepPos(ScoringLevel level, BooleanSupplier flipped) {
     switch (level) {
       case CORAL_L1:
         return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
@@ -326,7 +306,7 @@ public class Superstructure {
       case ALGAE_L2:
         return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
       case ALGAE_L3:
-        return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
+        return setState(SuperstructureState.ALGAE_PREP_L3, flipped.getAsBoolean());
       default:
         return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
     }

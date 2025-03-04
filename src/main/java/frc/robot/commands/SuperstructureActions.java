@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -28,7 +29,7 @@ public class SuperstructureActions {
       Superstructure superstructure,
       EndEffector endEffector) {
     return superstructure
-        .goToCoralPrepPos(level, flipped)
+        .goToPrepPos(level, flipped)
         .beforeStarting(
             () -> {
               superstructure.recordScoringLevel(level);
@@ -65,18 +66,14 @@ public class SuperstructureActions {
                         new ConditionalCommand(
                             superstructure.setState(
                                 SuperstructureState.NET_SCORE, flipped.getAsBoolean()),
-                            new ConditionalCommand(
-                                superstructure.setState(
-                                    SuperstructureState.ALGAE_GRAB_L3, flipped.getAsBoolean()),
-                                superstructure.setState(
-                                    SuperstructureState.ALGAE_GRAB_L2, flipped.getAsBoolean()),
-                                superstructure::isScoringLevelAlgaeL3),
+                            endEffector.intakeAlgaeCommand().until(endEffector::hasPiece),
                             superstructure::isScoringLevelNet),
                         superstructure::isScoringLevelCoralL1),
                     superstructure::isScoringLevelCoralL2),
                 superstructure::isScoringLevelCoralL3),
             superstructure::isScoringLevelCoralL4)
         .andThen(
+
             // if were scoring in the net, outtake until we dont have a peice
             // then go to idle
             superstructure.getScoringLevel() == ScoringLevel.NET
@@ -85,9 +82,11 @@ public class SuperstructureActions {
                     .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
                     .andThen(superstructure.setState(IdleType.UPRIGHT.state))
                 // else, outake and start going down immediately
-                : endEffector
-                    .coralOut(superstructure.getScoringLevel())
-                    .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
+                : superstructure.isAlgaeScoringLevel()
+                    ? endEffector.idleAlgaeCommand()
+                    : endEffector
+                        .coralOut(superstructure.getScoringLevel())
+                        .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
         .withInterruptBehavior(
             InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
   }
@@ -136,6 +135,7 @@ public class SuperstructureActions {
         .handleInterrupt(
             () -> {
               intake.dampenCoral();
+              intake.retract();
             });
   }
 
@@ -143,7 +143,15 @@ public class SuperstructureActions {
     return superstructure
         .setState(SuperstructureState.INTAKE_ALGAE_GROUND)
         .alongWith(endEffector.intakeAlgaeCommand())
-        .andThen(superstructure.setState(SuperstructureState.IDLE_ALGAE));
+        .until(endEffector::hasPiece)
+        .andThen(
+            superstructure
+                .setState(SuperstructureState.IDLE_ALGAE)
+                .alongWith(new InstantCommand(() -> endEffector.setSpeed(-20))))
+        .finallyDo(
+            () -> {
+              endEffector.setSpeed(EndEffector.ALGAE_IDLE_SPEED);
+            });
   }
 
   public static Command outtakeCoralGround(

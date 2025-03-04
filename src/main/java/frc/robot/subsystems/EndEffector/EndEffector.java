@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
   public static double CORAL_IDLE_SPEED = 1;
-  public static double ALGAE_IDLE_SPEED = 5;
+  public static double ALGAE_IDLE_SPEED = 100;
   public static double INTAKE_CORAL_SPEED = 500;
   public static double INTAKE_ALGAE_SPEED = 1000;
   public static double OUTTAKE_SPEED = -300;
@@ -90,12 +90,10 @@ public class EndEffector extends SubsystemBase {
 
   public Command intakeAlgaeCommand() {
     return new RunCommand(
-            () -> {
-              io.setSpeed(INTAKE_ALGAE_SPEED);
-            },
-            this)
-        .until(() -> inputs.hasPiece)
-        .andThen(idleAlgaeCommand());
+        () -> {
+          io.setSpeed(INTAKE_ALGAE_SPEED);
+        },
+        this);
   }
 
   public void outtake() {

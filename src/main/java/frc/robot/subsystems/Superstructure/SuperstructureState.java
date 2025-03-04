@@ -32,9 +32,7 @@ public enum SuperstructureState {
   INTAKE_ALGAE_GROUND(ElevatorState.ALGAE_GROUND, ArmState.ALGAE_GROUND),
 
   ALGAE_PREP_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L2),
-  ALGAE_PREP_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L3),
-  ALGAE_GRAB_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L2),
-  ALGAE_GRAB_L3(ElevatorState.ALGAE_L2, ArmState.ALGAE_SCORE_L3),
+  ALGAE_PREP_L3(ElevatorState.ALGAE_L3, ArmState.ALGAE_PREP_L3),
 
   NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
   NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP);

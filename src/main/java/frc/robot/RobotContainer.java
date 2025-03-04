@@ -129,8 +129,7 @@ public class RobotContainer {
   private final Alert rightRuffyUnpluggedAlert =
       new Alert("Right Ruffy unplugged!", AlertType.kWarning);
 
-  private Supplier<Angle> trimSupplier = () -> Rotations.of(0);
-  // () -> Rotations.of((1 - joystick.throttle.getAsDouble()) / 2);
+  public Supplier<Angle> trimSupplier = () -> Rotations.of((3 * joystick.throttle.getAsDouble()));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -281,7 +280,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // driver controls
+    /*driver controls */
 
     // TODO decrease speed when CoG really high
     // default commands
@@ -301,27 +300,12 @@ public class RobotContainer {
             .andThen(
                 Commands.runOnce(
                     () -> {
-                      //   limelightbl.resetGyroLL4();
-                      //   limelightbr.resetGyroLL4();
+                      // limelightbl.resetGyroLL4();
+                      // limelightbr.resetGyroLL4();
                     }))
             .ignoringDisable(true));
 
-    // Switch to X pattern when X button is pressed
-    // leftRuffy.button.onTrue(Commands.runOnce(drive::stopWithX, drive));
-    // gp.a.whileTrue(
-    // DriveCommands.driveToCoral(
-    // drive, photon, () -> 0, () -> 0, () -> 0,
-    // superstructure::getElevatorPercentage));
-
-    // gp.a.onTrue(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE));
-    // gp.b
-    // .whileTrue(SuperstructureActions.handoff(superstructure, endEffector))
-    // .onFalse(
-    // superstructure
-    // .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
-    // .alongWith(intake.stopCommand()));
-
-    // operator controls
+    /* operator controls */
 
     // default commands
     endEffector.setDefaultCommand(endEffector.idleCoralCommand());
@@ -347,11 +331,17 @@ public class RobotContainer {
 
     buttonBoard.l2.onTrue(
         SuperstructureActions.prepScore(
-            ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector));
+            shouldUseAlgae() ? ScoringLevel.ALGAE_L2 : ScoringLevel.CORAL_L2,
+            drive::isCoralSideDesired,
+            superstructure,
+            endEffector));
 
     buttonBoard.l3.onTrue(
         SuperstructureActions.prepScore(
-            ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector));
+            shouldUseAlgae() ? ScoringLevel.ALGAE_L3 : ScoringLevel.CORAL_L3,
+            drive::isCoralSideDesired,
+            superstructure,
+            endEffector));
 
     buttonBoard.l4.onTrue(
         SuperstructureActions.prepScore(
@@ -369,13 +359,24 @@ public class RobotContainer {
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
 
     // intake from ground
-    joystick.bottomLeft.onTrue(
+    joystick.bottomLeft.whileTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
     // handoff
     joystick.bottomRight.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
 
     // intake algae from ground
     joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
+
+    // zero intake
+    joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
+
+    // climber
+    joystick.bottom7.whileTrue(
+        new RunCommand(
+            () -> {
+              climber.setDutyCycle(joystick.getY()); // TODO maybe invert
+            },
+            climber));
 
     // death stars
     joystick.bottom9.whileTrue(
@@ -388,17 +389,6 @@ public class RobotContainer {
     // outtake from coral intake
     joystick.bottom10.whileTrue(
         SuperstructureActions.outtakeCoralGround(superstructure, intake, trimSupplier));
-
-    // zero intake
-    joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
-
-    // climber
-    joystick.bottom7.whileTrue(
-        new RunCommand(
-            () -> {
-              climber.setDutyCycle(joystick.getY()); // TODO maybe invert
-            },
-            climber));
 
     joystick.bottom12.whileTrue(
         DriveCommands.driveToCoral(
@@ -422,5 +412,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public boolean shouldUseAlgae() {
+    return drive.getAdjustY() == 0 || joystick.bottom11.getAsBoolean();
   }
 }

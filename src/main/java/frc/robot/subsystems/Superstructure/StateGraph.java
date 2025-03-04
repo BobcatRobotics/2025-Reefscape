@@ -112,6 +112,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3,
               SuperstructureState.HP_INTAKE,
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.INTAKE_ALGAE_GROUND,
@@ -200,20 +202,14 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L2,
               SuperstructureState.IDLE_ALGAE,
-              SuperstructureState.ALGAE_GRAB_L2,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ALGAE_PREP_L3
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L3,
               SuperstructureState.IDLE_ALGAE,
-              SuperstructureState.ALGAE_GRAB_L3,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ALGAE_PREP_L2
-            },
-            new SuperstructureState[] {
-              SuperstructureState.ALGAE_GRAB_L2, SuperstructureState.ALGAE_GRAB_L2
-            },
-            new SuperstructureState[] {
-              SuperstructureState.ALGAE_GRAB_L3, SuperstructureState.ALGAE_GRAB_L3
             },
             new SuperstructureState[] {SuperstructureState.NET_SCORE, SuperstructureState.NET_PREP},
             new SuperstructureState[] {

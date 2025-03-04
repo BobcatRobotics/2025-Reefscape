@@ -19,8 +19,8 @@ public enum ElevatorState {
   CORAL_L4(Rotation2d.fromRotations(3.1)),
   POST_CORAL_L4(Rotation2d.fromRotations(2.3)),
   INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.5)), // safe height for flipping up the arm
-  ALGAE_L2(Rotation2d.fromRotations(0)),
-  ALGAE_L3(Rotation2d.fromRotations(0)),
+  ALGAE_L2(Rotation2d.fromRotations(1.5)),
+  ALGAE_L3(Rotation2d.fromRotations(2.5)),
   ALGAE_GROUND(Rotation2d.fromRotations(0)), // pickup algae from ground
   ALGAE_SCORE_PROCESSOR(Rotation2d.fromRotations(0)), // pickup algae from processor
   IDLE_ALGAE(Rotation2d.fromRotations(1.75)), // hold a algae
