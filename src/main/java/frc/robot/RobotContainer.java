@@ -238,6 +238,7 @@ public class RobotContainer {
     registerCommands();
     // autobuilder handles 'do nothing' command
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser.addOption("Popsicle", new PathPlannerAuto("Popsicle"));
 
     // Set up SysId routines
     // drivetrain
@@ -313,16 +314,18 @@ public class RobotContainer {
 
     double aidenAlignStrength = 1;
     // autoalign
-    joystick.trigger.whileTrue(
-        DriveCommands.driveToReef(
-            drive,
-            () -> leftRuffy.yAxis.getAsDouble(),
-            () -> -leftRuffy.xAxis.getAsDouble(),
-            rightRuffy.xAxis,
-            joystick.povRight(),
-            joystick.povLeft(),
-            () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    rightRuffy
+        .axisLessThan(1, -.75)
+        .whileTrue(
+            DriveCommands.driveToReef(
+                drive,
+                () -> leftRuffy.yAxis.getAsDouble(),
+                () -> -leftRuffy.xAxis.getAsDouble(),
+                () -> -rightRuffy.xAxis.getAsDouble(),
+                joystick.povRight(),
+                joystick.povLeft(),
+                () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+                () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
 
     // reef levels
     buttonBoard.l1.onTrue(
@@ -403,6 +406,17 @@ public class RobotContainer {
                     .withDeadline(new WaitCommand(0.5)))
             .withDeadline(
                 SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier)));
+
+    rightRuffy
+        .axisGreaterThan(1, .5)
+        .whileTrue(
+            DriveCommands.driveToBarge(
+                drive,
+                () -> leftRuffy.yAxis.getAsDouble(),
+                () -> -leftRuffy.xAxis.getAsDouble(),
+                () -> -rightRuffy.xAxis.getAsDouble(),
+                () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+                () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
   }
 
   /**
