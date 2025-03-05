@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.Enums;
 
 public enum ScoringLevel {
   CORAL_L1, // trough

@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -35,6 +36,7 @@ import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants25;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.SuperstructureActions;
 import frc.robot.subsystems.Climber.Climber;
@@ -66,8 +68,10 @@ import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-import frc.robot.util.ScoringLevel;
+import frc.robot.util.Enums.BranchSide;
+import frc.robot.util.Enums.ScoringLevel;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -239,6 +243,10 @@ public class RobotContainer {
     // autobuilder handles 'do nothing' command
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption("Popsicle", new PathPlannerAuto("Popsicle"));
+    autoChooser.addOption(
+        "MVP CW L4",
+        AutoCommands.fullAutoReefScore(
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
 
     // Set up SysId routines
     // drivetrain
@@ -327,6 +335,14 @@ public class RobotContainer {
                     }))
             .ignoringDisable(true));
 
+    leftRuffy.button.onTrue(
+        AutoCommands.fullAutoReefScore(
+            drive,
+            superstructure,
+            endEffector,
+            BranchSide.COUNTER_CLOCKWISE,
+            ScoringLevel.CORAL_L2));
+
     /* operator controls */
 
     // default commands
@@ -352,18 +368,20 @@ public class RobotContainer {
             ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.l2.onTrue(
-        SuperstructureActions.prepScore(
-            shouldUseAlgae() ? ScoringLevel.ALGAE_L2 : ScoringLevel.CORAL_L2,
-            drive::isCoralSideDesired,
-            superstructure,
-            endEffector));
+        new ConditionalCommand(
+            SuperstructureActions.prepScore(
+                ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector),
+            SuperstructureActions.prepScore(
+                ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector),
+            this::shouldUseAlgae));
 
     buttonBoard.l3.onTrue(
-        SuperstructureActions.prepScore(
-            shouldUseAlgae() ? ScoringLevel.ALGAE_L3 : ScoringLevel.CORAL_L3,
-            drive::isCoralSideDesired,
-            superstructure,
-            endEffector));
+        new ConditionalCommand(
+            SuperstructureActions.prepScore(
+                ScoringLevel.ALGAE_L3, drive::isCoralSideDesired, superstructure, endEffector),
+            SuperstructureActions.prepScore(
+                ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector),
+            this::shouldUseAlgae));
 
     buttonBoard.l4.onTrue(
         SuperstructureActions.prepScore(
@@ -375,7 +393,8 @@ public class RobotContainer {
 
     // score
     joystick.thumb.onTrue(
-        SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
+        SuperstructureActions.score(
+            superstructure, endEffector, drive::isCoralSideDesired, this::shouldUseAlgae));
 
     // stow
     joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
@@ -389,22 +408,37 @@ public class RobotContainer {
     // intake algae from ground
     joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
 
+    // score algae into the processor
+    joystick
+        .topLeft
+        .onTrue(superstructure.setState(SuperstructureState.ALGAE_SCORE_PROCESSOR))
+        .onFalse(
+            endEffector
+                .outtakeCommand()
+                .until(() -> !endEffector.hasPiece())
+                .andThen(
+                    endEffector
+                        .idleCoralCommand()
+                        .alongWith(
+                            superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE))));
+
     // zero intake
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
 
     // climber
     joystick.bottom7.whileTrue(
         new RunCommand(
-            () -> {
-              climber.setDutyCycle(joystick.getY()); // TODO maybe invert
-            },
-            climber));
+                () -> {
+                  climber.setDutyCycle(-joystick.getY()); // TODO maybe invert
+                },
+                climber)
+            .alongWith(superstructure.setState(SuperstructureState.CLIMB)));
 
     // death stars
     joystick.bottom9.whileTrue(
         new RunCommand(
             () -> {
-              intake.setSpeed(0.1);
+              intake.setSpeed(0.25);
             },
             intake));
 
@@ -448,7 +482,6 @@ public class RobotContainer {
     //                 () -> -rightRuffy.xAxis.getAsDouble(),
     //                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
     //                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
-
   }
 
   /**
@@ -460,6 +493,7 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
+  @AutoLogOutput(key = "Superstructure/usingAlgae")
   public boolean shouldUseAlgae() {
     return drive.getAdjustY() == 0 || joystick.bottom11.getAsBoolean();
   }

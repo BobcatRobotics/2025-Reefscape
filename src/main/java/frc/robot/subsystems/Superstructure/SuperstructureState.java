@@ -35,7 +35,8 @@ public enum SuperstructureState {
   ALGAE_PREP_L3(ElevatorState.ALGAE_L3, ArmState.ALGAE_PREP_L3),
 
   NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
-  NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP);
+  NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP),
+  CLIMB(ElevatorState.CLIMB, ArmState.CLIMB);
 
   SuperstructureState(ElevatorState elevatorState, ArmState armState) {
     this.armState = armState;

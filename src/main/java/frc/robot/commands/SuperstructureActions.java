@@ -1,13 +1,10 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Millimeters;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -15,8 +12,8 @@ import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
-import frc.robot.util.IdleType;
-import frc.robot.util.ScoringLevel;
+import frc.robot.util.Enums.IdleType;
+import frc.robot.util.Enums.ScoringLevel;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -36,70 +33,25 @@ public class SuperstructureActions {
             });
   }
 
-  /** go to the desired level's corresponding prep position, */
   public static Command score(
-      Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped) {
+      Superstructure superstructure,
+      EndEffector endEffector,
+      BooleanSupplier flipped,
+      BooleanSupplier shouldUseAlgae) {
 
-    return new ConditionalCommand(
-        endEffector
-            .intakeAlgaeCommand()
-            .until(endEffector::hasPiece)
-            .andThen(endEffector.idleAlgaeCommand()),
-        stupidNestedConditional(superstructure, endEffector, flipped),
-        superstructure::isAlgaeScoringLevel);
-  }
-
-  private static Command stupidNestedConditional(
-      Superstructure superstructure, EndEffector endEffector, BooleanSupplier flipped) {
-
-    // A cursed nest, six layers deep,
-    // A tangled web that makes me weep.
-    // Each check, another, down the chain,
-    // My sanity drifts—debugging's pain.
-    // Yet through this mess, it still prevails,
-    // A fragile beast that somehow sails.
-    // Six deep in logic, lost in despair,
-    // A nested hell beyond repair.
-    // If this, then that, then maybe so,
-    // My patience fades with each indent’s woe.
-    // Yet though it's cursed, it still must stay—
-    // Refactor dreams drift far away.
-
-    return new ConditionalCommand(
-            superstructure.setState(SuperstructureState.CORAL_SCORE_L4, flipped.getAsBoolean()),
-            new ConditionalCommand(
-                superstructure.setState(SuperstructureState.CORAL_SCORE_L3, flipped.getAsBoolean()),
-                new ConditionalCommand(
-                    superstructure.setState(
-                        SuperstructureState.CORAL_SCORE_L2, flipped.getAsBoolean()),
-                    new ConditionalCommand(
-                        superstructure.setState(
-                            SuperstructureState.CORAL_SCORE_L1, flipped.getAsBoolean()),
-                        new ConditionalCommand(
-                            superstructure.setState(
-                                SuperstructureState.NET_SCORE, flipped.getAsBoolean()),
-                            endEffector.intakeAlgaeCommand().until(endEffector::hasPiece),
-                            superstructure::isScoringLevelNet),
-                        superstructure::isScoringLevelCoralL1),
-                    superstructure::isScoringLevelCoralL2),
-                superstructure::isScoringLevelCoralL3),
-            superstructure::isScoringLevelCoralL4)
+    return superstructure
+        .score(flipped)
         .andThen(
-            // if were scoring in the net, outtake until we dont have a peice
-            // then go to idle
-            superstructure.getScoringLevel() == ScoringLevel.NET
-                ? endEffector
-                    .outtakeFastCommand()
-                    .until(() -> endEffector.getDistanceToPiece().in(Millimeters) > 70)
-                    .andThen(superstructure.setState(IdleType.UPRIGHT.state))
-                // else, outake and start going down immediately
-                : superstructure.isAlgaeScoringLevel()
-                    ? endEffector.idleAlgaeCommand()
-                    : endEffector
-                        .coralOut(superstructure.getScoringLevel())
-                        .raceWith(superstructure.setState(IdleType.UPRIGHT.state)))
-        .withInterruptBehavior(
-            InterruptionBehavior.kCancelSelf); // TODO should this be cancel self?
+            new ConditionalCommand(
+                endEffector
+                    .intakeAlgaeCommand()
+                    .until(endEffector::hasPiece)
+                    .andThen(endEffector.idleAlgaeCommand()),
+                endEffector
+                    .coralOut(superstructure.getScoringLevel())
+                    .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped))
+                    .withInterruptBehavior(InterruptionBehavior.kCancelSelf),
+                shouldUseAlgae));
   }
 
   public static Command stow(Superstructure superstructure) {
@@ -158,11 +110,7 @@ public class SuperstructureActions {
         .andThen(
             superstructure
                 .setState(SuperstructureState.IDLE_ALGAE)
-                .alongWith(new InstantCommand(() -> endEffector.setSpeed(-20))))
-        .finallyDo(
-            () -> {
-              endEffector.setSpeed(EndEffector.ALGAE_IDLE_SPEED);
-            });
+                .alongWith(endEffector.idleAlgaeCommand()));
   }
 
   public static Command outtakeCoralGround(

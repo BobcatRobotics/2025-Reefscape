@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.Enums;
 
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 

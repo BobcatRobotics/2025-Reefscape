@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.ScoringLevel;
+import frc.robot.util.Enums.ScoringLevel;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
   public static double CORAL_IDLE_SPEED = 1;
-  public static double ALGAE_IDLE_SPEED = 100;
+  public static double ALGAE_IDLE_SPEED = 10;
   public static double INTAKE_CORAL_SPEED = 500;
-  public static double INTAKE_ALGAE_SPEED = 1000;
+  public static double INTAKE_ALGAE_SPEED = 50;
   public static double OUTTAKE_SPEED = -300;
   public static double OUTTAKE_FAST_SPEED = -1000;
   public static double CORAL_SCORE_SPEED = -5;
@@ -118,13 +118,19 @@ public class EndEffector extends SubsystemBase {
 
   public Command coralOut(ScoringLevel level) {
     // if were scoring in l1 we need to actually shoot out the coral
-    if (level == ScoringLevel.CORAL_L1) {
-      return new RunCommand(
-          () -> {
+    return new RunCommand(
+        () -> {
+          if (level == ScoringLevel.CORAL_L1) {
             io.setSpeed(OUTTAKE_SPEED);
-          },
-          this);
-    }
+          } else {
+            io.setSpeed(CORAL_SCORE_SPEED);
+          }
+        },
+        this);
+  }
+
+  public Command coralOutSlow() {
+    // if were scoring in l1 we need to actually shoot out the coral
 
     return new RunCommand(
         () -> {

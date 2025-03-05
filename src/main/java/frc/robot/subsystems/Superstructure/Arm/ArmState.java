@@ -35,13 +35,14 @@ public enum ArmState {
   FLIPPED_ALGAE_SCORE_L2(0),
   FLIPPED_ALGAE_SCORE_L3(0),
 
-  ALGAE_GROUND(180 + 10),
-  ALGAE_SCORE_PROCESSOR(180 + 45),
-  IDLE_ALGAE(180), // coral handoff
-  NET_SCORE(180 + 45),
-  NET_PREP(180 + 90),
+  ALGAE_GROUND(180 + 15),
+  ALGAE_SCORE_PROCESSOR(180 - 45),
+  IDLE_ALGAE(180 - 45), // coral handoff
+  NET_SCORE(180 - 45),
+  NET_PREP(180 - 90),
   FLIPPED_NET_SCORE(0),
   FLIPPED_NET_PREP(25),
+  CLIMB(180),
   NO_OP(0), // do nothing, maintain current pos
   UNKOWN(0); // arm isnt at a predefined state
 
