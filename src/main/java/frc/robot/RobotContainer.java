@@ -277,10 +277,12 @@ public class RobotContainer {
     //         endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
 
     NamedCommands.registerCommand(
-        "Prep Coral L4", Commands.run(()-> limelightbl.resetGyroLL4()));
+        "Score", SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
+
     NamedCommands.registerCommand(
-        "Score Coral L4",
-            Commands.run(()-> limelightbl.resetGyroLL4()));
+        "Prep Coral L4",
+        SuperstructureActions.prepScore(
+            ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));                    
         
 
   }
