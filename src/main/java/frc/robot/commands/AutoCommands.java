@@ -1,0 +1,225 @@
+package frc.robot.commands;
+
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.Constants;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.subsystems.Drive.Drive;
+import frc.robot.subsystems.Drive.ScoreSide;
+import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.Superstructure.Superstructure;
+import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.Enums.BranchSide;
+import frc.robot.util.Enums.IdleType;
+import frc.robot.util.Enums.ScoringLevel;
+import frc.robot.util.RotationUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.Logger;
+
+public class AutoCommands {
+  private static final double TRANSLATION_TOLERANCE = 0.1;
+  private static final double THETA_TOLERANCE = 0.1;
+
+  public static Command fullAutoReefScore(
+      Drive drive,
+      Superstructure superstructure,
+      EndEffector endEffector,
+      BranchSide branchSide,
+      ScoringLevel level) {
+
+    List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
+
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            2,
+            0.0,
+            DriveCommands.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    ProfiledPIDController xController =
+        new ProfiledPIDController(
+            3, 0.0, DriveCommands.DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+
+    ProfiledPIDController yController =
+        new ProfiledPIDController(
+            5, 0.0, DriveCommands.DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+    angleController.setTolerance(THETA_TOLERANCE);
+    xController.setTolerance(TRANSLATION_TOLERANCE);
+    yController.setTolerance(TRANSLATION_TOLERANCE);
+
+    Timer timer = new Timer();
+
+    return Commands.run(
+            () -> {
+              timer.start();
+              switch (branchSide) {
+                case CENTER:
+                  drive.setAdjustY(0);
+                  break;
+                case CLOCKWISE:
+                  drive.setAdjustY(-FieldConstants.Reef.reefToBranchY);
+                  break;
+                case COUNTER_CLOCKWISE:
+                  drive.setAdjustY(FieldConstants.Reef.reefToBranchY);
+              }
+
+              List<Pose2d> flippedFaces = new ArrayList<>();
+
+              for (int j = 0; j < faces.size(); j++) {
+                flippedFaces.add(AllianceFlipUtil.apply(faces.get(j)));
+              }
+
+              Pose2d nearestFace = drive.getPose().nearest(flippedFaces);
+              Logger.recordOutput("reef_face/raw", nearestFace);
+
+              int faceIndex = -1;
+              for (int i = 0; i < flippedFaces.size(); i++) {
+                if (flippedFaces.get(i) == nearestFace) {
+                  faceIndex = i;
+                  break;
+                }
+              }
+
+              Pose2d poseDirection =
+                  AllianceFlipUtil.apply(
+                      new Pose2d(
+                          (FieldConstants.Reef.center),
+                          (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
+
+              Logger.recordOutput("reef_face/poseDirection", poseDirection);
+              Logger.recordOutput("reef_face/faceIndex", faceIndex);
+
+              double diff =
+                  RotationUtil.wrapRot2d(drive.getPose().getRotation())
+                      .minus(poseDirection.getRotation())
+                      .getDegrees();
+
+              double transformY = 0;
+
+              Rotation2d closestRotation =
+                  drive.getPose().getRotation().minus(Rotation2d.fromDegrees(diff));
+
+              if (Math.abs(diff) >= 90) { // use coral side
+                drive.setDesiredScoringSide(ScoreSide.FRONT);
+                closestRotation = closestRotation.plus(Rotation2d.k180deg);
+                transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+              } else { // use front
+                drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
+                transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+              }
+
+              double adjustX =
+                  DriveCommands.ALIGN_DISTANCE.baseUnitMagnitude()
+                      + FieldConstants.Reef.faceToCenter;
+              // double adjustY = Units.inchesToMeters(0);
+
+              Pose2d offsetFace =
+                  new Pose2d(
+                      poseDirection
+                          .transformBy(
+                              new Transform2d(
+                                  adjustX, drive.getAdjustY() + transformY, new Rotation2d()))
+                          .getTranslation(),
+                      poseDirection.getRotation());
+              Logger.recordOutput("adjustY", drive.getAdjustY());
+
+              Logger.recordOutput("reef_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("reef_face/offset", offsetFace);
+
+              double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
+              double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
+              double omegaOutput =
+                  angleController.calculate(
+                      drive.getPose().getRotation().getRadians(), closestRotation.getRadians());
+
+              Logger.recordOutput("driveToReef/xError", xController.getPositionError());
+              Logger.recordOutput("driveToReef/xPID", xOutput);
+              Logger.recordOutput("driveToReef/yError", yController.getPositionError());
+              Logger.recordOutput("driveToReef/yPID", yOutput);
+              Logger.recordOutput("driveToReef/omegaError", angleController.getPositionError());
+              Logger.recordOutput("driveToReef/omegaPID", omegaOutput);
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds = new ChassisSpeeds(xOutput, yOutput, omegaOutput);
+              speeds = ChassisSpeeds.discretize(speeds, Constants.loopPeriodSecs);
+              boolean isFlipped = false;
+
+              // DriverStation.getAlliance().isPresent()
+              //     && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+
+              if ((xController.getPositionError() < TRANSLATION_TOLERANCE * 2)
+                  && (yController.getPositionError() < TRANSLATION_TOLERANCE * 2)
+                  && (angleController.getPositionError() < THETA_TOLERANCE)) {
+                SuperstructureActions.prepScore(
+                    level, drive::isCoralSideDesired, superstructure, endEffector);
+              }
+              Logger.recordOutput("Auto/AlignXError", xController.getPositionError());
+              Logger.recordOutput("Auto/AlignYError", yController.getPositionError());
+              Logger.recordOutput("Auto/AlignThetaError", angleController.getPositionError());
+              Logger.recordOutput(
+                  "Auto/Aligned",
+                  xController.atSetpoint()
+                      && (yController.atSetpoint())
+                      && (angleController.atSetpoint())
+                      && timer.hasElapsed(1));
+            },
+            drive)
+        .until(
+            () ->
+                (xController.atSetpoint())
+                    && (yController.atSetpoint())
+                    && (angleController.atSetpoint())
+                    && timer.hasElapsed(1))
+        .andThen(autoScore(superstructure, endEffector, drive::isCoralSideDesired, level))
+        .beforeStarting(
+            () -> {
+              xController.reset(drive.getPose().getX());
+              yController.reset(drive.getPose().getY());
+              angleController.reset(drive.getPose().getRotation().getRadians());
+              drive.setAdjustY(0);
+            })
+        .finallyDo(
+            // if were not autoaligning, always use the front side, reset adjustY
+            () -> {
+              drive.setDesiredScoringSide(ScoreSide.FRONT);
+              drive.setAdjustY(-1);
+              timer.stop();
+              timer.reset();
+            });
+  }
+
+  /** go to the desired level's corresponding prep position, */
+  private static Command autoScore(
+      Superstructure superstructure,
+      EndEffector endEffector,
+      BooleanSupplier flipped,
+      ScoringLevel level) {
+
+    return superstructure
+        .score(flipped, level)
+        .andThen(
+            endEffector
+                .coralOut(level)
+                .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)));
+  }
+}

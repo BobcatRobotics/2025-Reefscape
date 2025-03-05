@@ -35,17 +35,17 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = .5;
-  private static final double ANGLE_KD = 0;
-  private static final double DRIVE_KPY = 1;
-  private static final double DRIVE_KDY = 0;
-  private static final double DRIVE_KPX = 1;
-  private static final double DRIVE_KDX = 0;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
-  private static final double ANGLE_MAX_ACCELERATION = 20.0;
-  private static final Distance ALIGN_DISTANCE = Meters.of(.4); // TODO this should be zero
+  static final double ANGLE_KP = .5;
+  static final double ANGLE_KD = 0;
+  static final double DRIVE_KPY = 1;
+  static final double DRIVE_KDY = 0;
+  static final double DRIVE_KPX = 1;
+  static final double DRIVE_KDX = 0;
+  static final double ANGLE_MAX_VELOCITY = 8.0;
+  static final double ANGLE_MAX_ACCELERATION = 20.0;
+  static final Distance ALIGN_DISTANCE = Meters.of(.5); // TODO this should be zero
 
-  private static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); // towards elevator
+  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); // towards elevator
 
   private DriveCommands() {}
 
@@ -389,7 +389,7 @@ public class DriveCommands {
         new ProfiledPIDController(3, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
 
     ProfiledPIDController yController =
-        new ProfiledPIDController(2, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+        new ProfiledPIDController(5, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
 
     return Commands.run(
             () -> {
@@ -534,12 +534,13 @@ public class DriveCommands {
               xController.reset(drive.getPose().getX());
               yController.reset(drive.getPose().getY());
               angleController.reset(drive.getPose().getRotation().getRadians());
+              drive.setAdjustY(0);
             })
         .finallyDo(
             // if were not autoaligning, always use the front side, reset adjustY
             () -> {
               drive.setDesiredScoringSide(ScoreSide.FRONT);
-              drive.setAdjustY(0);
+              drive.setAdjustY(-1);
             });
   }
 
@@ -854,7 +855,6 @@ public class DriveCommands {
                       .minus(omegaGoal)
                       .getDegrees();
 
-
               Rotation2d closestRotation =
                   drive.getPose().getRotation().minus(Rotation2d.fromDegrees(diff));
 
@@ -865,11 +865,9 @@ public class DriveCommands {
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
               }
 
-
-
-
               double omegaOutput =
-                  angleController.calculate(drive.getPose().getRotation().getRadians(), closestRotation.getRadians());
+                  angleController.calculate(
+                      drive.getPose().getRotation().getRadians(), closestRotation.getRadians());
 
               // Logger.recordOutput("processor_face/xError", xController.getPositionError());
               // Logger.recordOutput("processor_face/xPID", xOutput);

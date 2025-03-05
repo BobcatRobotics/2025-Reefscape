@@ -14,7 +14,8 @@ import org.littletonrobotics.junction.Logger;
 public class Elevator extends SubsystemBase {
 
   public static final Rotation2d ELEVATOR_TOLERANCE =
-      Rotation2d.fromDegrees(125); // should be about 1 (?) in of travel
+      // Rotation2d.fromDegrees(125); // should be about 1 (?) in of travel
+      Rotation2d.fromDegrees(100);
 
   /** the minimum height where the arm can swing freely without hitting an intake */
   public static final Rotation2d MIN_HEIGHT_INTAKE_AVOIDANCE = Rotation2d.fromRotations(0);
@@ -76,7 +77,8 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean inTolerance() {
-    return inputs.aligned;
+    return inputs.aligned
+        || (desiredState == ElevatorState.CORAL_L4 && inputs.distanceToAlignment > 0);
   }
 
   public boolean inTolerance(SuperstructureState desiredState) {

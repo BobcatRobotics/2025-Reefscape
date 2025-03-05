@@ -47,7 +47,7 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-    angleConfigs.Slot0.kP = 25;
+    angleConfigs.Slot0.kP = 20;
     angleConfigs.Slot0.kI = 0;
     angleConfigs.Slot0.kD = 10;
     angleConfigs.Slot0.kS = 5;

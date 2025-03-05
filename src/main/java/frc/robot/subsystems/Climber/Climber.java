@@ -34,6 +34,6 @@ public class Climber extends SubsystemBase {
   }
 
   public Command idleIn() {
-    return Commands.run(() -> io.setDutyCycle(-0.02), this); // TODO tune
+    return Commands.run(() -> io.setDutyCycle(-0.0), this); // TODO tune
   }
 }

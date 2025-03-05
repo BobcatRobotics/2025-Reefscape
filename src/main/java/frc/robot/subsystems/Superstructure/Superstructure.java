@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
-import frc.robot.util.ScoringLevel;
+import frc.robot.util.Enums.ScoringLevel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -45,8 +45,8 @@ public class Superstructure {
     return elevator.positionPercent();
   }
 
+  @AutoLogOutput(key = "Superstructure/DesiredScoringLevel")
   public void recordScoringLevel(ScoringLevel level) {
-    Logger.recordOutput("Superstructure/DesiredScoringLevel", level);
     scoringLevel = level;
   }
 
@@ -122,7 +122,7 @@ public class Superstructure {
             });
   }
 
-  public Command setState(SuperstructureState goal, boolean armFlipped) {
+  public Command setState(SuperstructureState goal, BooleanSupplier armFlipped) {
 
     return Commands.run(
             () -> {
@@ -133,8 +133,9 @@ public class Superstructure {
               SuperstructureState nextState = nextStateInPath(currentState, goal);
               Logger.recordOutput("Superstructure/NextState", nextState);
 
-              if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
-                arm.setState(nextState.armState, armFlipped);
+              if (arm.getDesiredState() != goal.armState
+                  || (arm.isFlipped() != armFlipped.getAsBoolean())) {
+                arm.setState(nextState.armState, armFlipped.getAsBoolean());
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
 
@@ -151,9 +152,108 @@ public class Superstructure {
         .finallyDo(
             () -> {
               Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("finished", true);
             });
   }
 
+  @AutoLogOutput(key = "Superstructure/calculatedScoringState")
+  private SuperstructureState getDesiredScoringState() {
+    SuperstructureState goal;
+
+    switch (getScoringLevel()) {
+      case CORAL_L1:
+        goal = SuperstructureState.CORAL_SCORE_L1;
+        break;
+      case CORAL_L2:
+        goal = SuperstructureState.CORAL_SCORE_L2;
+        break;
+      case CORAL_L3:
+        goal = SuperstructureState.CORAL_SCORE_L3;
+        break;
+      case CORAL_L4:
+        goal = SuperstructureState.CORAL_SCORE_L4;
+        break;
+      case ALGAE_L2:
+        goal = SuperstructureState.ALGAE_PREP_L2;
+        break;
+      case ALGAE_L3:
+        goal = SuperstructureState.ALGAE_PREP_L3;
+        break;
+      case NET:
+        goal = SuperstructureState.NET_SCORE;
+      default:
+        goal = SuperstructureState.CORAL_SCORE_L4;
+    }
+    return goal;
+  }
+
+  private SuperstructureState getDesiredScoringState(ScoringLevel level) {
+    SuperstructureState goal;
+
+    switch (level) {
+      case CORAL_L1:
+        goal = SuperstructureState.CORAL_SCORE_L1;
+        break;
+      case CORAL_L2:
+        goal = SuperstructureState.CORAL_SCORE_L2;
+        break;
+      case CORAL_L3:
+        goal = SuperstructureState.CORAL_SCORE_L3;
+        break;
+      case CORAL_L4:
+        goal = SuperstructureState.CORAL_SCORE_L4;
+        break;
+      case ALGAE_L2:
+        goal = SuperstructureState.ALGAE_PREP_L2;
+        break;
+      case ALGAE_L3:
+        goal = SuperstructureState.ALGAE_PREP_L3;
+        break;
+      case NET:
+        goal = SuperstructureState.NET_SCORE;
+      default:
+        goal = SuperstructureState.CORAL_SCORE_L4;
+    }
+    return goal;
+  }
+
+  public Command score(BooleanSupplier shouldFlipArm, ScoringLevel level) {
+
+    return Commands.run(
+            () -> {
+              SuperstructureState goal = getDesiredScoringState(level);
+              boolean armFlipped = shouldFlipArm.getAsBoolean();
+
+              Logger.recordOutput("Superstructure/IsFlippingArm", armFlipped);
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
+
+              if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
+                arm.setState(nextState.armState, armFlipped);
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
+                elevator.setState(nextState.elevatorState);
+              }
+
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
+        .until(() -> getState() == getDesiredScoringState(level))
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+            });
+  }
+
+  public Command score(BooleanSupplier shouldFlipArm) {
+    return score(shouldFlipArm, getScoringLevel());
+  }
   /**
    * Performs a breadth-first search of all possible states to find the shortest path from the start
    * state to the goal state.
@@ -294,21 +394,21 @@ public class Superstructure {
   public Command goToPrepPos(ScoringLevel level, BooleanSupplier flipped) {
     switch (level) {
       case CORAL_L1:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
       case CORAL_L2:
-        return setState(SuperstructureState.CORAL_PREP_L2, flipped.getAsBoolean());
+        return setState(SuperstructureState.CORAL_PREP_L2, flipped);
       case CORAL_L3:
-        return setState(SuperstructureState.CORAL_PREP_L3, flipped.getAsBoolean());
+        return setState(SuperstructureState.CORAL_PREP_L3, flipped);
       case CORAL_L4:
-        return setState(SuperstructureState.CORAL_PREP_L4, flipped.getAsBoolean());
+        return setState(SuperstructureState.CORAL_PREP_L4, flipped);
       case NET:
-        return setState(SuperstructureState.NET_PREP, flipped.getAsBoolean());
+        return setState(SuperstructureState.NET_PREP, flipped);
       case ALGAE_L2:
-        return setState(SuperstructureState.ALGAE_PREP_L2, flipped.getAsBoolean());
+        return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
       case ALGAE_L3:
-        return setState(SuperstructureState.ALGAE_PREP_L3, flipped.getAsBoolean());
+        return setState(SuperstructureState.ALGAE_PREP_L3, flipped);
       default:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped.getAsBoolean());
+        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
     }
   }
 }

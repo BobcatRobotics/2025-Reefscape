@@ -10,7 +10,8 @@ public enum ElevatorState {
       Rotation2d.fromRotations(1.5)), // upside down, for quick pickup once game piece intook
   IDLE_RIGHT_SIDE_UP(
       Rotation2d.fromRotations(0)), // right side up for quick transition to scoring zone
-  CORAL_HANDOFF(Rotation2d.fromRotations(1.015)), // picking up coral with the end effector
+  CORAL_HANDOFF(
+      Rotation2d.fromRotations(1.1)), // picking up coral with the end effector //OLD 1.015
   CORAL_L1(Rotation2d.fromRotations(2)), // elevator pos doesnt matter for score or prep
   CORAL_L2(Rotation2d.fromRotations(0.5)),
   POST_CORAL_L2(Rotation2d.fromRotations(0)),
@@ -18,14 +19,15 @@ public enum ElevatorState {
   POST_CORAL_L3(Rotation2d.fromRotations(1)),
   CORAL_L4(Rotation2d.fromRotations(3.1)),
   POST_CORAL_L4(Rotation2d.fromRotations(2.3)),
-  INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.5)), // safe height for flipping up the arm
+  INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.75)), // safe height for flipping up the arm
   ALGAE_L2(Rotation2d.fromRotations(1.5)),
-  ALGAE_L3(Rotation2d.fromRotations(2.5)),
-  ALGAE_GROUND(Rotation2d.fromRotations(0)), // pickup algae from ground
+  ALGAE_L3(Rotation2d.fromRotations(2.35)),
+  ALGAE_GROUND(Rotation2d.fromRotations(0.2)), // pickup algae from ground
   ALGAE_SCORE_PROCESSOR(Rotation2d.fromRotations(0)), // pickup algae from processor
-  IDLE_ALGAE(Rotation2d.fromRotations(1.75)), // hold a algae
-  NET_SCORE(Rotation2d.fromRotations(4)),
-  UNKNOWN(Rotation2d.fromRotations(0)); // elevator isnt at a predefined state
+  IDLE_ALGAE(Rotation2d.fromRotations(0)), // hold a algae
+  NET_SCORE(Rotation2d.fromRotations(3)),
+  UNKNOWN(Rotation2d.fromRotations(0)),
+  CLIMB(Rotation2d.fromRotations(0)); // elevator isnt at a predefined state
 
   ElevatorState(Rotation2d pos) {
     this.pos = pos;

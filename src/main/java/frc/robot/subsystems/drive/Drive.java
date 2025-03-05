@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Constants;
@@ -105,7 +106,7 @@ public class Drive extends SubsystemBase {
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private ScoreSide desiredScoreSide = ScoreSide.FRONT;
-  private double reefAlignAdjustY = 0;
+  private double reefAlignAdjustY = -1;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -228,6 +229,17 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+  }
+
+  public void reverseZeroGyro() {
+    setPose(new Pose2d(getPose().getTranslation(), Rotation2d.k180deg));
+  }
+
+  public Command reverseZeroGyroCommand() {
+    return new InstantCommand(
+        () -> {
+          reverseZeroGyro();
+        });
   }
 
   public void setDesiredScoringSide(ScoreSide side) {

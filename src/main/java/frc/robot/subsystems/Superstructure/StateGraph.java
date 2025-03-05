@@ -93,7 +93,8 @@ public class StateGraph {
               SuperstructureState.INTAKE_ALGAE_GROUND,
               SuperstructureState.ALGAE_PREP_L2,
               SuperstructureState.ALGAE_PREP_L3,
-              SuperstructureState.ELEVATOR_SAFE_ZONE
+              SuperstructureState.ELEVATOR_SAFE_ZONE,
+              SuperstructureState.CLIMB
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_HANDOFF,
@@ -117,6 +118,7 @@ public class StateGraph {
               SuperstructureState.HP_INTAKE,
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.INTAKE_ALGAE_GROUND,
+              SuperstructureState.CLIMB
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L1,
@@ -196,8 +198,9 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.INTAKE_ALGAE_GROUND,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ELEVATOR_SAFE_ZONE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.IDLE_ALGAE
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L2,
@@ -214,6 +217,9 @@ public class StateGraph {
             new SuperstructureState[] {SuperstructureState.NET_SCORE, SuperstructureState.NET_PREP},
             new SuperstructureState[] {
               SuperstructureState.HP_INTAKE, SuperstructureState.RIGHT_SIDE_UP_IDLE
+            },
+            new SuperstructureState[] {
+              SuperstructureState.CLIMB, SuperstructureState.RIGHT_SIDE_UP_IDLE
             });
 
     // for each set of transitions
