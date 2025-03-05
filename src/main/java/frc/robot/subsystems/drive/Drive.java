@@ -60,6 +60,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
+
+  public Pose2d pathPlannerOverride = new Pose2d();
   // TunerConstants25 doesn't include these constants, so they are declared locally
   public static final double
       ODOMETRY_FREQUENCY = // if were on the canivore, run at a higher frequency
@@ -149,6 +151,26 @@ public class Drive extends SubsystemBase {
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
+
+    PPHolonomicDriveController.overrideXFeedback(
+        () -> {
+          // Calculate feedback from your custom PID controller
+          return pathPlannerOverride.getX();
+        });
+    // Override the Y feedback
+    PPHolonomicDriveController.overrideYFeedback(
+        () -> {
+          // Calculate feedback from your custom PID controller
+          return pathPlannerOverride.getY();
+        });
+
+    // Override the rotation feedback
+    PPHolonomicDriveController.overrideRotationFeedback(
+        () -> {
+          // Calculate feedback from your custom PID controller
+          return pathPlannerOverride.getRotation().getRadians();
+        });
+
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
@@ -434,4 +456,16 @@ public class Drive extends SubsystemBase {
   }
   // poseEstimator.addVisionMeasurement(visionObservation.getPose(),
   // visionObservation.getTimestamp());
+
+  public Pose2d getPPOverride() {
+    return pathPlannerOverride;
+  }
+
+  public void sePPOverride(double xOverride, double yOverride, double thetaOverride) {
+    pathPlannerOverride = new Pose2d(xOverride, yOverride, new Rotation2d(thetaOverride));
+  }
+
+  public void clearPPOverride() {
+    PPHolonomicDriveController.clearFeedbackOverrides();
+  }
 }
