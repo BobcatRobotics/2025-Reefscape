@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3186475409836067,
-        "y": 7.09984631147541
+        "x": 1.7741803278688524,
+        "y": 7.111834016393442
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9008065037884236,
-        "y": 6.537899524842447
+        "x": 2.478107975336081,
+        "y": 6.5523773910336764
       },
       "isLocked": false,
       "linkedName": "Ice Cream End"
     },
     {
       "anchor": {
-        "x": 3.668237704918033,
-        "y": 5.0379610655737705
+        "x": 3.524385245901639,
+        "y": 5.517469262295082
       },
       "prevControl": {
-        "x": 3.065333443577109,
-        "y": 5.563078116833468
+        "x": 2.810634712981554,
+        "y": 6.065240181621235
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,30 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Prep Coral L4",
-      "waypointRelativePos": 0.7262589928057541,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Prep Coral L4"
-        }
-      }
-    },
-    {
-      "name": "AutoalignCCW",
-      "waypointRelativePos": 0.878776978417267,
-      "endWaypointRelativePos": 1.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Autoalign"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 4.5,
@@ -68,10 +45,10 @@
     "rotation": -61.11175896877485
   },
   "reversed": false,
-  "folder": "Popsicle",
+  "folder": "Combo Meal",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.92692668268957
+    "rotation": -51.51980175165697
   },
   "useDefaultConstraints": true
 }

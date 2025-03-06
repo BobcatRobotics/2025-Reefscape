@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Enums.ScoringLevel;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
@@ -116,11 +117,12 @@ public class EndEffector extends SubsystemBase {
         this);
   }
 
-  public Command coralOut(ScoringLevel level) {
+  public Command coralOut(Supplier<ScoringLevel> level) {
     // if were scoring in l1 we need to actually shoot out the coral
     return new RunCommand(
         () -> {
-          if (level == ScoringLevel.CORAL_L1) {
+          Logger.recordOutput("scoringlevel", level.get());
+          if (level.get() == ScoringLevel.CORAL_L1) {
             io.setSpeed(OUTTAKE_SPEED);
           } else {
             io.setSpeed(CORAL_SCORE_SPEED);

@@ -153,16 +153,10 @@ public class Drive extends SubsystemBase {
         this);
 
     PPHolonomicDriveController.overrideXFeedback(
-        () -> {
-          // Calculate feedback from your custom PID controller
-          return pathPlannerOverride.getX();
-        });
+        // Calculate feedback from your custom PID controller
+        pathPlannerOverride::getX);
     // Override the Y feedback
-    PPHolonomicDriveController.overrideYFeedback(
-        () -> {
-          // Calculate feedback from your custom PID controller
-          return pathPlannerOverride.getY();
-        });
+    PPHolonomicDriveController.overrideYFeedback(pathPlannerOverride::getY);
 
     // Override the rotation feedback
     PPHolonomicDriveController.overrideRotationFeedback(

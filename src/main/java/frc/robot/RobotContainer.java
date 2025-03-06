@@ -14,6 +14,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -276,23 +278,46 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopOverride", Commands.run(() -> drive.clearPPOverride()));
     NamedCommands.registerCommand("AutoalignCCW", DriveCommands.driveToReefAuto(drive, true));
     NamedCommands.registerCommand("AutoalignCW", DriveCommands.driveToReefAuto(drive, false));
-    // NamedCommands.registerCommand(
-    //     "Prep Coral L4", superstructure.setState(SuperstructureState.CORAL_PREP_L4));
-    // NamedCommands.registerCommand(
-    //     "Score Coral L4",
-    //     new ParallelCommandGroup(
-    //         superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
-    //         endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
+    NamedCommands.registerCommand(
+        "PopsicleLick",
+        superstructure
+            .setState(SuperstructureState.POPSICLE_LICK)
+            .alongWith(endEffector.intakeCoralCommand())
+            .until(endEffector::hasPiece)
+            .andThen(
+                superstructure
+                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
+                    .alongWith(endEffector.idleCoralCommand())));
 
     NamedCommands.registerCommand(
-        "Score", SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
+        "hpWaitThenIntake",
+        new WaitCommand(Seconds.of(2))
+            .andThen(
+                new RunCommand(
+                        () -> {
+                          intake.deploy();
+                          intake.runIn();
+                        })
+                    .until(intake::hasPiece)
+                    .withTimeout(3)));
+
+    // NamedCommands.registerCommand(
+    //     "Prep Coral L4",
+    //     SuperstructureActions.prepScore(
+    //         ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
 
     NamedCommands.registerCommand(
-        "Prep Coral L4",
-        SuperstructureActions.prepScore(
-            ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));                    
-        
-
+        "ScoreCoralL4CCW",
+        AutoCommands.fullAutoReefScore(
+            drive,
+            superstructure,
+            endEffector,
+            BranchSide.COUNTER_CLOCKWISE,
+            ScoringLevel.CORAL_L4));
+    NamedCommands.registerCommand(
+        "ScoreCoralL4CW",
+        AutoCommands.fullAutoReefScore(
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
   }
 
   public void updateControllerAlerts() {
@@ -341,7 +366,7 @@ public class RobotContainer {
             superstructure,
             endEffector,
             BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L2));
+            ScoringLevel.CORAL_L4));
 
     /* operator controls */
 

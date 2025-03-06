@@ -7,25 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Popsicle1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreCoralL4CW"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IceCream"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IceCream 2"
+            "pathName": "Popsicle1Flipped"
           }
         },
         {
@@ -37,13 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Ice Cream 3"
+            "pathName": "IceCreamFlipped"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "hpWaitThenIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Ice Cream 4"
+            "pathName": "IceCream2Flipped"
           }
         },
         {
@@ -56,6 +44,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Archive",
+  "folder": null,
   "choreoAuto": false
 }

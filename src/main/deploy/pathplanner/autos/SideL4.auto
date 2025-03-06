@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MVP Score first"
+            "pathName": "Popsicle1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreCoralL4CW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MVP Pickup second"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MVP Score second"
+            "pathName": "Popsicle 2"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Archive",
   "choreoAuto": false
 }

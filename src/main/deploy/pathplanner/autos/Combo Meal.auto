@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreCoralL4CW"
+            "name": "ScoreCoralL4CCW"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "IceCream"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "hpWaitThenIntake"
           }
         },
         {
@@ -33,29 +39,11 @@
           "data": {
             "name": "ScoreCoralL4CCW"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Ice Cream 3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Ice Cream 4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreCoralL4CCW"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Archive",
+  "folder": null,
   "choreoAuto": false
 }
