@@ -36,7 +36,8 @@ public enum SuperstructureState {
 
   NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
   NET_PREP(ElevatorState.NET_SCORE, ArmState.NET_PREP),
-  CLIMB(ElevatorState.CLIMB, ArmState.CLIMB);
+  CLIMB(ElevatorState.CLIMB, ArmState.CLIMB),
+  POPSICLE_LICK(ElevatorState.IDLE_RIGHT_SIDE_UP, ArmState.CLIMB);
 
   SuperstructureState(ElevatorState elevatorState, ArmState armState) {
     this.armState = armState;

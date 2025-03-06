@@ -118,7 +118,8 @@ public class StateGraph {
               SuperstructureState.HP_INTAKE,
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.INTAKE_ALGAE_GROUND,
-              SuperstructureState.CLIMB
+              SuperstructureState.CLIMB,
+              SuperstructureState.POPSICLE_LICK
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L1,
@@ -226,6 +227,14 @@ public class StateGraph {
               SuperstructureState.NET_PREP,
               SuperstructureState.NET_SCORE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE
+            },
+            new SuperstructureState[] {
+              SuperstructureState.POPSICLE_LICK,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.CORAL_PREP_L4
             });
 
     // for each set of transitions

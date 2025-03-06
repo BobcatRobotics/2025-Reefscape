@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.3105532786885234,
-        "y": 5.277715163934426
+        "x": 5.68217213114754,
+        "y": 5.505481557377049
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.121412368183263,
-        "y": 5.486706036263231
+        "x": 5.412667336446946,
+        "y": 5.6327164265972405
       },
       "isLocked": false,
       "linkedName": "Popsicle1End"
     },
     {
       "anchor": {
-        "x": 4.78725,
-        "y": 5.565499999999999
+        "x": 4.5553278688524586,
+        "y": 5.84825
       },
       "prevControl": {
-        "x": 4.986711711994531,
-        "y": 5.414784952814222
+        "x": 4.892425596542618,
+        "y": 5.805074126555397
       },
       "nextControl": {
-        "x": 4.58778828800547,
-        "y": 5.716215047185776
+        "x": 2.9357888840106012,
+        "y": 6.0556824580212085
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.84825
       },
       "prevControl": {
-        "x": 3.509549887926952,
-        "y": 5.5847861319045515
+        "x": 1.9854928708706463,
+        "y": 5.850137992015984
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,9 +45,35 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.4854827819041183,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "PopsicleLick",
+      "waypointRelativePos": 1.0155300472653406,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PopsicleLick"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 4.5,

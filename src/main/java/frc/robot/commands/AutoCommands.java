@@ -52,11 +52,11 @@ public class AutoCommands {
 
     ProfiledPIDController xController =
         new ProfiledPIDController(
-            3, 0.0, DriveCommands.DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+            4, 0.0, DriveCommands.DRIVE_KDX, new TrapezoidProfile.Constraints(3, 3.0));
 
     ProfiledPIDController yController =
         new ProfiledPIDController(
-            5, 0.0, DriveCommands.DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+            4, 0.0, DriveCommands.DRIVE_KDY, new TrapezoidProfile.Constraints(3, 3.0));
     angleController.setTolerance(THETA_TOLERANCE);
     xController.setTolerance(TRANSLATION_TOLERANCE);
     yController.setTolerance(TRANSLATION_TOLERANCE);
@@ -160,20 +160,18 @@ public class AutoCommands {
 
               // DriverStation.getAlliance().isPresent()
               //     && DriverStation.getAlliance().get() == Alliance.Red;
-              // drive.runVelocity(
-              //     ChassisSpeeds.fromFieldRelativeSpeeds(
-              //         speeds,
-              //         isFlipped
-              //             ? drive.getRotation().plus(new Rotation2d(Math.PI))
-              //             : drive.getRotation()));
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
 
               // Convert to field relative speeds & send command
-              drive.sePPOverride(
-                  xOutput, yOutput, omegaOutput);
+              // drive.sePPOverride(xOutput, yOutput, omegaOutput);
               Logger.recordOutput("ppoverride/x", xOutput);
               Logger.recordOutput("ppoverride/y", yOutput);
               Logger.recordOutput("ppoverride/theta", omegaOutput);
-
 
               if ((xController.getPositionError() < TRANSLATION_TOLERANCE * 2)
                   && (yController.getPositionError() < TRANSLATION_TOLERANCE * 2)
@@ -214,9 +212,8 @@ public class AutoCommands {
               timer.stop();
               timer.reset();
               drive.clearPPOverride();
-
             });
-            }
+  }
 
   /** go to the desired level's corresponding prep position, */
   private static Command autoScore(
@@ -229,7 +226,7 @@ public class AutoCommands {
         .score(flipped, level)
         .andThen(
             endEffector
-                .coralOut(level)
+                .coralOut(() -> level)
                 .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)));
   }
 }

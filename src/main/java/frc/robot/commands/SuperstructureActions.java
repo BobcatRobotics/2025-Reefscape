@@ -48,7 +48,7 @@ public class SuperstructureActions {
                     .until(endEffector::hasPiece)
                     .andThen(endEffector.idleAlgaeCommand()),
                 endEffector
-                    .coralOut(superstructure.getScoringLevel())
+                    .coralOut(superstructure::getScoringLevel)
                     .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped))
                     .withInterruptBehavior(InterruptionBehavior.kCancelSelf),
                 shouldUseAlgae));

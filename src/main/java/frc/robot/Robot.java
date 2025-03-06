@@ -166,6 +166,8 @@ public class Robot extends LoggedRobot {
     robotContainer.limelightbr.throttleSet(0);
     robotContainer.limelightfl.throttleSet(0);
     robotContainer.limelightfr.throttleSet(0);
+    robotContainer.limelightbl.resetGyroLL4();
+    robotContainer.limelightbr.resetGyroLL4();
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 

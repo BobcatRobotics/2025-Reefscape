@@ -276,7 +276,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopOverride", Commands.run(() -> drive.clearPPOverride()));
     NamedCommands.registerCommand("AutoalignCCW", DriveCommands.driveToReefAuto(drive, true));
     NamedCommands.registerCommand("AutoalignCW", DriveCommands.driveToReefAuto(drive, false));
-    // NamedCommands.registerCommand(
+    NamedCommands.registerCommand(
+        "PopsicleLick",
+        superstructure
+            .setState(SuperstructureState.POPSICLE_LICK)
+            .alongWith(endEffector.intakeCoralCommand())
+            .until(endEffector::hasPiece)
+            .andThen(
+                superstructure
+                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
+                    .alongWith(endEffector.idleCoralCommand())));    // NamedCommands.registerCommand(
     //     "Prep Coral L4", superstructure.setState(SuperstructureState.CORAL_PREP_L4));
     // NamedCommands.registerCommand(
     //     "Score Coral L4",
@@ -285,17 +294,26 @@ public class RobotContainer {
     //         endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
 
     // NamedCommands.registerCommand(
-    //     "Score", SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
+    //     "Score", SuperstructureActions.score(superstructure, endEffector,
+    // drive::isCoralSideDesired));
 
     // NamedCommands.registerCommand(
     //     "Prep Coral L4",
     //     SuperstructureActions.prepScore(
-    //         ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));                    
-    
-    NamedCommands.registerCommand("ScoreCoralL4CCW", AutoCommands.fullAutoReefScore(drive, superstructure, endEffector, BranchSide.COUNTER_CLOCKWISE, ScoringLevel.CORAL_L4));
-    NamedCommands.registerCommand("ScoreCoralL4CW", AutoCommands.fullAutoReefScore(drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+    //         ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
 
-
+    NamedCommands.registerCommand(
+        "ScoreCoralL4CCW",
+        AutoCommands.fullAutoReefScore(
+            drive,
+            superstructure,
+            endEffector,
+            BranchSide.COUNTER_CLOCKWISE,
+            ScoringLevel.CORAL_L4));
+    NamedCommands.registerCommand(
+        "ScoreCoralL4CW",
+        AutoCommands.fullAutoReefScore(
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
   }
 
   public void updateControllerAlerts() {
@@ -344,7 +362,7 @@ public class RobotContainer {
             superstructure,
             endEffector,
             BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L2));
+            ScoringLevel.CORAL_L4));
 
     /* operator controls */
 
