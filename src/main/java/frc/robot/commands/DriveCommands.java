@@ -929,6 +929,142 @@ public class DriveCommands {
               // drive.setAdjustY(0);
             });
   }
+
+  public static Command driveToReefAuto(Drive drive, Boolean Counterclockwise) {
+
+    List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
+
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            2,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    ProfiledPIDController xController =
+        new ProfiledPIDController(3, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+
+    ProfiledPIDController yController =
+        new ProfiledPIDController(2, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+
+    return Commands.run(
+            () -> {
+              if (Counterclockwise) {
+                drive.setAdjustY(FieldConstants.Reef.reefToBranchY);
+              } else {
+                drive.setAdjustY(-FieldConstants.Reef.reefToBranchY);
+              }
+
+              List<Pose2d> flippedFaces = new ArrayList<>();
+
+              for (int j = 0; j < faces.size(); j++) {
+                flippedFaces.add(AllianceFlipUtil.apply(faces.get(j)));
+              }
+
+              Pose2d nearestFace = drive.getPose().nearest(flippedFaces);
+              Logger.recordOutput("reef_face/raw", nearestFace);
+
+              int faceIndex = -1;
+              for (int i = 0; i < flippedFaces.size(); i++) {
+                if (flippedFaces.get(i) == nearestFace) {
+                  faceIndex = i;
+                  break;
+                }
+              }
+
+              Pose2d poseDirection =
+                  AllianceFlipUtil.apply(
+                      new Pose2d(
+                          (FieldConstants.Reef.center),
+                          (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
+
+              Logger.recordOutput("reef_face/poseDirection", poseDirection);
+              Logger.recordOutput("reef_face/faceIndex", faceIndex);
+
+              double diff =
+                  RotationUtil.wrapRot2d(drive.getPose().getRotation())
+                      .minus(poseDirection.getRotation())
+                      .getDegrees();
+
+              double transformY = 0;
+
+              Rotation2d closestRotation =
+                  drive.getPose().getRotation().minus(Rotation2d.fromDegrees(diff));
+
+              if (Math.abs(diff) >= 90) { // use coral side
+                drive.setDesiredScoringSide(ScoreSide.FRONT);
+                closestRotation = closestRotation.plus(Rotation2d.k180deg);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
+              } else { // use front
+                drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
+              }
+
+              double adjustX =
+                  ALIGN_DISTANCE.baseUnitMagnitude() + FieldConstants.Reef.faceToCenter;
+              // double adjustY = Units.inchesToMeters(0);
+
+              Pose2d offsetFace =
+                  new Pose2d(
+                      poseDirection
+                          .transformBy(
+                              new Transform2d(
+                                  adjustX, drive.getAdjustY() + transformY, new Rotation2d()))
+                          .getTranslation(),
+                      poseDirection.getRotation());
+              Logger.recordOutput("adjustY", drive.getAdjustY());
+
+              Logger.recordOutput("reef_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("reef_face/offset", offsetFace);
+
+              double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
+              double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
+              double omegaOutput =
+                  angleController.calculate(
+                      drive.getPose().getRotation().getRadians(), closestRotation.getRadians());
+
+              Logger.recordOutput("driveToReef/xError", xController.getPositionError());
+              Logger.recordOutput("driveToReef/xPID", xOutput);
+              Logger.recordOutput("driveToReef/yError", yController.getPositionError());
+              Logger.recordOutput("driveToReef/yPID", yOutput);
+              Logger.recordOutput("driveToReef/omegaError", angleController.getPositionError());
+              Logger.recordOutput("driveToReef/omegaPID", omegaOutput);
+
+              // Convert to field relative speeds & send command
+              drive.sePPOverride(
+                  xOutput, yOutput, omegaOutput);
+              Logger.recordOutput("ppoverride/x", xOutput);
+              Logger.recordOutput("ppoverride/y", yOutput);
+              Logger.recordOutput("ppoverride/theta", omegaOutput);
+
+            })
+        .beforeStarting(
+            () -> {
+              xController.reset(drive.getPose().getX());
+              yController.reset(drive.getPose().getY());
+              angleController.reset(drive.getPose().getRotation().getRadians());
+            })
+        .finallyDo(
+            // if were not autoaligning, always use the front side, reset adjustY
+            () -> {
+              drive.setDesiredScoringSide(ScoreSide.FRONT);
+              drive.setAdjustY(0);
+            });
+  }
+
+  public static Command overridePP(
+      Drive drive, DoubleSupplier xOutput, DoubleSupplier yOutput, DoubleSupplier omegaOutput) {
+    return Commands.run(
+            () -> {
+              drive.sePPOverride(
+                  xOutput.getAsDouble(), yOutput.getAsDouble(), omegaOutput.getAsDouble());
+              Logger.recordOutput("ppoverride/x", xOutput.getAsDouble());
+              Logger.recordOutput("ppoverride/y", yOutput.getAsDouble());
+              Logger.recordOutput("ppoverride/theta", omegaOutput.getAsDouble());
+            })
+        .finallyDo(() -> drive.clearPPOverride());
+  }
 }
 
 // The cool thing about being the only one who ever touches certian parts of the
