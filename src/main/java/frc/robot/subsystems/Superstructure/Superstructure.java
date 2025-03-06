@@ -152,7 +152,6 @@ public class Superstructure {
         .finallyDo(
             () -> {
               Logger.recordOutput("Superstructure/CurrentState", currentState);
-              Logger.recordOutput("finished", true);
             });
   }
 
@@ -252,7 +251,37 @@ public class Superstructure {
   }
 
   public Command score(BooleanSupplier shouldFlipArm) {
-    return score(shouldFlipArm, getScoringLevel());
+    return Commands.run(
+            () -> {
+              SuperstructureState goal = getDesiredScoringState();
+              boolean armFlipped = shouldFlipArm.getAsBoolean();
+              Logger.recordOutput("desiredscoringstate", getDesiredScoringState());
+
+              Logger.recordOutput("Superstructure/IsFlippingArm", armFlipped);
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
+
+              if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
+                arm.setState(nextState.armState, armFlipped);
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
+                elevator.setState(nextState.elevatorState);
+              }
+
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
+        .until(() -> getState() == getDesiredScoringState())
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+            });
   }
   /**
    * Performs a breadth-first search of all possible states to find the shortest path from the start

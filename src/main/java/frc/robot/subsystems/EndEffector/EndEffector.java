@@ -17,9 +17,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
   public static double CORAL_IDLE_SPEED = 1;
-  public static double ALGAE_IDLE_SPEED = 10;
+  public static double ALGAE_IDLE_SPEED = 200;
   public static double INTAKE_CORAL_SPEED = 500;
-  public static double INTAKE_ALGAE_SPEED = 50;
+  public static double INTAKE_ALGAE_SPEED = 500;
   public static double OUTTAKE_SPEED = -300;
   public static double OUTTAKE_FAST_SPEED = -1000;
   public static double CORAL_SCORE_SPEED = -5;

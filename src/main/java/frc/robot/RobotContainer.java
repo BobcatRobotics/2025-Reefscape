@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -45,6 +44,7 @@ import frc.robot.subsystems.Climber.ClimberIOTalonFX;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIO;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
+import frc.robot.subsystems.CoralIntake.IntakeState;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
@@ -400,7 +400,13 @@ public class RobotContainer {
             superstructure, endEffector, drive::isCoralSideDesired, this::shouldUseAlgae));
 
     // stow
-    joystick.povDown().onTrue(SuperstructureActions.stow(superstructure));
+    joystick
+        .povDown()
+        .onTrue(
+            new ConditionalCommand(
+                superstructure.setState(SuperstructureState.IDLE_ALGAE),
+                SuperstructureActions.stow(superstructure),
+                this::shouldUseAlgae));
 
     // intake from ground
     joystick.bottomLeft.whileTrue(
@@ -449,19 +455,20 @@ public class RobotContainer {
     joystick.bottom10.whileTrue(
         SuperstructureActions.outtakeCoralGround(superstructure, intake, trimSupplier));
 
-    joystick.bottom12.whileTrue(
-        DriveCommands.driveToCoral(
-                drive,
-                photon,
-                () -> -leftRuffy.yAxis.getAsDouble(),
-                leftRuffy.xAxis,
-                () -> -rightRuffy.xAxis.getAsDouble(),
-                superstructure::getElevatorPercentage)
-            .beforeStarting(
-                new RunCommand(() -> intake.deploy(Rotations.of(0)))
-                    .withDeadline(new WaitCommand(0.5)))
-            .withDeadline(
-                SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier)));
+    joystick
+        .bottom12
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  intake.setState(IntakeState.ALGAE_PICKUP);
+                  intake.setSpeed(100);
+                },
+                intake))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  intake.retract();
+                }));
 
     //     rightRuffy
     //         .axisGreaterThan(1, .5)

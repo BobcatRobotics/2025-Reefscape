@@ -189,7 +189,8 @@ public class StateGraph {
               SuperstructureState.IDLE_ALGAE,
               SuperstructureState.ALGAE_SCORE_PROCESSOR,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
-              SuperstructureState.INTAKE_ALGAE_GROUND
+              SuperstructureState.INTAKE_ALGAE_GROUND,
+              SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_SCORE_PROCESSOR,
@@ -220,6 +221,11 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.CLIMB, SuperstructureState.RIGHT_SIDE_UP_IDLE
+            },
+            new SuperstructureState[] {
+              SuperstructureState.NET_PREP,
+              SuperstructureState.NET_SCORE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             });
 
     // for each set of transitions
