@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.106938942634349,
-        "y": 5.485893110796355
+        "x": 5.361914101890995,
+        "y": 5.3489956895804935
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.187,
-        "y": 5.097499999999999
+        "x": 5.3105532786885234,
+        "y": 5.277715163934426
       },
       "prevControl": {
-        "x": 6.274703997561072,
-        "y": 5.1211277960848625
+        "x": 6.5835227797219416,
+        "y": 5.2867055599882065
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,30 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Prep Coral L4",
-      "waypointRelativePos": 0.7017985611510841,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Prep Coral L4"
-        }
-      }
-    },
-    {
-      "name": "Autoalign",
-      "waypointRelativePos": 0.8902877697841727,
-      "endWaypointRelativePos": 1.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "AutoalignCW"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 4.5,

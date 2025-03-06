@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9008065037884236,
-        "y": 6.537899524842447
+        "x": 2.022575188450835,
+        "y": 6.540389686115645
       },
       "isLocked": false,
       "linkedName": "Ice Cream End"
     },
     {
       "anchor": {
-        "x": 3.668237704918033,
-        "y": 5.0379610655737705
+        "x": 3.5723360655737704,
+        "y": 5.25373975409836
       },
       "prevControl": {
-        "x": 3.065333443577109,
-        "y": 5.563078116833468
+        "x": 2.8585855326536853,
+        "y": 5.801510673424513
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,24 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Prep Coral L4",
-      "waypointRelativePos": 0.7262589928057541,
+      "name": "Stow",
+      "waypointRelativePos": 0.5436847103513797,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Prep Coral L4"
-        }
-      }
-    },
-    {
-      "name": "AutoalignCCW",
-      "waypointRelativePos": 0.878776978417267,
-      "endWaypointRelativePos": 1.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Autoalign"
+          "name": "Stow"
         }
       }
     }

@@ -284,14 +284,17 @@ public class RobotContainer {
     //         superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
     //         endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
 
-    NamedCommands.registerCommand(
-        "Score", SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
+    // NamedCommands.registerCommand(
+    //     "Score", SuperstructureActions.score(superstructure, endEffector, drive::isCoralSideDesired));
 
-    NamedCommands.registerCommand(
-        "Prep Coral L4",
-        SuperstructureActions.prepScore(
-            ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));                    
-        
+    // NamedCommands.registerCommand(
+    //     "Prep Coral L4",
+    //     SuperstructureActions.prepScore(
+    //         ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));                    
+    
+    NamedCommands.registerCommand("ScoreCoralL4CCW", AutoCommands.fullAutoReefScore(drive, superstructure, endEffector, BranchSide.COUNTER_CLOCKWISE, ScoringLevel.CORAL_L4));
+    NamedCommands.registerCommand("ScoreCoralL4CW", AutoCommands.fullAutoReefScore(drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+
 
   }
 

@@ -160,12 +160,20 @@ public class AutoCommands {
 
               // DriverStation.getAlliance().isPresent()
               //     && DriverStation.getAlliance().get() == Alliance.Red;
-              drive.runVelocity(
-                  ChassisSpeeds.fromFieldRelativeSpeeds(
-                      speeds,
-                      isFlipped
-                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                          : drive.getRotation()));
+              // drive.runVelocity(
+              //     ChassisSpeeds.fromFieldRelativeSpeeds(
+              //         speeds,
+              //         isFlipped
+              //             ? drive.getRotation().plus(new Rotation2d(Math.PI))
+              //             : drive.getRotation()));
+
+              // Convert to field relative speeds & send command
+              drive.sePPOverride(
+                  xOutput, yOutput, omegaOutput);
+              Logger.recordOutput("ppoverride/x", xOutput);
+              Logger.recordOutput("ppoverride/y", yOutput);
+              Logger.recordOutput("ppoverride/theta", omegaOutput);
+
 
               if ((xController.getPositionError() < TRANSLATION_TOLERANCE * 2)
                   && (yController.getPositionError() < TRANSLATION_TOLERANCE * 2)
@@ -205,8 +213,10 @@ public class AutoCommands {
               drive.setAdjustY(-1);
               timer.stop();
               timer.reset();
+              drive.clearPPOverride();
+
             });
-  }
+            }
 
   /** go to the desired level's corresponding prep position, */
   private static Command autoScore(

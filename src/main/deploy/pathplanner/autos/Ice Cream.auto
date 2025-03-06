@@ -13,25 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopOverride"
+            "name": "ScoreCoralL4CW"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Ice Cream"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Ice Cream"
           }
         },
         {
@@ -43,25 +31,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopOverride"
+            "name": "ScoreCoralL4CCW"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Ice Cream 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Popsicle"
           }
         },
         {
@@ -73,13 +49,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopOverride"
+            "name": "ScoreCoralL4CCW"
           }
         }
       ]

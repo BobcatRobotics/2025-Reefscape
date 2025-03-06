@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.187,
-        "y": 5.097499999999999
+        "x": 5.3105532786885234,
+        "y": 5.277715163934426
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.861473880594652,
-        "y": 5.456297254428568
+        "x": 5.06409289846489,
+        "y": 5.394141733452964
       },
       "isLocked": false,
       "linkedName": "Popsicle1End"
@@ -20,12 +20,12 @@
         "y": 5.565499999999999
       },
       "prevControl": {
-        "x": 5.037801764613139,
-        "y": 5.252687635131354
+        "x": 5.075613726156048,
+        "y": 5.404510769949183
       },
       "nextControl": {
-        "x": 4.624102063684858,
-        "y": 5.7691892131291835
+        "x": 4.536920013607687,
+        "y": 5.705255552146393
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 7.09984631147541
       },
       "prevControl": {
-        "x": 2.6463222878824677,
-        "y": 6.434504370308192
+        "x": 2.714841460881762,
+        "y": 6.565991742027777
       },
       "nextControl": null,
       "isLocked": false,
@@ -52,12 +52,7 @@
       "name": "Prep Ice Cream",
       "waypointRelativePos": 1.6482014388489161,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Prep Ice Cream"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {
