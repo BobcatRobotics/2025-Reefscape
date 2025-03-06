@@ -1,5 +1,7 @@
 package frc.robot.subsystems.CoralIntake;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Alert;
@@ -41,6 +43,10 @@ public class CoralIntake extends SubsystemBase {
 
   public void deploy(Angle trim) {
     io.deploy(trim);
+  }
+
+  public void deploy() {
+    io.deploy(Rotations.of(0));
   }
 
   public void retract() {

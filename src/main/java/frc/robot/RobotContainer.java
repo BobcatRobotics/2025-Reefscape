@@ -14,6 +14,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -285,17 +287,19 @@ public class RobotContainer {
             .andThen(
                 superstructure
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
-                    .alongWith(endEffector.idleCoralCommand())));    // NamedCommands.registerCommand(
-    //     "Prep Coral L4", superstructure.setState(SuperstructureState.CORAL_PREP_L4));
-    // NamedCommands.registerCommand(
-    //     "Score Coral L4",
-    //     new ParallelCommandGroup(
-    //         superstructure.setState(SuperstructureState.CORAL_SCORE_L4),
-    //         endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
+                    .alongWith(endEffector.idleCoralCommand())));
 
-    // NamedCommands.registerCommand(
-    //     "Score", SuperstructureActions.score(superstructure, endEffector,
-    // drive::isCoralSideDesired));
+    NamedCommands.registerCommand(
+        "hpWaitThenIntake",
+        new WaitCommand(Seconds.of(2))
+            .andThen(
+                new RunCommand(
+                        () -> {
+                          intake.deploy();
+                          intake.runIn();
+                        })
+                    .until(intake::hasPiece)
+                    .withTimeout(3)));
 
     // NamedCommands.registerCommand(
     //     "Prep Coral L4",

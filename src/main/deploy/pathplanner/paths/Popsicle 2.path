@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.68217213114754,
-        "y": 5.505481557377049
+        "x": 5.38247950819672,
+        "y": 5.372
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.412667336446946,
-        "y": 5.6327164265972405
+        "x": 5.112974713496126,
+        "y": 5.499234869220191
       },
       "isLocked": false,
       "linkedName": "Popsicle1End"
@@ -90,7 +90,7 @@
   "folder": "Popsicle",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -122.15229514128222
+    "rotation": -114.7563356930048
   },
   "useDefaultConstraints": true
 }

@@ -24,14 +24,15 @@ public class ClimberIOTalonFX implements ClimberIO {
   public ClimberIOTalonFX(int talonID) {
     motor = new TalonFX(talonID);
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motor
-        .getConfigurator()
-        .apply(motorConfig); // TODO i think this is unecessary but if it aint broke dont fix it ig
     motorConfig.Slot0.kP = 1; // TODO tuner
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.CurrentLimits.StatorCurrentLimit = 60; // TODO tune
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 66;
+    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -158;
     motor.getConfigurator().apply(motorConfig);
     motor.setPosition(0);
 

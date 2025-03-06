@@ -5,9 +5,12 @@
   "pathFolders": [
     "Its a start",
     "MVP",
+    "Combo Meal",
     "Popsicle"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Archive"
+  ],
   "defaultMaxVel": 4.5,
   "defaultMaxAccel": 4.5,
   "defaultMaxAngVel": 540.0,

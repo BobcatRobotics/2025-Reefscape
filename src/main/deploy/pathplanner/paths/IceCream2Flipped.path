@@ -3,47 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.524385245901639,
-        "y": 5.517469262295082
+        "x": 1.5943647540983608,
+        "y": 1.1179815573770497
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.41533570751921,
-        "y": 5.143334351463855
+        "x": 1.8037866282302948,
+        "y": 0.9814440949900978
       },
       "isLocked": false,
-      "linkedName": "Ice Cream 2 End"
+      "linkedName": "IceCreamEndFlipped"
     },
     {
       "anchor": {
-        "x": 1.7022540983606556,
-        "y": 5.649334016393442
+        "x": 3.5843237704918027,
+        "y": 2.5445184426229503
       },
       "prevControl": {
-        "x": 2.891832341222513,
-        "y": 5.196123371975133
+        "x": 3.3419092598509152,
+        "y": 2.6056347663895116
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Ice Cream 3 End"
+      "linkedName": "IceCream2EndFlipped"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Prep Popsicle",
-      "waypointRelativePos": 0.7061151079136715,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Prep Popsicle"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 4.5,
@@ -54,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.78429786756266
+    "rotation": 58.39538770575454
   },
   "reversed": false,
-  "folder": "Popsicle",
+  "folder": "Combo Meal",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -61.11175896877485
+    "rotation": 50.33144677837368
   },
   "useDefaultConstraints": true
 }
