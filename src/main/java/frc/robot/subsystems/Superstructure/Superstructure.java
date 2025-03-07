@@ -45,8 +45,8 @@ public class Superstructure {
     return elevator.positionPercent();
   }
 
-  @AutoLogOutput(key = "Superstructure/DesiredScoringLevel")
   public void recordScoringLevel(ScoringLevel level) {
+    Logger.recordOutput("Superstructure/DesiredScoringLevel", level);
     scoringLevel = level;
   }
 

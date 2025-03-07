@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
@@ -37,16 +39,20 @@ public class SuperstructureActions {
       Superstructure superstructure,
       EndEffector endEffector,
       BooleanSupplier flipped,
-      BooleanSupplier shouldUseAlgae) {
+      BooleanSupplier shouldUseAlgae,
+      BooleanSupplier isNet) {
 
     return superstructure
         .score(flipped)
         .andThen(
             new ConditionalCommand(
-                endEffector
-                    .intakeAlgaeCommand()
-                    .until(endEffector::hasPiece)
-                    .andThen(endEffector.idleAlgaeCommand()),
+                new ConditionalCommand(
+                    endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
+                    endEffector
+                        .intakeAlgaeCommand()
+                        .until(endEffector::hasPiece)
+                        .andThen(endEffector.idleAlgaeCommand()),
+                    isNet),
                 endEffector
                     .coralOut(superstructure::getScoringLevel)
                     .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped))
@@ -119,7 +125,7 @@ public class SuperstructureActions {
     Commands.run(
             () -> {
               intake.deploy(trim.get());
-              intake.setSpeed(-0.4);
+              intake.setSpeed(Volts.of(-3));
             },
             intake)
         .finallyDo(
@@ -138,5 +144,14 @@ public class SuperstructureActions {
             superstructure
                 .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
                 .alongWith(endEffector.idleCoralCommand()));
+  }
+
+  public static Command handoffNoIdle(Superstructure superstructure, EndEffector endEffector) {
+    return superstructure
+        .setState(SuperstructureState.CORAL_HANDOFF)
+        .alongWith(endEffector.intakeCoralCommand())
+        .until(endEffector::hasPiece)
+        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE));
+    // .alongWith(endEffector.idleCoralCommand()));
   }
 }

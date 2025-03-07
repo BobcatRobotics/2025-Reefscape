@@ -78,10 +78,18 @@ public class Elevator extends SubsystemBase {
 
   public boolean inTolerance() {
     return inputs.aligned
-        || (desiredState == ElevatorState.CORAL_L4 && inputs.distanceToAlignment > 0);
+        || (desiredState == ElevatorState.CORAL_L4
+            && (inputs.rotPosition.getRotations() - desiredState.pos.getRotations() >= 0));
   }
 
   public boolean inTolerance(SuperstructureState desiredState) {
+    if (desiredState.elevatorState == ElevatorState.CORAL_L4) {
+      return (inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations()
+              >= 0)
+          || (Math.abs(
+                  inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations())
+              < ELEVATOR_TOLERANCE.getRotations());
+    }
     return Math.abs(
             inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations())
         < ELEVATOR_TOLERANCE.getRotations();

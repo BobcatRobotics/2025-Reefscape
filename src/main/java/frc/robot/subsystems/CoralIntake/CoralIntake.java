@@ -1,9 +1,11 @@
 package frc.robot.subsystems.CoralIntake;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +35,7 @@ public class CoralIntake extends SubsystemBase {
     io.setState(state);
   }
 
-  public void setSpeed(double speed) {
+  public void setSpeed(Voltage speed) {
     io.setSpeed(speed);
   }
 
@@ -62,11 +64,11 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public void runIn() {
-    io.setSpeed(0.60);
+    io.setSpeed(Volts.of(8));
   }
 
   public void dampenCoral() {
-    io.setSpeed(0.1);
+    io.setSpeed(Volts.of(1));
   }
 
   public boolean hasPiece() {

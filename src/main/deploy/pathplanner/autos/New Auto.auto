@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Popsicle1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreCoralL4CW"
+            "pathName": "tune2"
           }
         }
       ]

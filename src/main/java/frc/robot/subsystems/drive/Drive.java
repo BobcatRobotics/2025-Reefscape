@@ -82,15 +82,15 @@ public class Drive extends SubsystemBase {
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG =
-      Units.lbsToKilograms(96.1); // TODO update as more mechanisms get added
-  private static final double ROBOT_MOI = 6.883; // TODO find these //4.23321575 MOI from cad
+      Units.lbsToKilograms(115); // TODO update as more mechanisms get added
+  private static final double ROBOT_MOI = 4.2; // TODO find these //4.23321575 MOI from cad
   private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,
           ROBOT_MOI,
           new ModuleConfig(
-              TunerConstants25.FrontLeft.WheelRadius,
+              TunerConstants25.kWheelRadius.in(Meters),
               TunerConstants25.kSpeedAt12Volts.in(MetersPerSecond),
               WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
@@ -147,7 +147,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(7.0, 0.0, 0.0), new PIDConstants(7.0, 0.0, 0.0)),
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);

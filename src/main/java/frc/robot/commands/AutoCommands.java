@@ -8,15 +8,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.ScoreSide;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.Superstructure.Superstructure;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.Enums.BranchSide;
 import frc.robot.util.Enums.IdleType;
@@ -26,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoCommands {
@@ -228,5 +235,45 @@ public class AutoCommands {
             endEffector
                 .coralOut(() -> level)
                 .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)));
+  }
+
+  /**
+   * Picks up a peice that is indexed in the carwash
+   *
+   * <p>This command assumes that the peice is already there, it will NOT check to see if a peice is
+   * indexed
+   *
+   * <p>After it picks up the peice, the arm will flip around to the coral idle spot
+   */
+  public static Command intakeCoralGround(
+      Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
+    return superstructure
+        .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+        .alongWith(
+            new RunCommand(
+                () -> {
+                  intake.deploy(trim.get());
+                  intake.runIn();
+                },
+                intake))
+        .until(intake::hasPiece)
+        .andThen(
+            new ParallelDeadlineGroup(
+                new WaitCommand(1),
+                new RunCommand(
+                    () -> {
+                      intake.retract();
+                    },
+                    intake)))
+        .finallyDo(
+            () -> {
+              intake.retract();
+              intake.dampenCoral();
+            })
+        .handleInterrupt(
+            () -> {
+              intake.dampenCoral();
+              intake.retract();
+            });
   }
 }

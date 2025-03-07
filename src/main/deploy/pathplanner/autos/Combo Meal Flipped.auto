@@ -29,6 +29,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Handoff"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "IceCream2Flipped"
@@ -37,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreCoralL4CCW"
+            "name": "ScoreCoralL4CW"
           }
         }
       ]

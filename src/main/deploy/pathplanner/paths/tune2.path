@@ -3,61 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8025,
-        "y": 5.097499999999999
+        "x": 7.056927710843374,
+        "y": 1.025301204819275
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4766903140818455,
-        "y": 5.022232298815184
-      },
-      "isLocked": false,
-      "linkedName": "Popsicle3End"
-    },
-    {
-      "anchor": {
-        "x": 3.159,
-        "y": 4.97075
-      },
-      "prevControl": {
-        "x": 3.3661897674955177,
-        "y": 5.1458552490206495
-      },
-      "nextControl": {
-        "x": 1.8336403755976274,
-        "y": 3.850629880757561
+        "x": 6.724810727656635,
+        "y": 0.933967004196386
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.09625,
-        "y": 4.0055000000000005
+        "x": 4.978614457831325,
+        "y": 1.7873493975903592
       },
       "prevControl": {
-        "x": 2.952312167477677,
-        "y": 4.8641417708232435
+        "x": 6.089523469921103,
+        "y": 1.9681420123608482
       },
       "nextControl": {
-        "x": 1.9197394475876886,
-        "y": 3.8284575619036483
+        "x": 4.2546494511559105,
+        "y": 1.669529193473944
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6185000000000003,
-        "y": 4.0055000000000005
+        "x": 3.232831325301205,
+        "y": 1.1361445783132513
       },
       "prevControl": {
-        "x": 1.8496324070069012,
-        "y": 4.26046258351468
+        "x": 3.9512844826152227,
+        "y": 1.1892778241269313
+      },
+      "nextControl": {
+        "x": 2.263257273915614,
+        "y": 1.064439671900933
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.6948795180722889,
+        "y": 2.1891566265060227
+      },
+      "prevControl": {
+        "x": 1.9645312425909962,
+        "y": 1.9604403568697113
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Popsicle4End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -74,13 +74,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Popsicle",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.06858282186231
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -12,7 +12,7 @@ public enum ElevatorState {
       Rotation2d.fromRotations(0)), // right side up for quick transition to scoring zone
   CORAL_HANDOFF(
       Rotation2d.fromRotations(1.1)), // picking up coral with the end effector //OLD 1.015
-  CORAL_L1(Rotation2d.fromRotations(2)), // elevator pos doesnt matter for score or prep
+  CORAL_L1(Rotation2d.fromRotations(1.5)), // elevator pos doesnt matter for score or prep
   CORAL_L2(Rotation2d.fromRotations(0.5)),
   POST_CORAL_L2(Rotation2d.fromRotations(0)),
   CORAL_L3(Rotation2d.fromRotations(1.4)),

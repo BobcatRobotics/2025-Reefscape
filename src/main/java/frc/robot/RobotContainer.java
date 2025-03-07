@@ -14,7 +14,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -289,18 +288,6 @@ public class RobotContainer {
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
                     .alongWith(endEffector.idleCoralCommand())));
 
-    NamedCommands.registerCommand(
-        "hpWaitThenIntake",
-        new WaitCommand(Seconds.of(2))
-            .andThen(
-                new RunCommand(
-                        () -> {
-                          intake.deploy();
-                          intake.runIn();
-                        })
-                    .until(intake::hasPiece)
-                    .withTimeout(3)));
-
     // NamedCommands.registerCommand(
     //     "Prep Coral L4",
     //     SuperstructureActions.prepScore(
@@ -318,6 +305,28 @@ public class RobotContainer {
         "ScoreCoralL4CW",
         AutoCommands.fullAutoReefScore(
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+
+    NamedCommands.registerCommand(
+        "hpWaitThenIntake",
+        SuperstructureActions.intakeCoralGround(superstructure, intake, () -> Rotations.of(0))
+            .withTimeout(5));
+    // .andThen(SuperstructureActions.handoff(superstructure, endEffector)));
+    NamedCommands.registerCommand(
+        "Handoff", SuperstructureActions.handoffNoIdle(superstructure, endEffector));
+
+    NamedCommands.registerCommand("StopEEDefault", Commands.runOnce(() -> endEffector.setSpeed(0)));
+
+    NamedCommands.registerCommand(
+        "DriveToCoral",
+        DriveCommands.driveToCoral(
+            drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
+
+    NamedCommands.registerCommand(
+        "retractIntake",
+        new InstantCommand(
+            () -> {
+              intake.retract();
+            }));
   }
 
   public void updateControllerAlerts() {
@@ -360,13 +369,19 @@ public class RobotContainer {
                     }))
             .ignoringDisable(true));
 
-    leftRuffy.button.onTrue(
-        AutoCommands.fullAutoReefScore(
-            drive,
-            superstructure,
-            endEffector,
-            BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L4));
+    // leftRuffy.button.onTrue(
+    //     AutoCommands.fullAutoReefScore(
+    //         drive,
+    //         superstructure,
+    //         endEffector,
+    //         BranchSide.COUNTER_CLOCKWISE,
+    //         ScoringLevel.CORAL_L4));
+
+    leftRuffy.button.whileTrue(
+        DriveCommands.driveToCoral(
+            drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
+    // .withDeadline(
+    //     SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier)));
 
     /* operator controls */
 
@@ -419,7 +434,11 @@ public class RobotContainer {
     // score
     joystick.thumb.onTrue(
         SuperstructureActions.score(
-            superstructure, endEffector, drive::isCoralSideDesired, this::shouldUseAlgae));
+            superstructure,
+            endEffector,
+            drive::isCoralSideDesired,
+            this::shouldUseAlgae,
+            superstructure::isScoringLevelNet));
 
     // stow
     joystick
@@ -454,7 +473,7 @@ public class RobotContainer {
                             superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE))));
 
     // zero intake
-    joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()));
+    joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()).ignoringDisable(true));
 
     // climber
     joystick.bottom7.whileTrue(
@@ -469,7 +488,7 @@ public class RobotContainer {
     joystick.bottom9.whileTrue(
         new RunCommand(
             () -> {
-              intake.setSpeed(0.25);
+              intake.setSpeed(Volts.of(1));
             },
             intake));
 
@@ -483,7 +502,7 @@ public class RobotContainer {
             new RunCommand(
                 () -> {
                   intake.setState(IntakeState.ALGAE_PICKUP);
-                  intake.setSpeed(100);
+                  intake.setSpeed(Volts.of(4));
                 },
                 intake))
         .onFalse(

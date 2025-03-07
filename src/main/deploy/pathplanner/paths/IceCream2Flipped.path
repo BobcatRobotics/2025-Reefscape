@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5943647540983608,
-        "y": 1.1179815573770497
+        "x": 1.6948795180722889,
+        "y": 0.9837349397590345
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8037866282302948,
-        "y": 0.9814440949900978
+        "x": 1.8977678155130513,
+        "y": 0.8376653030730046
       },
       "isLocked": false,
       "linkedName": "IceCreamEndFlipped"
@@ -20,8 +20,8 @@
         "y": 2.5445184426229503
       },
       "prevControl": {
-        "x": 3.3419092598509152,
-        "y": 2.6056347663895116
+        "x": 3.338494254022929,
+        "y": 2.4990448367325007
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 4.4,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

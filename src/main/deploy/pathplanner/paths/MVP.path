@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.282379862700229,
-        "y": 5.1960996240601505
+        "x": 7.839959016393443,
+        "y": 3.971055327868852
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.910726621273512,
-        "y": 5.1235970273161
+        "x": 6.535023510299421,
+        "y": 4.097995351433689
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.1672768878718545,
-        "y": 5.1960996240601505
+        "x": 6.245594262295082,
+        "y": 4.078944672131147
       },
       "prevControl": {
-        "x": 5.417814013114719,
-        "y": 5.217584466039911
+        "x": 7.4125795709697115,
+        "y": 4.002602734842304
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MVP score first"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 4.4,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.200562821265
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "MVP",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.75384833307064
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

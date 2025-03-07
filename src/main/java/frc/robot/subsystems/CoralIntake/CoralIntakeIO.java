@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface CoralIntakeIO {
@@ -24,7 +25,7 @@ public interface CoralIntakeIO {
 
   public default void updateInputs(CoralIntakeIOInputs inputs) {}
 
-  public default void setSpeed(double velocity) {}
+  public default void setSpeed(Voltage velocity) {}
 
   public default void setAngle(Angle angle) {}
 
