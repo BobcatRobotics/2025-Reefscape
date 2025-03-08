@@ -207,15 +207,17 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.NET_PREP,
               SuperstructureState.IDLE_ALGAE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
-              SuperstructureState.ALGAE_PREP_L3
+              SuperstructureState.ALGAE_PREP_L3,
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L3,
               SuperstructureState.IDLE_ALGAE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
-              SuperstructureState.ALGAE_PREP_L2
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
               SuperstructureState.NET_SCORE,
@@ -229,9 +231,8 @@ public class StateGraph {
               SuperstructureState.CLIMB, SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
-              SuperstructureState.NET_PREP,
-              SuperstructureState.NET_SCORE,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.NET_PREP, SuperstructureState.NET_SCORE,
+              // SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.POPSICLE_LICK,

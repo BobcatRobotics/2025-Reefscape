@@ -289,9 +289,10 @@ public class RobotContainer {
                     .alongWith(endEffector.idleCoralCommand())));
 
     // NamedCommands.registerCommand(
-    //     "Prep Coral L4",
-    //     SuperstructureActions.prepScore(
-    //         ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
+    // "Prep Coral L4",
+    // SuperstructureActions.prepScore(
+    // ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure,
+    // endEffector));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCW",
@@ -307,9 +308,81 @@ public class RobotContainer {
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
 
     NamedCommands.registerCommand(
+        "StowSuperstructureThenFlip",
+        superstructure
+            .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
+            .andThen(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE)));
+
+    NamedCommands.registerCommand(
         "hpWaitThenIntake",
-        SuperstructureActions.intakeCoralGround(superstructure, intake, () -> Rotations.of(0))
-            .withTimeout(5));
+        superstructure
+            .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+            .alongWith(
+                new InstantCommand(
+                    () -> {
+                      intake.deploy();
+                      intake.runIn(); // deploy and run in for one second
+                    }))
+            .withTimeout(1)
+            // flippy flip flip
+            .andThen(
+                new RunCommand(() -> intake.retract())
+                    .withTimeout(0.25)
+                    .andThen(
+                        new RunCommand(
+                                () -> { // retract for a quarter second
+                                  intake.retract();
+                                })
+                            .withTimeout(0.25))
+                    .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25)) // depo
+                ));
+
+    NamedCommands.registerCommand(
+        "PrepL4", superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false));
+
+    NamedCommands.registerCommand(
+        "FlipAndIntake",
+        new RunCommand(() -> intake.deploy())
+            .withTimeout(0.25)
+            .andThen(
+                new RunCommand(
+                        () -> {
+                          intake.retract();
+                          intake.setSpeed(Volts.of(3));
+                        })
+                    .withTimeout(0.25))
+            .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25))
+            .andThen(new RunCommand(() -> intake.retract()).withTimeout(0.25))
+            .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25))
+            .andThen(
+                new RunCommand(
+                    () -> {
+                      intake.retract();
+                      intake.stop();
+                    }))
+            .handleInterrupt(() -> intake.retract()));
+
+    NamedCommands.registerCommand(
+        "DeployTounge",
+        new RunCommand(() -> intake.deploy())
+            .withTimeout(0.25)
+            .andThen(
+                new RunCommand(
+                        () -> {
+                          intake.retract();
+                          intake.setSpeed(Volts.of(3));
+                        })
+                    .withTimeout(0.25))
+            .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25))
+            .andThen(new RunCommand(() -> intake.retract()).withTimeout(0.25))
+            .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25))
+            .andThen(
+                new RunCommand(
+                    () -> {
+                      intake.retract();
+                      intake.stop();
+                    }))
+            .handleInterrupt(() -> intake.retract()));
     // .andThen(SuperstructureActions.handoff(superstructure, endEffector)));
     NamedCommands.registerCommand(
         "Handoff", SuperstructureActions.handoffNoIdle(superstructure, endEffector));
@@ -327,6 +400,8 @@ public class RobotContainer {
             () -> {
               intake.retract();
             }));
+    NamedCommands.registerCommand(
+        "Stow", superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE));
   }
 
   public void updateControllerAlerts() {
@@ -344,7 +419,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    /*driver controls */
+    /* driver controls */
 
     // TODO decrease speed when CoG really high
     // default commands
@@ -370,18 +445,19 @@ public class RobotContainer {
             .ignoringDisable(true));
 
     // leftRuffy.button.onTrue(
-    //     AutoCommands.fullAutoReefScore(
-    //         drive,
-    //         superstructure,
-    //         endEffector,
-    //         BranchSide.COUNTER_CLOCKWISE,
-    //         ScoringLevel.CORAL_L4));
+    // AutoCommands.fullAutoReefScore(
+    // drive,
+    // superstructure,
+    // endEffector,
+    // BranchSide.COUNTER_CLOCKWISE,
+    // ScoringLevel.CORAL_L4));
 
     leftRuffy.button.whileTrue(
         DriveCommands.driveToCoral(
             drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
     // .withDeadline(
-    //     SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier)));
+    // SuperstructureActions.intakeCoralGround(superstructure, intake,
+    // trimSupplier)));
 
     /* operator controls */
 
@@ -410,7 +486,8 @@ public class RobotContainer {
     buttonBoard.l2.onTrue(
         new ConditionalCommand(
             SuperstructureActions.prepScore(
-                ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector),
+                    ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector)
+                .alongWith(endEffector.intakeAlgaeCommand()),
             SuperstructureActions.prepScore(
                 ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector),
             this::shouldUseAlgae));
@@ -418,7 +495,8 @@ public class RobotContainer {
     buttonBoard.l3.onTrue(
         new ConditionalCommand(
             SuperstructureActions.prepScore(
-                ScoringLevel.ALGAE_L3, drive::isCoralSideDesired, superstructure, endEffector),
+                    ScoringLevel.ALGAE_L3, drive::isCoralSideDesired, superstructure, endEffector)
+                .alongWith(endEffector.intakeAlgaeCommand()),
             SuperstructureActions.prepScore(
                 ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector),
             this::shouldUseAlgae));
@@ -428,8 +506,9 @@ public class RobotContainer {
             ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector));
 
     buttonBoard.net.onTrue(
-        SuperstructureActions.prepScore(
-            ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector));
+        superstructure
+            .setState(SuperstructureState.NET_SCORE)
+            .alongWith(endEffector.intakeAlgaeCommand()));
 
     // score
     joystick.thumb.onTrue(
@@ -511,28 +590,28 @@ public class RobotContainer {
                   intake.retract();
                 }));
 
-    //     rightRuffy
-    //         .axisGreaterThan(1, .5)
-    //         .whileTrue(
-    //             DriveCommands.driveToBarge(
-    //                 drive,
-    //                 () -> leftRuffy.yAxis.getAsDouble(),
-    //                 () -> -leftRuffy.xAxis.getAsDouble(),
-    //                 () -> -rightRuffy.xAxis.getAsDouble(),
-    //                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-    //                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
-    //   }
+    // rightRuffy
+    // .axisGreaterThan(1, .5)
+    // .whileTrue(
+    // DriveCommands.driveToBarge(
+    // drive,
+    // () -> leftRuffy.yAxis.getAsDouble(),
+    // () -> -leftRuffy.xAxis.getAsDouble(),
+    // () -> -rightRuffy.xAxis.getAsDouble(),
+    // () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+    // () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    // }
 
-    //     rightRuffy
-    //         .axisGreaterThan(1, .5)
-    //         .whileTrue(
-    //             DriveCommands.driveToProcessor(
-    //                 drive,
-    //                 () -> leftRuffy.yAxis.getAsDouble(),
-    //                 () -> -leftRuffy.xAxis.getAsDouble(),
-    //                 () -> -rightRuffy.xAxis.getAsDouble(),
-    //                 () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-    //                 () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    // rightRuffy
+    // .axisGreaterThan(1, .5)
+    // .whileTrue(
+    // DriveCommands.driveToProcessor(
+    // drive,
+    // () -> leftRuffy.yAxis.getAsDouble(),
+    // () -> -leftRuffy.xAxis.getAsDouble(),
+    // () -> -rightRuffy.xAxis.getAsDouble(),
+    // () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
+    // () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
   }
 
   /**

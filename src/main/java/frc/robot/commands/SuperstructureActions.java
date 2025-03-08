@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.Superstructure.Superstructure;
@@ -51,7 +50,7 @@ public class SuperstructureActions {
                     endEffector
                         .intakeAlgaeCommand()
                         .until(endEffector::hasPiece)
-                        .andThen(endEffector.idleAlgaeCommand()),
+                        .andThen(endEffector.intakeAlgaeCommand()),
                     isNet),
                 endEffector
                     .coralOut(superstructure::getScoringLevel)
@@ -88,14 +87,6 @@ public class SuperstructureActions {
                 },
                 intake))
         .until(intake::hasPiece)
-        .andThen(
-            new ParallelDeadlineGroup(
-                new WaitCommand(1),
-                new RunCommand(
-                    () -> {
-                      intake.retract();
-                    },
-                    intake)))
         .finallyDo(
             () -> {
               intake.retract();
@@ -151,7 +142,7 @@ public class SuperstructureActions {
         .setState(SuperstructureState.CORAL_HANDOFF)
         .alongWith(endEffector.intakeCoralCommand())
         .until(endEffector::hasPiece)
-        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE));
-    // .alongWith(endEffector.idleCoralCommand()));
+        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE))
+        .alongWith(new InstantCommand(() -> endEffector.idle()));
   }
 }

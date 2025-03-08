@@ -25,7 +25,6 @@ import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.Enums.BranchSide;
-import frc.robot.util.Enums.IdleType;
 import frc.robot.util.Enums.ScoringLevel;
 import frc.robot.util.RotationUtil;
 import java.util.ArrayList;
@@ -180,9 +179,9 @@ public class AutoCommands {
               Logger.recordOutput("ppoverride/y", yOutput);
               Logger.recordOutput("ppoverride/theta", omegaOutput);
 
-              if ((xController.getPositionError() < TRANSLATION_TOLERANCE * 2)
-                  && (yController.getPositionError() < TRANSLATION_TOLERANCE * 2)
-                  && (angleController.getPositionError() < THETA_TOLERANCE)) {
+              if ((xController.getPositionError() < 0.4)
+                  && (yController.getPositionError() < 0.4)
+                  && (angleController.getPositionError() < Math.toRadians(2))) {
                 SuperstructureActions.prepScore(
                     level, drive::isCoralSideDesired, superstructure, endEffector);
               }
@@ -203,7 +202,7 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(autoScore(superstructure, endEffector, drive::isCoralSideDesired, level))
+        .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired, level))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
@@ -223,7 +222,7 @@ public class AutoCommands {
   }
 
   /** go to the desired level's corresponding prep position, */
-  private static Command autoScore(
+  private static Command autoScoreNoRetract(
       Superstructure superstructure,
       EndEffector endEffector,
       BooleanSupplier flipped,
@@ -234,7 +233,7 @@ public class AutoCommands {
         .andThen(
             endEffector
                 .coralOut(() -> level)
-                .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)));
+                .raceWith(superstructure.setState(level.postState, flipped)));
   }
 
   /**

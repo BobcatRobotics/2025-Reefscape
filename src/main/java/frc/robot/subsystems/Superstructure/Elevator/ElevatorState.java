@@ -25,7 +25,8 @@ public enum ElevatorState {
   ALGAE_GROUND(Rotation2d.fromRotations(0.2)), // pickup algae from ground
   ALGAE_SCORE_PROCESSOR(Rotation2d.fromRotations(0)), // pickup algae from processor
   IDLE_ALGAE(Rotation2d.fromRotations(0)), // hold a algae
-  NET_SCORE(Rotation2d.fromRotations(3)),
+  NET_SCORE(Rotation2d.fromRotations(2.5)),
+  NET_PREP(Rotation2d.fromRotations(3)),
   UNKNOWN(Rotation2d.fromRotations(0)),
   CLIMB(Rotation2d.fromRotations(0)); // elevator isnt at a predefined state
 

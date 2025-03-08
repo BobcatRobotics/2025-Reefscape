@@ -52,6 +52,8 @@ public class Superstructure {
 
   /** only for use in commands */
   public ScoringLevel getScoringLevel() {
+    Logger.recordOutput("Superstructure/gotDesiredScoringLevel", scoringLevel);
+
     return scoringLevel;
   }
 
@@ -133,8 +135,8 @@ public class Superstructure {
               SuperstructureState nextState = nextStateInPath(currentState, goal);
               Logger.recordOutput("Superstructure/NextState", nextState);
 
-              if (arm.getDesiredState() != goal.armState
-                  || (arm.isFlipped() != armFlipped.getAsBoolean())) {
+              if ((arm.getDesiredState() != goal.armState
+                  || (arm.isFlipped() != armFlipped.getAsBoolean()))) {
                 arm.setState(nextState.armState, armFlipped.getAsBoolean());
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
@@ -155,7 +157,6 @@ public class Superstructure {
             });
   }
 
-  @AutoLogOutput(key = "Superstructure/calculatedScoringState")
   private SuperstructureState getDesiredScoringState() {
     SuperstructureState goal;
 
@@ -181,8 +182,11 @@ public class Superstructure {
       case NET:
         goal = SuperstructureState.NET_SCORE;
       default:
-        goal = SuperstructureState.CORAL_SCORE_L4;
+        goal = SuperstructureState.NET_SCORE;
     }
+
+    Logger.recordOutput("wtf", goal);
+
     return goal;
   }
 

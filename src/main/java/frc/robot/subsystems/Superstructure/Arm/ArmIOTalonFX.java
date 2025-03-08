@@ -52,6 +52,13 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Slot0.kD = 10;
     angleConfigs.Slot0.kS = 5;
     angleConfigs.Slot0.kG = 6;
+
+    angleConfigs.Slot1.kP = 20;
+    angleConfigs.Slot1.kI = 0;
+    angleConfigs.Slot1.kD = 10;
+    angleConfigs.Slot1.kS = 5;
+    angleConfigs.Slot1.kG = 6;
+
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.5;
     angleConfigs.MotionMagic.MotionMagicAcceleration = 1;
 
@@ -124,9 +131,14 @@ public class ArmIOTalonFX implements ArmIO {
    */
   @Override
   public void setDesiredState(ArmState state, boolean flipped) {
+
     this.flipped = flipped;
     desiredState = state;
-    double rotations = flipped ? 0.5 - state.rotations : state.rotations;
-    motor.setControl(angleRequest.withPosition(rotations));
+    double rotations = state.rotations;
+    if (state != ArmState.NET_SCORE) {
+      rotations = flipped ? 0.5 - state.rotations : state.rotations;
+    }
+    motor.setControl(
+        angleRequest.withPosition(rotations).withSlot(state == ArmState.NET_SCORE ? 1 : 0));
   }
 }

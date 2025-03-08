@@ -5,22 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Popsicle1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DeployTounge"
-                }
-              }
-            ]
+            "pathName": "Popsicle1Flipped"
           }
         },
         {
@@ -30,22 +17,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "IceCream"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StowSuperstructureThenFlip"
-                }
-              }
-            ]
+            "pathName": "IceCreamFlipped"
           }
         },
         {
@@ -59,15 +33,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Handoff"
+                  "pathName": "IceCream2Flipped"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "IceCream 2"
+                  "name": "Handoff"
                 }
               }
             ]
@@ -76,7 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreCoralL4CCW"
+            "name": "ScoreCoralL4CW"
           }
         },
         {

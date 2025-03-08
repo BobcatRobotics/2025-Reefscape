@@ -70,7 +70,7 @@ public class EndEffector extends SubsystemBase {
   public Command idleAlgaeCommand() {
     return new RunCommand(
         () -> {
-          io.setSpeed(ALGAE_IDLE_SPEED);
+          io.setSpeed(INTAKE_ALGAE_SPEED);
         },
         this);
   }

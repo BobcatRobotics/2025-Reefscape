@@ -30,28 +30,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "IceCreamFlipped"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StowSuperstructureThenFlip"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "hpWaitThenIntake"
+            "pathName": "IceCreamFlipped"
           }
         },
         {
@@ -59,30 +40,56 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "IceCream2Flipped"
+                  "name": "hpWaitThenIntake"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Handoff"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.7
+                      }
+                    },
+                    {
+                      "type": "race",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "DriveToCoral"
+                            }
+                          },
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 3.0
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ScoreCoralL4CW"
+            "pathName": "IceCream2Flipped"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stow"
+            "name": "ScoreCoralL4CCW"
           }
         }
       ]
