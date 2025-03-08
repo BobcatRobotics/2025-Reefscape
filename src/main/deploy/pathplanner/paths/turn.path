@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6948795180722889,
-        "y": 0.9837349397590345
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8977678155130513,
-        "y": 0.8376653030730046
+        "x": 2.2471473284117347,
+        "y": 6.96234102950236
       },
       "isLocked": false,
-      "linkedName": "IceCreamEndFlipped"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.471,
-        "y": 2.182249999999999
+        "x": 3.2955,
+        "y": 6.247999999999999
       },
       "prevControl": {
-        "x": 3.2251704835311266,
-        "y": 2.1367763941095492
+        "x": 3.0167116983838773,
+        "y": 6.289859204968006
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IceCream2EndFlipped"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Combo Meal",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 50.33144677837368
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

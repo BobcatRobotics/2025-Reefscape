@@ -229,7 +229,7 @@ public class AutoCommands {
       ScoringLevel level) {
 
     return superstructure
-        .score(flipped, level)
+        .score(flipped, level, () -> false)
         .andThen(
             endEffector
                 .coralOut(() -> level)
@@ -247,7 +247,7 @@ public class AutoCommands {
   public static Command intakeCoralGround(
       Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
     return superstructure
-        .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+        .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
         .alongWith(
             new RunCommand(
                 () -> {

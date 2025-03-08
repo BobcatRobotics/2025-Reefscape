@@ -15,7 +15,7 @@ public enum ArmState {
   CORAL_SCORE_L1(180 + 25), // normal side
   CORAL_SCORE_L2(180 - 35),
   CORAL_SCORE_L3(180 - 35),
-  CORAL_SCORE_L4(180 - 48),
+  CORAL_SCORE_L4(180),
 
   ALGAE_PREP_L2(180 - 0),
   ALGAE_PREP_L3(180 - 0),
@@ -29,7 +29,7 @@ public enum ArmState {
   ALGAE_GROUND(180 + 15),
   ALGAE_SCORE_PROCESSOR(180 - 45),
   IDLE_ALGAE(180 - 45), // coral handoff
-  NET_SCORE(180 - 45),
+  NET_SCORE(180 - 50),
   NET_PREP(180 - 45),
   FLIPPED_NET_SCORE(0),
   FLIPPED_NET_PREP(25),

@@ -73,10 +73,10 @@ public class Arm extends SubsystemBase {
     return desiredState;
   }
 
-  public void setState(ArmState state, boolean flipped) {
+  public void setState(ArmState state, boolean flipped, boolean hasPiece) {
     desiredState = state;
     if (state != ArmState.NO_OP) {
-      io.setDesiredState(desiredState, flipped);
+      io.setDesiredState(desiredState, flipped, hasPiece);
     }
   }
 

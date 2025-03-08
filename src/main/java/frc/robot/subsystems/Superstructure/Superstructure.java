@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -29,6 +30,7 @@ public class Superstructure {
   private Arm arm;
   private Elevator elevator;
   private ScoringLevel scoringLevel = ScoringLevel.CORAL_L1;
+  private SuperstructureState lastPrepPosition = SuperstructureState.RIGHT_SIDE_UP_IDLE;
 
   private final RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
@@ -48,6 +50,14 @@ public class Superstructure {
   public void recordScoringLevel(ScoringLevel level) {
     Logger.recordOutput("Superstructure/DesiredScoringLevel", level);
     scoringLevel = level;
+  }
+
+  public void setLastPrepPosition(SuperstructureState state) {
+    lastPrepPosition = state;
+  }
+
+  public SuperstructureState getLastPrepPosition() {
+    return lastPrepPosition;
   }
 
   /** only for use in commands */
@@ -93,7 +103,7 @@ public class Superstructure {
     return currentState;
   }
 
-  public Command setState(SuperstructureState goal) {
+  public Command setState(SuperstructureState goal, BooleanSupplier hasPeice) {
 
     return Commands.run(
             () -> {
@@ -104,7 +114,7 @@ public class Superstructure {
               Logger.recordOutput("Superstructure/NextState", nextState);
 
               if (arm.getDesiredState() != goal.armState) {
-                arm.setState(nextState.armState, false);
+                arm.setState(nextState.armState, false, hasPeice.getAsBoolean());
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
 
@@ -124,7 +134,39 @@ public class Superstructure {
             });
   }
 
-  public Command setState(SuperstructureState goal, BooleanSupplier armFlipped) {
+  public Command setState(Supplier<SuperstructureState> goal, BooleanSupplier hasPeice) {
+
+    return Commands.run(
+            () -> {
+              visualizer.setDesiredSuperstructureState(goal.get());
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal.get());
+              SuperstructureState nextState = nextStateInPath(currentState, goal.get());
+              Logger.recordOutput("Superstructure/NextState", nextState);
+
+              if (arm.getDesiredState() != goal.get().armState) {
+                arm.setState(nextState.armState, false, hasPeice.getAsBoolean());
+              }
+              if (elevator.getDesiredState() != goal.get().elevatorState) {
+
+                elevator.setState(nextState.elevatorState);
+              }
+
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
+        .until(() -> getState() == goal.get())
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+            });
+  }
+
+  public Command setState(
+      SuperstructureState goal, BooleanSupplier armFlipped, BooleanSupplier hasPeice) {
 
     return Commands.run(
             () -> {
@@ -137,7 +179,8 @@ public class Superstructure {
 
               if ((arm.getDesiredState() != goal.armState
                   || (arm.isFlipped() != armFlipped.getAsBoolean()))) {
-                arm.setState(nextState.armState, armFlipped.getAsBoolean());
+                arm.setState(
+                    nextState.armState, armFlipped.getAsBoolean(), hasPeice.getAsBoolean());
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
 
@@ -220,7 +263,8 @@ public class Superstructure {
     return goal;
   }
 
-  public Command score(BooleanSupplier shouldFlipArm, ScoringLevel level) {
+  public Command score(
+      BooleanSupplier shouldFlipArm, ScoringLevel level, BooleanSupplier hasPeice) {
 
     return Commands.run(
             () -> {
@@ -235,7 +279,7 @@ public class Superstructure {
               Logger.recordOutput("Superstructure/NextState", nextState);
 
               if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
-                arm.setState(nextState.armState, armFlipped);
+                arm.setState(nextState.armState, armFlipped, hasPeice.getAsBoolean());
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
                 elevator.setState(nextState.elevatorState);
@@ -254,7 +298,7 @@ public class Superstructure {
             });
   }
 
-  public Command score(BooleanSupplier shouldFlipArm) {
+  public Command score(BooleanSupplier shouldFlipArm, BooleanSupplier hasPeice) {
     return Commands.run(
             () -> {
               SuperstructureState goal = getDesiredScoringState();
@@ -269,7 +313,7 @@ public class Superstructure {
               Logger.recordOutput("Superstructure/NextState", nextState);
 
               if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
-                arm.setState(nextState.armState, armFlipped);
+                arm.setState(nextState.armState, armFlipped, hasPeice.getAsBoolean());
               }
               if (elevator.getDesiredState() != goal.elevatorState) {
                 elevator.setState(nextState.elevatorState);

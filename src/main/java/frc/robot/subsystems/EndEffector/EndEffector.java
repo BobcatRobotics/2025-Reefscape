@@ -22,7 +22,7 @@ public class EndEffector extends SubsystemBase {
   public static double INTAKE_CORAL_SPEED = 500;
   public static double INTAKE_ALGAE_SPEED = 500;
   public static double OUTTAKE_SPEED = -300;
-  public static double OUTTAKE_FAST_SPEED = -1000;
+  public static double OUTTAKE_FAST_SPEED = -2000;
   public static double CORAL_SCORE_SPEED = -5;
 
   private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
@@ -65,6 +65,10 @@ public class EndEffector extends SubsystemBase {
           io.setSpeed(CORAL_IDLE_SPEED);
         },
         this);
+  }
+
+  public void idleCoral() {
+    io.setSpeed(CORAL_IDLE_SPEED);
   }
 
   public Command idleAlgaeCommand() {
@@ -124,7 +128,7 @@ public class EndEffector extends SubsystemBase {
           Logger.recordOutput("scoringlevel", level.get());
           if (level.get() == ScoringLevel.CORAL_L1) {
             io.setSpeed(OUTTAKE_SPEED);
-          } else {
+          } else if (level.get() != ScoringLevel.CORAL_L4) {
             io.setSpeed(CORAL_SCORE_SPEED);
           }
         },

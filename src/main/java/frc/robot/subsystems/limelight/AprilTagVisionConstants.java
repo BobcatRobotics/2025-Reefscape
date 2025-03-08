@@ -51,6 +51,6 @@ public class AprilTagVisionConstants {
     public static final double xyMultiTagStdDev = 0.45;
     public static final double thetaMultiTagStdDev = 99999999;
     public static final int[] validTags =
-        new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+        new int[] {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22}; // No barge tags
   }
 }

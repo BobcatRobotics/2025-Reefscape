@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.util.VisionObservation;
-import frc.robot.util.VisionObservation.LLTYPE;
 import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
@@ -87,8 +86,6 @@ public class Vision extends SubsystemBase {
       LimelightHelpers.RawFiducial[] rawTrackedTags =
           LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).rawFiducials;
       List<Integer> trackedTagID = new ArrayList<Integer>();
-      LimelightHelpers.SetFiducialIDFiltersOverride(
-          inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
       for (int i = 0; i < rawTrackedTags.length; i++) {
         trackedTagID.add(rawTrackedTags[i].id);
@@ -107,13 +104,13 @@ public class Vision extends SubsystemBase {
     // inputs.limelightType != LLTYPE.LL4
     // &&
     DriverStation.isDSAttached() && getBotPoseMG2() != null) {
+      LimelightHelpers.SetFiducialIDFiltersOverride(
+          inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
 
       if (DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
         // System.out.println("red");
         // io.setRobotOrientationMG2(new Rotation2d(swerve.getRotation().getRadians() + Math.PI));
-        LimelightHelpers.SetFiducialIDFiltersOverride(
-            inputs.name, AprilTagVisionConstants.limelightConstants.validTags);
         Rotation3d gyro = swerve.getRotation3d().rotateBy(new Rotation3d(0, 0, Math.PI));
         LimelightHelpers.SetIMUMode(inputs.name, 4);
         io.setRobotOrientationMG2(gyro, swerve.getRotationRate());
@@ -150,9 +147,9 @@ public class Vision extends SubsystemBase {
         }
       }
 
-    } else if (inputs.limelightType == LLTYPE.LL4
-        && DriverStation.isDSAttached()
-        && getBotPoseMG2() != null) {
+      // } else if (inputs.limelightType == LLTYPE.LL4
+      //     && DriverStation.isDSAttached()
+      //     && getBotPoseMG2() != null) {
       // LimelightHelpers.SetIMUMode(inputs.name, 4);
       // if (inputs.tagCount < 2) {
       //   xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;

@@ -211,17 +211,29 @@ public class StateGraph {
               SuperstructureState.IDLE_ALGAE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.CORAL_PREP_L4,
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L3,
               SuperstructureState.IDLE_ALGAE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
               SuperstructureState.NET_SCORE,
               SuperstructureState.NET_PREP,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
@@ -231,8 +243,9 @@ public class StateGraph {
               SuperstructureState.CLIMB, SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
-              SuperstructureState.NET_PREP, SuperstructureState.NET_SCORE,
-              // SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.NET_PREP,
+              SuperstructureState.NET_SCORE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.POPSICLE_LICK,

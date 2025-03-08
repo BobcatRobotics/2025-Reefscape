@@ -64,7 +64,7 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public void runIn() {
-    io.setSpeed(Volts.of(8));
+    io.setSpeed(Volts.of(7));
   }
 
   public void dampenCoral() {

@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,40 +30,38 @@ public class SuperstructureActions {
         .beforeStarting(
             () -> {
               superstructure.recordScoringLevel(level);
+              superstructure.setLastPrepPosition(level.prepState);
             });
   }
 
-  public static Command score(
+  public static Command place(
       Superstructure superstructure,
       EndEffector endEffector,
       BooleanSupplier flipped,
-      BooleanSupplier shouldUseAlgae,
-      BooleanSupplier isNet) {
+      BooleanSupplier hasPeice) {
 
-    return superstructure
-        .score(flipped)
-        .andThen(
-            new ConditionalCommand(
-                new ConditionalCommand(
-                    endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
-                    endEffector
-                        .intakeAlgaeCommand()
-                        .until(endEffector::hasPiece)
-                        .andThen(endEffector.intakeAlgaeCommand()),
-                    isNet),
-                endEffector
-                    .coralOut(superstructure::getScoringLevel)
-                    .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped))
-                    .withInterruptBehavior(InterruptionBehavior.kCancelSelf),
-                shouldUseAlgae));
+    return superstructure.score(flipped, endEffector::hasPiece);
+  }
+
+  public static Command retractFromPlace(
+      Superstructure superstructure,
+      EndEffector endEffector,
+      BooleanSupplier shouldUseAlgae,
+      BooleanSupplier flipped) {
+    return new ConditionalCommand(
+        endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
+        endEffector
+            .coralOut(superstructure::getScoringLevel)
+            .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)),
+        shouldUseAlgae);
   }
 
   public static Command stow(Superstructure superstructure) {
-    return superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE);
+    return superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, () -> false);
   }
 
   public static Command stow(Superstructure superstructure, IdleType idleType) {
-    return superstructure.setState(idleType.state);
+    return superstructure.setState(idleType.state, () -> false);
   }
 
   /**
@@ -78,7 +75,7 @@ public class SuperstructureActions {
   public static Command intakeCoralGround(
       Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
     return superstructure
-        .setState(SuperstructureState.UPSIDE_DOWN_IDLE)
+        .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
         .alongWith(
             new RunCommand(
                 () -> {
@@ -86,7 +83,6 @@ public class SuperstructureActions {
                   intake.runIn();
                 },
                 intake))
-        .until(intake::hasPiece)
         .finallyDo(
             () -> {
               intake.retract();
@@ -101,12 +97,12 @@ public class SuperstructureActions {
 
   public static Command intakeAlgaeGround(Superstructure superstructure, EndEffector endEffector) {
     return superstructure
-        .setState(SuperstructureState.INTAKE_ALGAE_GROUND)
+        .setState(SuperstructureState.INTAKE_ALGAE_GROUND, () -> false)
         .alongWith(endEffector.intakeAlgaeCommand())
         .until(endEffector::hasPiece)
         .andThen(
             superstructure
-                .setState(SuperstructureState.IDLE_ALGAE)
+                .setState(SuperstructureState.IDLE_ALGAE, () -> false)
                 .alongWith(endEffector.idleAlgaeCommand()));
   }
 
@@ -128,21 +124,21 @@ public class SuperstructureActions {
 
   public static Command handoff(Superstructure superstructure, EndEffector endEffector) {
     return superstructure
-        .setState(SuperstructureState.CORAL_HANDOFF)
+        .setState(SuperstructureState.CORAL_HANDOFF, () -> false)
         .alongWith(endEffector.intakeCoralCommand())
         .until(endEffector::hasPiece)
         .andThen(
             superstructure
-                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE)
+                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, () -> false)
                 .alongWith(endEffector.idleCoralCommand()));
   }
 
   public static Command handoffNoIdle(Superstructure superstructure, EndEffector endEffector) {
     return superstructure
-        .setState(SuperstructureState.CORAL_HANDOFF)
+        .setState(SuperstructureState.CORAL_HANDOFF, () -> false)
         .alongWith(endEffector.intakeCoralCommand())
         .until(endEffector::hasPiece)
-        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE))
+        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, () -> false))
         .alongWith(new InstantCommand(() -> endEffector.idle()));
   }
 }

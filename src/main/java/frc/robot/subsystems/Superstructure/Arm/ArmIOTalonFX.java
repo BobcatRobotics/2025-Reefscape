@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Superstructure.Arm;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Hertz;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
   public static final double ARM_ROTOR_TO_SENSOR_RATIO = 76.62;
@@ -53,12 +55,6 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Slot0.kS = 5;
     angleConfigs.Slot0.kG = 6;
 
-    angleConfigs.Slot1.kP = 20;
-    angleConfigs.Slot1.kI = 0;
-    angleConfigs.Slot1.kD = 10;
-    angleConfigs.Slot1.kS = 5;
-    angleConfigs.Slot1.kG = 6;
-
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.5;
     angleConfigs.MotionMagic.MotionMagicAcceleration = 1;
 
@@ -72,7 +68,7 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ARM_MIN_ANGLE.getRotations();
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    angleConfigs.CurrentLimits.StatorCurrentLimit = 60;
+    angleConfigs.CurrentLimits.StatorCurrentLimit = 100;
     angleConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
     motor.getConfigurator().apply(angleConfigs);
 
@@ -130,15 +126,20 @@ public class ArmIOTalonFX implements ArmIO {
    * @param state the desired state
    */
   @Override
-  public void setDesiredState(ArmState state, boolean flipped) {
+  public void setDesiredState(ArmState state, boolean flipped, boolean hasPiece) {
 
     this.flipped = flipped;
     desiredState = state;
-    double rotations = state.rotations;
-    if (state != ArmState.NET_SCORE) {
-      rotations = flipped ? 0.5 - state.rotations : state.rotations;
+    double rotations = flipped ? 0.5 - state.rotations : state.rotations;
+
+    if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP) && hasPiece) {
+      motor.setControl(
+          angleRequest.withPosition(rotations).withSlot(0).withFeedForward(Amps.of(-10)));
+      Logger.recordOutput("using feedforward", true);
+    } else {
+      motor.setControl(
+          angleRequest.withPosition(rotations).withSlot(0).withFeedForward(Amps.of(0)));
+      Logger.recordOutput("using feedforward", false);
     }
-    motor.setControl(
-        angleRequest.withPosition(rotations).withSlot(state == ArmState.NET_SCORE ? 1 : 0));
   }
 }
