@@ -432,7 +432,7 @@ public class RobotContainer {
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
             () -> -leftRuffy.yAxis.getAsDouble() * stickInvert,
-            () -> leftRuffy.xAxis.getAsDouble(),
+            () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
             () -> -rightRuffy.xAxis.getAsDouble(),
             superstructure::getElevatorPercentage));
 
@@ -526,10 +526,15 @@ public class RobotContainer {
             SuperstructureActions.place(
                 superstructure, endEffector, drive::isCoralSideDesired, endEffector::hasPiece))
         .onFalse(
-            superstructure.setState(superstructure::getLastPrepPosition, endEffector::hasPiece));
+            superstructure
+                .setState(superstructure::getLastPrepPosition, endEffector::hasPiece)
+                .unless(() -> superstructure.getState() == SuperstructureState.RIGHT_SIDE_UP_IDLE)
+                .unless(() -> superstructure.isScoring()));
+    // SuperstructureState.)
     joystick.bottom12.onTrue(
         SuperstructureActions.retractFromPlace(
-            superstructure, endEffector, this::shouldUseAlgae, drive::isCoralSideDesired));
+                superstructure, endEffector, this::shouldUseAlgae, drive::isCoralSideDesired)
+            .beforeStarting(() -> superstructure.setIsScoring(true)));
     // stow
     joystick
         .povDown()

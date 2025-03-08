@@ -16,9 +16,9 @@ public enum ElevatorState {
   CORAL_L2(Rotation2d.fromRotations(0.5)),
   POST_CORAL_L2(Rotation2d.fromRotations(0)),
   CORAL_L3(Rotation2d.fromRotations(1.4)),
-  POST_CORAL_L3(Rotation2d.fromRotations(1)),
-  CORAL_L4(Rotation2d.fromRotations(3.6)),
-  POST_CORAL_L4(Rotation2d.fromRotations(2.3)),
+  POST_CORAL_L3(Rotation2d.fromRotations(0.6)),
+  CORAL_L4(Rotation2d.fromRotations(4.1)),
+  POST_CORAL_L4(Rotation2d.fromRotations(3.2)),
   INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.75)), // safe height for flipping up the arm
   ALGAE_L2(Rotation2d.fromRotations(1.25)),
   ALGAE_L3(Rotation2d.fromRotations(2.35)),

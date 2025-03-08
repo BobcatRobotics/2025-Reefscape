@@ -49,11 +49,12 @@ public class SuperstructureActions {
       BooleanSupplier shouldUseAlgae,
       BooleanSupplier flipped) {
     return new ConditionalCommand(
-        endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
-        endEffector
-            .coralOut(superstructure::getScoringLevel)
-            .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)),
-        shouldUseAlgae);
+            endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
+            endEffector
+                .coralOut(superstructure::getScoringLevel)
+                .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)),
+            shouldUseAlgae)
+        .beforeStarting(() -> superstructure.setIsScoring(false));
   }
 
   public static Command stow(Superstructure superstructure) {

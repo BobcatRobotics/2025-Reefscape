@@ -101,9 +101,9 @@ public class DriveCommands {
                   linearVelocity.getX() * maxSpeed,
                   linearVelocity.getY() * maxSpeed,
                   omega * drive.getMaxAngularSpeedRadPerSec());
-          boolean isFlipped = true;
-          // DriverStation.getAlliance().isPresent()
-          // && DriverStation.getAlliance().get() == Alliance.Red;
+          boolean isFlipped = // true;
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Blue;
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,

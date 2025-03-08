@@ -236,6 +236,20 @@ public class AutoCommands {
                 .raceWith(superstructure.setState(level.postState, flipped)));
   }
 
+  private static Command anandsL4(
+      Superstructure superstructure,
+      EndEffector endEffector,
+      BooleanSupplier flipped,
+      ScoringLevel level) {
+
+    return superstructure
+        .scoreL4Auto(flipped, () -> false)
+        .andThen(
+            endEffector
+                .coralOut(() -> level)
+                .raceWith(superstructure.setState(level.postState, flipped)));
+  }
+
   /**
    * Picks up a peice that is indexed in the carwash
    *

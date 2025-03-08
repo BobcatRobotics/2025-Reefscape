@@ -34,6 +34,8 @@ public class Superstructure {
 
   private final RobotVisualizer visualizer = RobotVisualizer.getInstance();
 
+  private boolean isScoring = false;
+
   /** A class representing the Arm-Elevator superstructure */
   public Superstructure(Arm arm, Elevator elevator) {
     this.arm = arm;
@@ -50,6 +52,14 @@ public class Superstructure {
   public void recordScoringLevel(ScoringLevel level) {
     Logger.recordOutput("Superstructure/DesiredScoringLevel", level);
     scoringLevel = level;
+  }
+
+  public boolean isScoring() {
+    return isScoring;
+  }
+
+  public void setIsScoring(boolean isScoring) {
+    this.isScoring = isScoring;
   }
 
   public void setLastPrepPosition(SuperstructureState state) {
@@ -331,6 +341,41 @@ public class Superstructure {
               Logger.recordOutput("Superstructure/CurrentState", currentState);
             });
   }
+
+  public Command scoreL4Auto(BooleanSupplier shouldFlipArm, BooleanSupplier hasPeice) {
+
+    return Commands.run(
+            () -> {
+              SuperstructureState goal = SuperstructureState.AUTO_CORAL_SCORE_L4;
+              boolean armFlipped = shouldFlipArm.getAsBoolean();
+
+              Logger.recordOutput("Superstructure/IsFlippingArm", armFlipped);
+              visualizer.setDesiredSuperstructureState(goal);
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+              Logger.recordOutput("Superstructure/DesiredState", goal);
+              SuperstructureState nextState = nextStateInPath(currentState, goal);
+              Logger.recordOutput("Superstructure/NextState", nextState);
+
+              if (arm.getDesiredState() != goal.armState || (arm.isFlipped() != armFlipped)) {
+                arm.setState(nextState.armState, armFlipped, hasPeice.getAsBoolean());
+              }
+              if (elevator.getDesiredState() != goal.elevatorState) {
+                elevator.setState(nextState.elevatorState);
+              }
+
+              if (superstructureInTolerance(nextState)) {
+                currentState = nextState;
+              }
+            },
+            arm,
+            elevator)
+        .until(() -> getState() == SuperstructureState.AUTO_CORAL_SCORE_L4)
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Superstructure/CurrentState", currentState);
+            });
+  }
+
   /**
    * Performs a breadth-first search of all possible states to find the shortest path from the start
    * state to the goal state.
