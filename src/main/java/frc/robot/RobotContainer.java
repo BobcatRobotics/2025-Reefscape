@@ -13,8 +13,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -351,7 +351,7 @@ public class RobotContainer {
                 new RunCommand(
                         () -> {
                           intake.retract();
-                          intake.setSpeed(Volts.of(3));
+                          intake.setSpeed(Amps.of(30));
                         })
                     .withTimeout(0.25))
             .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25))
@@ -373,7 +373,7 @@ public class RobotContainer {
                 new RunCommand(
                         () -> {
                           intake.retract();
-                          intake.setSpeed(Volts.of(3));
+                          intake.setSpeed(Amps.of(30));
                         })
                     .withTimeout(0.25))
             .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25))
@@ -586,7 +586,7 @@ public class RobotContainer {
     joystick.bottom9.whileTrue(
         new RunCommand(
             () -> {
-              intake.setSpeed(Volts.of(1));
+              intake.setSpeed(Amps.of(20));
             },
             intake));
 

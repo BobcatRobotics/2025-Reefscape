@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.Amps;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -112,7 +112,7 @@ public class SuperstructureActions {
     Commands.run(
             () -> {
               intake.deploy(trim.get());
-              intake.setSpeed(Volts.of(-3));
+              intake.setSpeed(Amps.of(-30));
             },
             intake)
         .finallyDo(

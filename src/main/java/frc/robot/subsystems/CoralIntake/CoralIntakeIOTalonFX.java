@@ -14,14 +14,14 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
@@ -35,7 +35,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   private TalonFX pivot;
   private LaserCan laser;
   private PositionVoltage positionRequest = new PositionVoltage(0);
-  private VoltageOut rollerRequest = new VoltageOut(0);
+  private TorqueCurrentFOC rollerRequest = new TorqueCurrentFOC(0);
   private Alert rangingAlert =
       new Alert(
           "Couldnt set intake ranging mode!! OMG this is really bad!! the robot will EXPLODE!!!!!! fix IMEDIATELY or i'll DIE a GRUESOME and PAINFUL death!",
@@ -108,7 +108,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   }
 
   @Override
-  public void setSpeed(Voltage output) {
+  public void setSpeed(Current output) {
     roller.setControl(rollerRequest.withOutput(output));
     // roller.setControl(rollerRequest.withVelocity(velocity));
     // desiredRollerVelocity = velocity;
