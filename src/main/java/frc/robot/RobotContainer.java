@@ -327,18 +327,17 @@ public class RobotContainer {
                       intake.deploy();
                       intake.runIn(); // deploy and run in for one second
                     }))
-            .withTimeout(1)
+            .withTimeout(5)
             // flippy flip flip
             .andThen(
-                new RunCommand(() -> intake.retract())
-                    .withTimeout(0.25)
-                    .andThen(
-                        new RunCommand(
-                                () -> { // retract for a quarter second
-                                  intake.retract();
-                                })
-                            .withTimeout(0.25))
-                    .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25)) // depo
+                new RunCommand(() -> intake.retract()).withTimeout(1)
+                // .andThen(
+                //     new RunCommand(
+                //             () -> { // retract for a quarter second
+                //               intake.retract();
+                //             })
+                //         .withTimeout(0.25))
+                // .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25)) // depo
                 ));
 
     NamedCommands.registerCommand(

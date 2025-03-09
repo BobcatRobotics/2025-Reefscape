@@ -21,7 +21,7 @@ public enum SuperstructureState {
   CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.CORAL_PREP_L4),
   CORAL_SCORE_L1(ElevatorState.CORAL_L1, ArmState.CORAL_SCORE_L1),
   CORAL_SCORE_L2(ElevatorState.CORAL_L2, ArmState.CORAL_SCORE_L2),
-  POST_CORAL_SCORE_L2(ElevatorState.POST_CORAL_L2, ArmState.CORAL_SCORE_L2),
+  POST_CORAL_SCORE_L2(ElevatorState.POST_CORAL_L2, ArmState.POST_CORAL_SCORE_L2),
   CORAL_SCORE_L3(ElevatorState.CORAL_L3, ArmState.CORAL_SCORE_L3),
   POST_CORAL_SCORE_L3(ElevatorState.POST_CORAL_L3, ArmState.CORAL_SCORE_L3),
   CORAL_SCORE_L4(ElevatorState.CORAL_L4, ArmState.CORAL_SCORE_L4),

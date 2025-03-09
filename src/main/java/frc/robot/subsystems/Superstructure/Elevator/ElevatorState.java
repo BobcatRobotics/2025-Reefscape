@@ -13,10 +13,10 @@ public enum ElevatorState {
   CORAL_HANDOFF(
       Rotation2d.fromRotations(1.1)), // picking up coral with the end effector //OLD 1.015
   CORAL_L1(Rotation2d.fromRotations(1.5)), // elevator pos doesnt matter for score or prep
-  CORAL_L2(Rotation2d.fromRotations(0.5)),
+  CORAL_L2(Rotation2d.fromRotations(0.55)),
   POST_CORAL_L2(Rotation2d.fromRotations(0)),
   CORAL_L3(Rotation2d.fromRotations(1.4)),
-  POST_CORAL_L3(Rotation2d.fromRotations(0.6)),
+  POST_CORAL_L3(Rotation2d.fromRotations(0.4)),
   CORAL_L4(Rotation2d.fromRotations(4.1)),
   POST_CORAL_L4(Rotation2d.fromRotations(3.2)),
   INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.75)), // safe height for flipping up the arm

@@ -6,7 +6,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.EndEffector.EndEffector;
@@ -139,7 +138,9 @@ public class SuperstructureActions {
         .setState(SuperstructureState.CORAL_HANDOFF, () -> false)
         .alongWith(endEffector.intakeCoralCommand())
         .until(endEffector::hasPiece)
-        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, () -> false))
-        .alongWith(new InstantCommand(() -> endEffector.idle()));
+        .andThen(
+            superstructure
+                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, () -> false)
+                .raceWith(endEffector.idleCoralCommand()));
   }
 }

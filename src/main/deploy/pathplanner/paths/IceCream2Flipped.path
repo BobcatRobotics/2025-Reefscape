@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8977678155130513,
-        "y": 0.8376653030730046
+        "x": 1.9201224460803923,
+        "y": 0.8752654814662213
       },
       "isLocked": false,
       "linkedName": "IceCreamEndFlipped"
     },
     {
       "anchor": {
-        "x": 3.471,
-        "y": 2.182249999999999
+        "x": 3.3445696721311475,
+        "y": 2.4486168032786884
       },
       "prevControl": {
-        "x": 3.2251704835311266,
-        "y": 2.1367763941095492
+        "x": 3.0622332235461567,
+        "y": 2.3397165298482476
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 58.2642908083801
   },
   "reversed": false,
   "folder": "Combo Meal",

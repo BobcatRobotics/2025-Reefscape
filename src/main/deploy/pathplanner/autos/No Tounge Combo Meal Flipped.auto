@@ -17,15 +17,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "IceCreamFlipped"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "hpWaitThenIntake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "IceCreamFlipped"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "hpWaitThenIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -45,6 +52,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreCoralL4CCW"
           }
         }
       ]
