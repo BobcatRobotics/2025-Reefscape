@@ -13,17 +13,6 @@ import frc.robot.subsystems.Superstructure.SuperstructureState;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
-  // see Assets\Docs\TopUpperLimit.png
-  // TODO remove?
-  // public static final Rotation2d TOP_UPPER_LIMIT = Rotation2d.fromDegrees(0);
-  // public static final Rotation2d TOP_LOWER_LIMIT = Rotation2d.fromDegrees(0);
-  // public static final Rotation2d BOTTOM_UPPER_LIMIT =
-  // Rotation2d.fromDegrees(0);
-  // public static final Rotation2d BOTTOM_LOWER_LIMIT =
-  // Rotation2d.fromDegrees(0);
-  // // the total length of the arm + end effector from the rotational joint, for
-  // kinematic use
-  // public static final Distance LENGTH_TO_END_EFFECTOR = Meters.of(0);
 
   // TODO make this as small as possible
   public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(2);

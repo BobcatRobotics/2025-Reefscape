@@ -11,7 +11,7 @@ public enum ElevatorState {
   IDLE_RIGHT_SIDE_UP(
       Rotation2d.fromRotations(0)), // right side up for quick transition to scoring zone
   CORAL_HANDOFF(
-      Rotation2d.fromRotations(1.1)), // picking up coral with the end effector //OLD 1.015
+      Rotation2d.fromRotations(0.9)), // picking up coral with the end effector //OLD 1.015
   CORAL_L1(Rotation2d.fromRotations(1.5)), // elevator pos doesnt matter for score or prep
   CORAL_L2(Rotation2d.fromRotations(0.55)),
   POST_CORAL_L2(Rotation2d.fromRotations(0)),
@@ -19,7 +19,7 @@ public enum ElevatorState {
   POST_CORAL_L3(Rotation2d.fromRotations(0.4)),
   CORAL_L4(Rotation2d.fromRotations(4.1)),
   POST_CORAL_L4(Rotation2d.fromRotations(3.2)),
-  INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.75)), // safe height for flipping up the arm
+  INTAKE_SAFE_ZONE(Rotation2d.fromRotations(2)), // safe height for flipping up the arm
   ALGAE_L2(Rotation2d.fromRotations(1.25)),
   ALGAE_L3(Rotation2d.fromRotations(2.35)),
   ALGAE_GROUND(Rotation2d.fromRotations(0.2)), // pickup algae from ground

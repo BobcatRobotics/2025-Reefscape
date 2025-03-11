@@ -10,8 +10,10 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.util.Enums.ScoringLevel;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -109,6 +111,39 @@ public class EndEffector extends SubsystemBase {
     return new RunCommand(
         () -> {
           io.setSpeed(OUTTAKE_SPEED);
+        },
+        this);
+  }
+
+  public Command scoreCommand(Supplier<SuperstructureState> level) {
+    return Commands.run(
+        () -> {
+          switch (level.get()) {
+            case CORAL_SCORE_L1:
+              io.setSpeed(OUTTAKE_SPEED);
+              break;
+            case CORAL_SCORE_L2:
+              io.setSpeed(CORAL_SCORE_SPEED);
+              break;
+            case CORAL_SCORE_L3:
+              io.setSpeed(CORAL_SCORE_SPEED);
+              break;
+            case CORAL_SCORE_L4:
+              io.setSpeed(CORAL_SCORE_SPEED);
+              break;
+            case NET_SCORE:
+              io.setSpeed(OUTTAKE_FAST_SPEED);
+              break;
+            case ALGAE_PREP_L2:
+              io.setSpeed(INTAKE_ALGAE_SPEED);
+              break;
+            case ALGAE_PREP_L3:
+              io.setSpeed(INTAKE_ALGAE_SPEED);
+              break;
+            default:
+              io.setSpeed(CORAL_IDLE_SPEED);
+              break;
+          }
         },
         this);
   }

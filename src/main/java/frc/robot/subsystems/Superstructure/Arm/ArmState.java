@@ -37,6 +37,7 @@ public enum ArmState {
   FLIPPED_NET_SCORE(0),
   FLIPPED_NET_PREP(25),
   CLIMB(180),
+  INTAKE_SAFE_ZONE(225),
   NO_OP(0), // do nothing, maintain current pos
   UNKOWN(0); // arm isnt at a predefined state
 
