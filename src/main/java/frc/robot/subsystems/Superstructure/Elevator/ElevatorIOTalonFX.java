@@ -23,10 +23,10 @@ import edu.wpi.first.units.measure.Current;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
-  public static final double GEAR_RATIO =
+  public static final double GEAR_RATIO = // TODO i think this is wrong
       10.08 / 1; // GEAR_RATIO motor rotations = 1 rotation of the ouput shaft
   public static final InvertedValue ELEVATOR_MOTOR_INVERTED =
-      InvertedValue.CounterClockwise_Positive; // TODO find this
+      InvertedValue.CounterClockwise_Positive;
 
   /**
    * note that kG is different from ks, even they are both static forces, ks always opposes the
@@ -57,13 +57,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.CurrentLimits.StatorCurrentLimit = 120;
 
-    motorConfig.Slot0.kP = 45;
-    motorConfig.Slot0.kI = 25;
-    motorConfig.Slot0.kD = 7;
-    motorConfig.Slot0.kS = 16.5;
-    motorConfig.Slot0.kG = 36.5;
-    motorConfig.MotionMagic.MotionMagicAcceleration = 3; // 4.5;
-    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 3; // 7.695;
+    motorConfig.Slot0.kP = 10;
+    motorConfig.Slot0.kI = 1;
+    motorConfig.Slot0.kD = 30;
+    motorConfig.Slot0.kS = 18;
+    motorConfig.Slot0.kG = 36;
+    motorConfig.MotionMagic.MotionMagicAcceleration = 7; // 4.5;
+    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 7.5; // 7.695;
     motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
     motorConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
@@ -83,7 +83,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
     encoder.getConfigurator().apply(encoderConfig);
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    encoderConfig.MagnetSensor.MagnetOffset = 0.20874; // TODO find this
+    encoderConfig.MagnetSensor.MagnetOffset = 0.20874;
     encoder.getConfigurator().apply(encoderConfig);
 
     torqueCurrent = motor.getTorqueCurrent();

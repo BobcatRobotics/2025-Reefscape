@@ -180,10 +180,14 @@ public class RobotContainer {
         // new SwerveModuleIO() {},
         // new SwerveModuleIO() {});
         // limelight = new Vision(drive, new VisionIO() {});
+        // superstructure =
+        //     new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
+
         superstructure =
             new Superstructure(
                 new Arm(new ArmIOTalonFX(ARM_TALON_ID, ARM_ENCODER_ID)),
                 new Elevator(new ElevatorIOTalonFX(ELEVATOR_TALON_ID, ELEVATOR_ENCODER_ID)));
+
         endEffector =
             new EndEffector(new EndEffectorIOTalonFX(END_EFFECTOR_TALON_ID, END_EFFECTOR_LASER_ID));
         // endEffector = new EndEffector(new EndEffectorIO() {});
@@ -519,30 +523,30 @@ public class RobotContainer {
             .alongWith(endEffector.intakeAlgaeCommand()));
 
     // score
-    joystick
-        .thumb
-        .whileTrue(
-            SuperstructureActions.place(
-                superstructure, endEffector, drive::isCoralSideDesired, endEffector::hasPiece))
-        .onFalse(
-            superstructure
-                .setState(superstructure::getLastPrepPosition, endEffector::hasPiece)
-                .unless(() -> superstructure.getState() == SuperstructureState.RIGHT_SIDE_UP_IDLE)
-                .unless(() -> superstructure.isScoring()));
-    // SuperstructureState.)
+    joystick.thumb.onTrue(
+        new ConditionalCommand(
+            superstructure.gotToLastPrepPosition(endEffector::hasPiece),
+            superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
+            superstructure::isScoring));
+
     joystick.bottom12.onTrue(
         SuperstructureActions.retractFromPlace(
-                superstructure, endEffector, this::shouldUseAlgae, drive::isCoralSideDesired)
-            .beforeStarting(() -> superstructure.setIsScoring(true)));
+            superstructure, endEffector, this::shouldUseAlgae, drive::isCoralSideDesired));
+
     // stow
     joystick
         .povDown()
         .onTrue(
-            new ConditionalCommand(
-                    superstructure.setState(SuperstructureState.IDLE_ALGAE, endEffector::hasPiece),
-                    SuperstructureActions.stow(superstructure),
-                    this::shouldUseAlgae)
-                .handleInterrupt(() -> endEffector.idleCoral()));
+            superstructure
+                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                .deadlineFor(endEffector.scoreCommand(superstructure::getState))
+                .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)));
+    joystick
+        .povUp()
+        .onTrue(
+            superstructure
+                .setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece)
+                .finallyDo(() -> endEffector.idleCoral()));
 
     // intake from ground
     joystick.bottomLeft.whileTrue(

@@ -12,6 +12,7 @@ public enum SuperstructureState {
   // Intermediate state between coral handoff and idle w/ coral, prevents collision
   // waiting for operator to confirm alignment, then bring arm down and outtake
   ELEVATOR_SAFE_ZONE(ElevatorState.INTAKE_SAFE_ZONE, ArmState.NO_OP),
+  ELEVATOR_AND_ARM_SAFE_ZONE(ElevatorState.INTAKE_SAFE_ZONE, ArmState.INTAKE_SAFE_ZONE),
 
   HP_INTAKE(ElevatorState.IDLE_RIGHT_SIDE_UP, ArmState.HP_INTAKE),
   CORAL_HANDOFF(ElevatorState.CORAL_HANDOFF, ArmState.UPSIDE_DOWN_CCW),

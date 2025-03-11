@@ -33,27 +33,17 @@ public class SuperstructureActions {
             });
   }
 
-  public static Command place(
-      Superstructure superstructure,
-      EndEffector endEffector,
-      BooleanSupplier flipped,
-      BooleanSupplier hasPeice) {
-
-    return superstructure.score(flipped, endEffector::hasPiece);
-  }
-
   public static Command retractFromPlace(
       Superstructure superstructure,
       EndEffector endEffector,
       BooleanSupplier shouldUseAlgae,
       BooleanSupplier flipped) {
     return new ConditionalCommand(
-            endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
-            endEffector
-                .coralOut(superstructure::getScoringLevel)
-                .raceWith(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, flipped)),
-            shouldUseAlgae)
-        .beforeStarting(() -> superstructure.setIsScoring(false));
+        endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
+        endEffector
+            .coralOut(superstructure::getScoringLevel)
+            .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)),
+        shouldUseAlgae);
   }
 
   public static Command stow(Superstructure superstructure) {

@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.util.Enums.ScoringLevel;
@@ -52,14 +53,6 @@ public class Superstructure {
   public void recordScoringLevel(ScoringLevel level) {
     Logger.recordOutput("Superstructure/DesiredScoringLevel", level);
     scoringLevel = level;
-  }
-
-  public boolean isScoring() {
-    return isScoring;
-  }
-
-  public void setIsScoring(boolean isScoring) {
-    this.isScoring = isScoring;
   }
 
   public void setLastPrepPosition(SuperstructureState state) {
@@ -224,7 +217,7 @@ public class Superstructure {
         goal = SuperstructureState.CORAL_SCORE_L3;
         break;
       case CORAL_L4:
-        goal = SuperstructureState.CORAL_SCORE_L4;
+        goal = SuperstructureState.POST_CORAL_SCORE_L4;
         break;
       case ALGAE_L2:
         goal = SuperstructureState.ALGAE_PREP_L2;
@@ -311,6 +304,7 @@ public class Superstructure {
   public Command score(BooleanSupplier shouldFlipArm, BooleanSupplier hasPeice) {
     return Commands.run(
             () -> {
+              isScoring = true;
               SuperstructureState goal = getDesiredScoringState();
               boolean armFlipped = shouldFlipArm.getAsBoolean();
               Logger.recordOutput("desiredscoringstate", getDesiredScoringState());
@@ -340,6 +334,15 @@ public class Superstructure {
             () -> {
               Logger.recordOutput("Superstructure/CurrentState", currentState);
             });
+  }
+
+  public Command gotToLastPrepPosition(BooleanSupplier hasPiece) {
+    return setState(this::getLastPrepPosition, hasPiece)
+        .alongWith(new InstantCommand(() -> isScoring = false));
+  }
+
+  public boolean isScoring() {
+    return isScoring;
   }
 
   public Command scoreL4Auto(BooleanSupplier shouldFlipArm, BooleanSupplier hasPeice) {
@@ -532,5 +535,24 @@ public class Superstructure {
       default:
         return setState(SuperstructureState.CORAL_PREP_L1, flipped);
     }
+  }
+
+  public static boolean isInPrepState(SuperstructureState desiredState) {
+    switch (desiredState) {
+      case CORAL_PREP_L1:
+        return true;
+      case CORAL_PREP_L2:
+        return true;
+      case CORAL_PREP_L3:
+        return true;
+      case CORAL_PREP_L4:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  public boolean isInPrepState() {
+    return isInPrepState(getDesiredScoringState()) || isInPrepState(getState());
   }
 }
