@@ -11,9 +11,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "ScoreCoralL4CCW"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ScoreCoralL4CW"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DeployTounge"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DeployTounge"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

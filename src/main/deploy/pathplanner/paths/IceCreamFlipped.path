@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.058089798169842,
-        "y": 1.78719664805101
+        "x": 3.9816518767758797,
+        "y": 1.774645215435329
       },
       "isLocked": false,
       "linkedName": "Popsicle1EndFlipped"
@@ -20,8 +20,8 @@
         "y": 0.9837349397590345
       },
       "prevControl": {
-        "x": 1.6429774628256795,
-        "y": 1.228287953768631
+        "x": 1.648270659010389,
+        "y": 1.2293517434532197
       },
       "nextControl": null,
       "isLocked": false,

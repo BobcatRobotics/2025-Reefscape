@@ -68,7 +68,7 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public void dampenCoral() {
-    io.setSpeed(Amps.of(10));
+    io.setSpeed(Amps.of(20));
   }
 
   public boolean hasPiece() {

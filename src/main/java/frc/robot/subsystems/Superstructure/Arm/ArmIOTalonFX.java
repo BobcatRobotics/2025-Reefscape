@@ -134,7 +134,7 @@ public class ArmIOTalonFX implements ArmIO {
 
     if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP) && hasPiece) {
       motor.setControl(
-          angleRequest.withPosition(rotations).withSlot(0).withFeedForward(Amps.of(-10)));
+          angleRequest.withPosition(rotations).withSlot(0).withFeedForward(Amps.of(-12)));
       Logger.recordOutput("using feedforward", true);
     } else {
       motor.setControl(

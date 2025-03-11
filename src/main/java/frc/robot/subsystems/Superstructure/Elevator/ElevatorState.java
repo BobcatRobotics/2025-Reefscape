@@ -21,12 +21,12 @@ public enum ElevatorState {
   POST_CORAL_L4(Rotation2d.fromRotations(3.2)),
   INTAKE_SAFE_ZONE(Rotation2d.fromRotations(1.75)), // safe height for flipping up the arm
   ALGAE_L2(Rotation2d.fromRotations(1.25)),
-  ALGAE_L3(Rotation2d.fromRotations(2.35)),
+  ALGAE_L3(Rotation2d.fromRotations(2)),
   ALGAE_GROUND(Rotation2d.fromRotations(0.2)), // pickup algae from ground
   ALGAE_SCORE_PROCESSOR(Rotation2d.fromRotations(0)), // pickup algae from processor
   IDLE_ALGAE(Rotation2d.fromRotations(0)), // hold a algae
-  NET_SCORE(Rotation2d.fromRotations(3.6)),
-  NET_PREP(Rotation2d.fromRotations(3.6)),
+  NET_SCORE(Rotation2d.fromRotations(4.1)),
+  NET_PREP(Rotation2d.fromRotations(4.1)),
   UNKNOWN(Rotation2d.fromRotations(0)),
   CLIMB(Rotation2d.fromRotations(0)); // elevator isnt at a predefined state
 

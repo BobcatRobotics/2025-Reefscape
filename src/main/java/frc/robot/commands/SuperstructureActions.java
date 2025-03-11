@@ -51,7 +51,7 @@ public class SuperstructureActions {
             endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece()),
             endEffector
                 .coralOut(superstructure::getScoringLevel)
-                .raceWith(superstructure.setState(IdleType.UPRIGHT.state, flipped)),
+                .raceWith(superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, flipped)),
             shouldUseAlgae)
         .beforeStarting(() -> superstructure.setIsScoring(false));
   }

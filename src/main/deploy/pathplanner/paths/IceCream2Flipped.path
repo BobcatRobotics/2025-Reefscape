@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9201224460803923,
-        "y": 0.8752654814662213
+        "x": 1.919598496452159,
+        "y": 0.8741841261796391
       },
       "isLocked": false,
       "linkedName": "IceCreamEndFlipped"
@@ -20,8 +20,8 @@
         "y": 2.4486168032786884
       },
       "prevControl": {
-        "x": 3.0622332235461567,
-        "y": 2.3397165298482476
+        "x": 3.0673601995753352,
+        "y": 2.332387052221866
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 58.2642908083801
   },
   "reversed": false,

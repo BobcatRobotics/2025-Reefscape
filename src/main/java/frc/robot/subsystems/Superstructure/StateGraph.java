@@ -184,10 +184,12 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.POST_CORAL_SCORE_L4,
-              SuperstructureState.CORAL_PREP_L4
+              SuperstructureState.CORAL_PREP_L4,
             },
             new SuperstructureState[] {
-              SuperstructureState.POST_CORAL_SCORE_L4, SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.POST_CORAL_SCORE_L4,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.UPSIDE_DOWN_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE,
@@ -220,6 +222,7 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.NET_PREP,
               SuperstructureState.IDLE_ALGAE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ALGAE_PREP_L2,
@@ -227,7 +230,6 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L4,
-              SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
               SuperstructureState.NET_SCORE,

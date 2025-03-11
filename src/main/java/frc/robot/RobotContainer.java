@@ -548,7 +548,9 @@ public class RobotContainer {
     joystick.bottomLeft.whileTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
     // handoff
-    joystick.bottomRight.onTrue(SuperstructureActions.handoff(superstructure, endEffector));
+    joystick.bottomRight.onTrue(
+        SuperstructureActions.handoff(superstructure, endEffector)
+            .alongWith(new InstantCommand(() -> intake.setSpeed(Amps.of(10)))));
 
     // intake algae from ground
     joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
