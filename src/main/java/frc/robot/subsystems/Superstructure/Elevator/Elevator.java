@@ -95,7 +95,10 @@ public class Elevator extends SubsystemBase {
         < ELEVATOR_TOLERANCE.getRotations();
   }
 
-  public void updateMechanism2d() {}
+
+  public void manualOverride(double percent) {
+    io.manualOverride(percent);
+  }
 
   /**
    * @param distance
@@ -107,4 +110,5 @@ public class Elevator extends SubsystemBase {
   public static Rotation2d distanceToElevatorRotations(Distance distance) {
     return Rotation2d.fromRotations(distance.in(Meters) * ROTATIONS_PER_METER);
   }
+
 }

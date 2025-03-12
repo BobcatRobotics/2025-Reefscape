@@ -6,6 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -38,6 +39,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private CANcoder encoder;
 
   private MotionMagicTorqueCurrentFOC positionRequest = new MotionMagicTorqueCurrentFOC(0);
+  private DutyCycleOut percentOutputRequest = new DutyCycleOut(0);
 
   private StatusSignal<AngularVelocity> velocity;
   private StatusSignal<Current> torqueCurrent;
@@ -45,6 +47,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private StatusSignal<ControlModeValue> controlMode;
 
   private ElevatorState desiredState = ElevatorState.UNKNOWN;
+
+  private boolean isOverridden = false;
 
   public ElevatorIOTalonFX(int motorID, int encoderID) {
     motor = new TalonFX(motorID);
@@ -117,11 +121,19 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.heightMeters = inputs.positionRotations * Elevator.METERS_PER_ROTATION;
     inputs.distanceToAlignment =
         rotationalPosition.getValueAsDouble() - desiredState.pos.getRotations() * 360;
+    inputs.overriden = isOverridden;
   }
 
   @Override
   public void setDesiredState(ElevatorState state) {
     this.desiredState = state;
     motor.setControl(positionRequest.withPosition(state.pos.getRotations()));
+    isOverridden = false;
+  }
+
+  @Override
+  public void manualOverride(double percent) {
+    motor.setControl(percentOutputRequest.withOutput(percent));
+    isOverridden = true;
   }
 }

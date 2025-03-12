@@ -17,7 +17,7 @@ public interface ElevatorIO {
     double heightMeters = -1;
     /** is the elevator at its desired state? */
     boolean aligned = false;
-
+    boolean overriden = false;
     double distanceToAlignment = 0;
 
     ControlModeValue controlMode = ControlModeValue.DisabledOutput;
@@ -29,4 +29,6 @@ public interface ElevatorIO {
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void setDesiredState(ElevatorState state) {}
+
+  public default void manualOverride(double percent) {}
 }
