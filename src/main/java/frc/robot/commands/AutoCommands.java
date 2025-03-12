@@ -160,9 +160,9 @@ public class AutoCommands {
               Logger.recordOutput("driveToReef/omegaPID", omegaOutput);
 
               // Convert to field relative speeds & send command
-              ChassisSpeeds speeds = new ChassisSpeeds(xOutput, yOutput, omegaOutput);
-              speeds = ChassisSpeeds.discretize(speeds, Constants.loopPeriodSecs);
-              boolean isFlipped = false;
+              // ChassisSpeeds speeds = new ChassisSpeeds(xOutput, yOutput, omegaOutput);
+              // speeds = ChassisSpeeds.discretize(speeds, Constants.loopPeriodSecs);
+              // boolean isFlipped = false;
 
               // DriverStation.getAlliance().isPresent()
               //     && DriverStation.getAlliance().get() == Alliance.Red;
@@ -174,15 +174,16 @@ public class AutoCommands {
               //             : drive.getRotation()));
 
               // Convert to field relative speeds & send command
+
               drive.setPPOverride(xOutput, yOutput, omegaOutput);
               Logger.recordOutput("ppoverride/output/x", xOutput);
               Logger.recordOutput("ppoverride/output/y", yOutput);
               Logger.recordOutput("ppoverride/output/theta", omegaOutput);
               Logger.recordOutput("ppoverride/swerve", drive.getPPOverride());
 
-              if ((xController.getPositionError() < 0.4)
-                  && (yController.getPositionError() < 0.4)
-                  && (angleController.getPositionError() < Math.toRadians(2))) {
+              if ((xController.getPositionError() < 1)
+                  && (yController.getPositionError() < 1)
+                  && (angleController.getPositionError() < Math.toRadians(90))) {
                 SuperstructureActions.prepScore(
                     level, drive::isCoralSideDesired, superstructure, endEffector);
               }
@@ -195,21 +196,21 @@ public class AutoCommands {
                       && (yController.atSetpoint())
                       && (angleController.atSetpoint())
                       && timer.hasElapsed(1));
-            },
-            drive)
+            })
         .until(
             () ->
                 (xController.atSetpoint())
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired, level))
+        // .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired, level))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
               yController.reset(drive.getPose().getY());
               angleController.reset(drive.getPose().getRotation().getRadians());
               drive.setAdjustY(0);
+              drive.setPPOverride(.0, .0, .0);
             })
         .finallyDo(
             // if were not autoaligning, always use the front side, reset adjustY
@@ -219,7 +220,6 @@ public class AutoCommands {
               timer.stop();
               timer.reset();
               drive.clearPPOverride();
-              Logger.recordOutput("test", true);
             });
   }
 
@@ -360,9 +360,9 @@ public class AutoCommands {
 
               // Convert to field relative speeds & send command
               // drive.sePPOverride(xOutput, yOutput, omegaOutput);
-              Logger.recordOutput("ppoverride/x", xOutput);
-              Logger.recordOutput("ppoverride/y", yOutput);
-              Logger.recordOutput("ppoverride/theta", omegaOutput);
+              // Logger.recordOutput("ppoverride/x", xOutput);
+              // Logger.recordOutput("ppoverride/y", yOutput);
+              // Logger.recordOutput("ppoverride/theta", omegaOutput);
 
               if ((xController.getPositionError() < 0.4)
                   && (yController.getPositionError() < 0.4)

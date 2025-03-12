@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.224750285926351,
-        "y": 2.7791502893667426
+        "x": 5.207297299324887,
+        "y": 2.7534130276346067
       },
       "isLocked": false,
       "linkedName": "Popsicle1StartFlipped"
@@ -20,8 +20,8 @@
         "y": 2.8561987704918033
       },
       "prevControl": {
-        "x": 6.467191611610688,
-        "y": 2.582535788524013
+        "x": 6.450574356341901,
+        "y": 2.5721984889848795
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7211343686698153,
+      "minWaypointRelativePos": 1.0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
@@ -59,9 +59,14 @@
     },
     {
       "name": "ScoreCoralL4CWOverride",
-      "waypointRelativePos": 0.24848075624577382,
+      "waypointRelativePos": 0.18809523809523837,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ScoreCoralL4CWOverride"
+        }
+      }
     }
   ],
   "globalConstraints": {
