@@ -197,12 +197,13 @@ public class AutoCommands {
                       && (angleController.atSetpoint())
                       && timer.hasElapsed(1));
             })
-        .until(
-            () ->
-                (xController.atSetpoint())
-                    && (yController.atSetpoint())
-                    && (angleController.atSetpoint())
-                    && timer.hasElapsed(1))
+        // .until(
+        //     () ->
+        //         (xController.atSetpoint())
+        //             && (yController.atSetpoint())
+        //             && (angleController.atSetpoint())
+        //             && timer.hasElapsed(1))
+
         // .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired,
         // level))
         .beforeStarting(
@@ -211,7 +212,7 @@ public class AutoCommands {
               yController.reset(drive.getPose().getY());
               angleController.reset(drive.getPose().getRotation().getRadians());
               drive.setAdjustY(0);
-              drive.setPPOverride(.0, .0, .0);
+              // drive.setPPOverride(.0, .0, .0);
             })
         .finallyDo(
             // if were not autoaligning, always use the front side, reset adjustY
@@ -221,6 +222,7 @@ public class AutoCommands {
               timer.stop();
               timer.reset();
               drive.clearPPOverride();
+              Logger.recordOutput("test", true);
             });
   }
 
@@ -403,8 +405,8 @@ public class AutoCommands {
               drive.setAdjustY(-1);
               timer.stop();
               timer.reset();
-              drive.clearPPOverride();
-              Logger.recordOutput("test", true);
+              // drive.clearPPOverride();
+              // Logger.recordOutput("test", true);
             });
   }
 

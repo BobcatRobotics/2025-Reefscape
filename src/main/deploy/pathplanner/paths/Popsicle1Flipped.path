@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.33760972316001997,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
@@ -59,8 +59,8 @@
     },
     {
       "name": "ScoreCoralL4CWOverride",
-      "waypointRelativePos": 0.18809523809523837,
-      "endWaypointRelativePos": null,
+      "waypointRelativePos": 0.37542201215394944,
+      "endWaypointRelativePos": 0.9912221471978389,
       "command": {
         "type": "named",
         "data": {
