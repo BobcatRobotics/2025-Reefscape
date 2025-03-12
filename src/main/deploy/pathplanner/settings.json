@@ -11,8 +11,8 @@
   "autoFolders": [
     "Archive"
   ],
-  "defaultMaxVel": 4.5,
-  "defaultMaxAccel": 4.4,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
