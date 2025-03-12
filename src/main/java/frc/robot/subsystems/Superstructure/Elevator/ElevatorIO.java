@@ -17,6 +17,7 @@ public interface ElevatorIO {
     double heightMeters = -1;
     /** is the elevator at its desired state? */
     boolean aligned = false;
+
     boolean overriden = false;
     double distanceToAlignment = 0;
 

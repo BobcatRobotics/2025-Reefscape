@@ -203,7 +203,8 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        // .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired, level))
+        // .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired,
+        // level))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
