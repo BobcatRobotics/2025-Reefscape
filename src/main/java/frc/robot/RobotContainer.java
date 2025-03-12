@@ -314,6 +314,22 @@ public class RobotContainer {
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
 
     NamedCommands.registerCommand(
+        "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));
+
+    NamedCommands.registerCommand(
+        "ScoreCoralL4CCWOverride",
+        AutoCommands.fullAutoReefScoreOverride(
+            drive,
+            superstructure,
+            endEffector,
+            BranchSide.COUNTER_CLOCKWISE,
+            ScoringLevel.CORAL_L4));
+    NamedCommands.registerCommand(
+        "ScoreCoralL4CWOverride",
+        AutoCommands.fullAutoReefScoreOverride(
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+
+    NamedCommands.registerCommand(
         "StowSuperstructureThenFlip",
         superstructure
             .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)

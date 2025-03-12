@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 3.3445696721311475,
+        "x": 4.279610655737705,
         "y": 7.0
       },
       "prevControl": {
-        "x": 3.0657813705150248,
+        "x": 4.000822354121582,
         "y": 7.041859204968007
       },
       "nextControl": null,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "TestRotation",
+      "waypointRelativePos": 0.22957461174881422,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 4.4,
@@ -42,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,

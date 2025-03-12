@@ -163,7 +163,8 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L1,
               SuperstructureState.CORAL_PREP_L1,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.UPSIDE_DOWN_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L2,
@@ -171,25 +172,31 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2
             },
             new SuperstructureState[] {
-              SuperstructureState.POST_CORAL_SCORE_L2, SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.POST_CORAL_SCORE_L2,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.ELEVATOR_SAFE_ZONE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L3,
               SuperstructureState.POST_CORAL_SCORE_L3,
-              SuperstructureState.CORAL_PREP_L3
+              SuperstructureState.CORAL_PREP_L3,
             },
             new SuperstructureState[] {
-              SuperstructureState.POST_CORAL_SCORE_L3, SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.POST_CORAL_SCORE_L3,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.UPSIDE_DOWN_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.POST_CORAL_SCORE_L4,
+              SuperstructureState.CORAL_PREP_L4
+            },
+            new SuperstructureState[] {
+              SuperstructureState.POST_CORAL_SCORE_L4,
+              SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.CORAL_PREP_L4,
-            },
-            new SuperstructureState[] {
-              SuperstructureState.POST_CORAL_SCORE_L4,
-              SuperstructureState.CORAL_SCORE_L4,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.UPSIDE_DOWN_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE,

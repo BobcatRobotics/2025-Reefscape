@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Superstructure.Arm;
 
-import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Hertz;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -54,6 +53,11 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Slot0.kD = 30;
     angleConfigs.Slot0.kS = 4.5;
     angleConfigs.Slot0.kG = 6.5;
+    angleConfigs.Slot1.kP = 18;
+    angleConfigs.Slot1.kI = 1;
+    angleConfigs.Slot1.kD = 30;
+    angleConfigs.Slot1.kS = 4.5;
+    angleConfigs.Slot1.kG = 12;
 
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.5;
     angleConfigs.MotionMagic.MotionMagicAcceleration = 2;
@@ -132,13 +136,11 @@ public class ArmIOTalonFX implements ArmIO {
     desiredState = state;
     double rotations = flipped ? 0.5 - state.rotations : state.rotations;
 
-    if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP) && hasPiece) {
-      motor.setControl(
-          angleRequest.withPosition(rotations).withSlot(0).withFeedForward(Amps.of(-12)));
+    if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
+      motor.setControl(angleRequest.withPosition(rotations).withFeedForward(-15));
       Logger.recordOutput("using feedforward", true);
     } else {
-      motor.setControl(
-          angleRequest.withPosition(rotations).withSlot(0).withFeedForward(Amps.of(0)));
+      motor.setControl(angleRequest.withPosition(rotations).withFeedForward(0));
       Logger.recordOutput("using feedforward", false);
     }
   }

@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.374340599030587,
-        "y": 2.4944577150629192
+        "x": 5.224750285926351,
+        "y": 2.7791502893667426
       },
       "isLocked": false,
       "linkedName": "Popsicle1StartFlipped"
     },
     {
       "anchor": {
-        "x": 5.38247950819672,
-        "y": 2.616444672131148
+        "x": 5.058811475409836,
+        "y": 2.8561987704918033
       },
       "prevControl": {
-        "x": 6.4544366474137815,
-        "y": 2.6029213680075314
+        "x": 6.467191611610688,
+        "y": 2.582535788524013
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.7211343686698153,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -42,6 +56,12 @@
           "name": "DeployTounge"
         }
       }
+    },
+    {
+      "name": "ScoreCoralL4CWOverride",
+      "waypointRelativePos": 0.24848075624577382,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

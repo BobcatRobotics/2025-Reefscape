@@ -32,7 +32,7 @@ public enum ArmState {
   ALGAE_GROUND(180 + 15),
   ALGAE_SCORE_PROCESSOR(180 - 45),
   IDLE_ALGAE(180 - 45), // coral handoff
-  NET_SCORE(180 - 50),
+  NET_SCORE(50),
   NET_PREP(180 - 45),
   FLIPPED_NET_SCORE(0),
   FLIPPED_NET_PREP(25),

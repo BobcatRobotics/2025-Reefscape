@@ -1032,7 +1032,7 @@ public class DriveCommands {
               Logger.recordOutput("driveToReef/omegaPID", omegaOutput);
 
               // Convert to field relative speeds & send command
-              drive.sePPOverride(xOutput, yOutput, omegaOutput);
+              // drive.sePPOverride(() -> xOutput, () -> yOutput, () -> omegaOutput);
               Logger.recordOutput("ppoverride/x", xOutput);
               Logger.recordOutput("ppoverride/y", yOutput);
               Logger.recordOutput("ppoverride/theta", omegaOutput);
@@ -1055,7 +1055,7 @@ public class DriveCommands {
       Drive drive, DoubleSupplier xOutput, DoubleSupplier yOutput, DoubleSupplier omegaOutput) {
     return Commands.run(
             () -> {
-              drive.sePPOverride(
+              drive.setPPOverride(
                   xOutput.getAsDouble(), yOutput.getAsDouble(), omegaOutput.getAsDouble());
               Logger.recordOutput("ppoverride/x", xOutput.getAsDouble());
               Logger.recordOutput("ppoverride/y", yOutput.getAsDouble());

@@ -11,35 +11,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ScoreCoralL4CW"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "DeployTounge"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "DeployTounge"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "ScoreCoralL4CW"
           }
         },
         {
@@ -78,12 +52,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreCoralL4CCW"
           }
         }
       ]

@@ -153,9 +153,14 @@ public class Drive extends SubsystemBase {
 
     PPHolonomicDriveController.overrideXFeedback(
         // Calculate feedback from your custom PID controller
-        pathPlannerOverride::getX);
+        () -> {
+          return pathPlannerOverride.getX();
+        });
     // Override the Y feedback
-    PPHolonomicDriveController.overrideYFeedback(pathPlannerOverride::getY);
+    PPHolonomicDriveController.overrideYFeedback(
+        () -> {
+          return pathPlannerOverride.getY();
+        });
 
     // Override the rotation feedback
     PPHolonomicDriveController.overrideRotationFeedback(
@@ -454,8 +459,9 @@ public class Drive extends SubsystemBase {
     return pathPlannerOverride;
   }
 
-  public void sePPOverride(double xOverride, double yOverride, double thetaOverride) {
+  public void setPPOverride(Double xOverride, Double yOverride, Double thetaOverride) {
     pathPlannerOverride = new Pose2d(xOverride, yOverride, new Rotation2d(thetaOverride));
+    Logger.recordOutput("setPPOverride", pathPlannerOverride);
   }
 
   public void clearPPOverride() {
