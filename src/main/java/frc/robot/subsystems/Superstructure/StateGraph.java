@@ -15,7 +15,7 @@ public class StateGraph {
             SuperstructureState.CORAL_PREP_L1,
             SuperstructureState.CORAL_PREP_L2,
             SuperstructureState.CORAL_PREP_L3,
-            SuperstructureState.CORAL_PREP_L4,
+            SuperstructureState.PRE_CORAL_PREP_L4,
             SuperstructureState.ALGAE_PREP_L2,
             SuperstructureState.ALGAE_PREP_L3,
             SuperstructureState.NET_PREP,
@@ -83,7 +83,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_PREP
             },
@@ -113,7 +113,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.ALGAE_PREP_L2,
               SuperstructureState.ALGAE_PREP_L3,
               SuperstructureState.HUMAN_INTAKE,
@@ -127,7 +127,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L1,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_SCORE
@@ -136,7 +136,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L2,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_SCORE
@@ -145,20 +145,26 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.CORAL_SCORE_L3,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.NET_SCORE
             },
             new SuperstructureState[] {
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
-              SuperstructureState.NET_SCORE
+              SuperstructureState.NET_SCORE,
+              SuperstructureState.CORAL_PREP_L4
             },
+            new SuperstructureState[] {
+              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
+              SuperstructureState.POST_CORAL_SCORE_L4,
+           },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L1,
               SuperstructureState.CORAL_PREP_L1,
@@ -188,11 +194,12 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.POST_CORAL_SCORE_L4,
-              SuperstructureState.CORAL_PREP_L4
+              SuperstructureState.PRE_CORAL_PREP_L4
             },
             new SuperstructureState[] {
               SuperstructureState.POST_CORAL_SCORE_L4,
               SuperstructureState.CORAL_SCORE_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.UPSIDE_DOWN_IDLE
@@ -227,7 +234,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
             },
             new SuperstructureState[] {
               SuperstructureState.ALGAE_PREP_L3,
@@ -238,7 +245,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
             },
             new SuperstructureState[] {
               SuperstructureState.NET_SCORE,
@@ -246,7 +253,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
@@ -271,7 +278,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.CORAL_PREP_L4
+              SuperstructureState.PRE_CORAL_PREP_L4
             });
 
     // for each set of transitions

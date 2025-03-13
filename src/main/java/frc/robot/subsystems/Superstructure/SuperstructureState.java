@@ -18,6 +18,7 @@ public enum SuperstructureState {
   CORAL_PREP_L1(ElevatorState.CORAL_L1, ArmState.CORAL_PREP_L1), // normal scoring side
   CORAL_PREP_L2(ElevatorState.CORAL_L2, ArmState.CORAL_PREP_L2),
   CORAL_PREP_L3(ElevatorState.CORAL_L3, ArmState.CORAL_PREP_L3),
+  PRE_CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.PRE_CORAL_PREP_L4),
   CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.CORAL_PREP_L4),
   CORAL_SCORE_L1(ElevatorState.CORAL_L1, ArmState.CORAL_SCORE_L1),
   CORAL_SCORE_L2(ElevatorState.CORAL_L2, ArmState.CORAL_SCORE_L2),

@@ -10,7 +10,8 @@ public enum ArmState {
   CORAL_PREP_L1(180 + 25),
   CORAL_PREP_L2(180 - 90),
   CORAL_PREP_L3(180 - 90),
-  CORAL_PREP_L4(180 - 90),
+  PRE_CORAL_PREP_L4(180 - 90),
+  CORAL_PREP_L4(180-15), //TODO tune
 
   CORAL_SCORE_L1(180 + 25), // normal side
   CORAL_SCORE_L2(180 - 35),
