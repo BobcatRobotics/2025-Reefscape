@@ -6,6 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,10 +17,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.DutyCycle;
+
 import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -30,6 +35,7 @@ public class ArmIOTalonFX implements ArmIO {
   private TalonFX motor;
   private CANcoder encoder;
   private MotionMagicTorqueCurrentFOC angleRequest = new MotionMagicTorqueCurrentFOC(0);
+  private DutyCycleOut manualRequest = new DutyCycleOut(0);
 
   private StatusSignal<Angle> position;
   private StatusSignal<Current> torqueCurrentAmps;
@@ -38,6 +44,7 @@ public class ArmIOTalonFX implements ArmIO {
 
   private ArmState desiredState = ArmState.UNKOWN;
   private boolean flipped = false;
+  private boolean isOverridden = false;
 
   public ArmIOTalonFX(int falconID, int encoderID) {
 
@@ -120,12 +127,9 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.flipped = flipped;
     double rotations = flipped ? 0.5 - desiredState.rotations : desiredState.rotations;
     inputs.distanceToAlignment = Math.abs(position.getValueAsDouble() - rotations) * 360;
-    // inputs.zone = getArmZone();
+    inputs.isOverridden = isOverridden;
   }
 
-  // private ArmZone getArmZone() {
-  // return Superstructure.getArmZone(getPosition());
-  // }
 
   /**
    * should be called every cycle, so that the arm collision avoidance gets updated
@@ -146,5 +150,14 @@ public class ArmIOTalonFX implements ArmIO {
       motor.setControl(angleRequest.withPosition(rotations).withFeedForward(0));
       Logger.recordOutput("using feedforward", false);
     }
+
+    isOverridden = false;
+  }
+
+  @Override
+  public void manualOverride(double percent) {
+    MathUtil.clamp(percent, -1, 1);
+    motor.setControl(manualRequest.withOutput(percent));
+    isOverridden = true;
   }
 }

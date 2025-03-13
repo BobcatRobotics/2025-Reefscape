@@ -21,10 +21,14 @@ public interface ArmIO {
     public double desiredPositionRotation = 0;
     public double distanceToAlignment = 0;
     public boolean flipped = false;
+    public boolean isOverridden = false;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ArmIOInputs inputs) {}
 
   public default void setDesiredState(ArmState state, boolean flipped, boolean hasPiece) {}
+
+  public default void manualOverride(double percent) {}
+
 }

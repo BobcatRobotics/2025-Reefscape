@@ -17,6 +17,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -133,6 +135,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void manualOverride(double percent) {
+    MathUtil.clamp(percent, -1, 1);
     motor.setControl(percentOutputRequest.withOutput(percent));
     isOverridden = true;
   }
