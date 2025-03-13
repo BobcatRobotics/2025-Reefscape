@@ -24,8 +24,8 @@ public class EndEffector extends SubsystemBase {
   public static double INTAKE_CORAL_SPEED = 500;
   public static double INTAKE_ALGAE_SPEED = 500;
   public static double OUTTAKE_SPEED = -300;
-  public static double OUTTAKE_FAST_SPEED = -2000;
-  public static double CORAL_SCORE_SPEED = -5;
+  public static double OUTTAKE_FAST_SPEED = -1000;
+  public static double CORAL_SCORE_SPEED = -15;
 
   private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
   private EndEffectorIO io;

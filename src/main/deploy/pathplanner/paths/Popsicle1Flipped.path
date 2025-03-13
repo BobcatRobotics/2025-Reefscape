@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.207297299324887,
-        "y": 2.7534130276346067
+        "x": 5.17169579488825,
+        "y": 2.445702220365371
       },
       "isLocked": false,
       "linkedName": "Popsicle1StartFlipped"
     },
     {
       "anchor": {
-        "x": 5.058811475409836,
-        "y": 2.8561987704918033
+        "x": 5.1330451127819545,
+        "y": 2.495
       },
       "prevControl": {
-        "x": 6.450574356341901,
-        "y": 2.5721984889848795
+        "x": 6.669680938285021,
+        "y": 2.632849965473297
       },
       "nextControl": null,
       "isLocked": false,
@@ -59,14 +59,9 @@
     },
     {
       "name": "ScoreCoralL4CWOverride",
-      "waypointRelativePos": 0.37542201215394944,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ScoreCoralL4CWOverride"
-        }
-      }
+      "waypointRelativePos": 0.26902173913043503,
+      "endWaypointRelativePos": 1.0,
+      "command": null
     }
   ],
   "globalConstraints": {

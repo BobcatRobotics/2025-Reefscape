@@ -418,21 +418,7 @@ public class AutoCommands {
       ScoringLevel level) {
 
     return superstructure
-        .score(flipped, level, () -> false)
-        .andThen(
-            endEffector
-                .coralOut(() -> level)
-                .raceWith(superstructure.setState(level.postState, flipped)));
-  }
-
-  private static Command anandsL4(
-      Superstructure superstructure,
-      EndEffector endEffector,
-      BooleanSupplier flipped,
-      ScoringLevel level) {
-
-    return superstructure
-        .scoreL4Auto(flipped, () -> false)
+        .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, flipped)
         .andThen(
             endEffector
                 .coralOut(() -> level)

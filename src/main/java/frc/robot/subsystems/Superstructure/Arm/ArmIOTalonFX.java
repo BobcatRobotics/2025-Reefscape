@@ -105,8 +105,11 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.motorConnected = motor.isConnected();
     inputs.state = desiredState;
     inputs.aligned =
-        Math.abs(position.getValueAsDouble() - desiredState.rotations)
-            < Arm.ARM_TOLERANCE.getRotations();
+        flipped
+            ? Math.abs(position.getValueAsDouble() - desiredState.rotations - 1)
+                < Arm.ARM_TOLERANCE.getRotations()
+            : Math.abs(position.getValueAsDouble() - desiredState.rotations)
+                < Arm.ARM_TOLERANCE.getRotations();
     inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.controlMode = motor.getControlMode().getValue();

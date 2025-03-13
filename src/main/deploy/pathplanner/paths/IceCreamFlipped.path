@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.058811475409836,
-        "y": 2.8561987704918033
+        "x": 5.1330451127819545,
+        "y": 2.495
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.657983843988996,
-        "y": 2.014399313795984
+        "x": 3.732217481361114,
+        "y": 1.6532005433041808
       },
       "isLocked": false,
       "linkedName": "Popsicle1EndFlipped"

@@ -135,7 +135,7 @@ public class RobotContainer {
   private final Alert rightRuffyUnpluggedAlert =
       new Alert("Right Ruffy unplugged!", AlertType.kWarning);
 
-  public Supplier<Angle> trimSupplier = () -> Rotations.of((3 * joystick.throttle.getAsDouble()));
+  public Supplier<Angle> trimSupplier = () -> Rotations.of(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -552,10 +552,17 @@ public class RobotContainer {
     joystick
         .povDown()
         .onTrue(
-            superstructure
-                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
-                .deadlineFor(endEffector.scoreCommand(superstructure::getState))
-                .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)));
+            new ConditionalCommand(
+                superstructure
+                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                    .deadlineFor(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
+                superstructure
+                    .setState(SuperstructureState.POST_HUMAN_INTAKE, endEffector::hasPiece)
+                    .deadlineFor(endEffector.intakeCoralCommand())
+                    .andThen(endEffector.idleCoralCommand()),
+                () -> superstructure.getState() != SuperstructureState.HUMAN_INTAKE));
+
     joystick
         .povUp()
         .onTrue(

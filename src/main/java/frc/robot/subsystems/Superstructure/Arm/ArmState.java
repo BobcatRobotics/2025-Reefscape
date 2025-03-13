@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 public enum ArmState {
   UPSIDE_DOWN_CCW(270), // upside down, for quick pickup once game piece intook
   RIGHT_SIDE_UP(90), // arm doesnt move from idle to handoff
-  HUMAN_INTAKE(180 + 25),
+  HUMAN_INTAKE(180 + 55),
   CORAL_PREP_L1(180 + 25),
   CORAL_PREP_L2(180 - 90),
   CORAL_PREP_L3(180 - 90),

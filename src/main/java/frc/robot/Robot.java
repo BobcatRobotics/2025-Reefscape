@@ -13,8 +13,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Rotations;
-
 import au.grapplerobotics.CanBridge;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
@@ -121,7 +119,6 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    Logger.recordOutput("trim", robotContainer.trimSupplier.get().in(Rotations));
 
     // Return to normal thread priority
     Threads.setCurrentThreadPriority(false, 10);
