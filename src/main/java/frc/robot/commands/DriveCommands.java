@@ -42,7 +42,7 @@ public class DriveCommands {
   static final double DRIVE_KPX = 1;
   static final double DRIVE_KDX = 0;
   static final double ANGLE_MAX_VELOCITY = 8.0;
-  static final double ANGLE_MAX_ACCELERATION = 20.0;
+  static final double ANGLE_MAX_ACCELERATION = 4;
   static final Distance ALIGN_DISTANCE = Inches.of(16); // TODO this should be zero
 
   static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); // towards elevator
