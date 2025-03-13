@@ -84,7 +84,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.PRE_CORAL_PREP_L4,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
