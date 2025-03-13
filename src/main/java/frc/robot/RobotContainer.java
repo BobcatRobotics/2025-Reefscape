@@ -546,8 +546,7 @@ public class RobotContainer {
             superstructure::isScoring));
 
     joystick.bottom12.onTrue(
-        SuperstructureActions.retractFromPlace(
-            superstructure, endEffector, this::shouldUseAlgae, drive::isCoralSideDesired));
+        superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
 
     // stow
     joystick

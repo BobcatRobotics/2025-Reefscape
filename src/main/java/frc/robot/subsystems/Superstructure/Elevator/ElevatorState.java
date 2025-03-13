@@ -28,7 +28,9 @@ public enum ElevatorState {
   NET_SCORE(Rotation2d.fromRotations(4.1)),
   NET_PREP(Rotation2d.fromRotations(4.1)),
   UNKNOWN(Rotation2d.fromRotations(0)),
-  CLIMB(Rotation2d.fromRotations(0)); // elevator isnt at a predefined state
+  CLIMB(Rotation2d.fromRotations(0)),
+  HUMAN_INTAKE(Rotation2d.fromRotations(2.5)),
+  POST_HUMAN_INTAKE(Rotation2d.fromRotations(2.2)); // elevator isnt at a predefined state
 
   ElevatorState(Rotation2d pos) {
     this.pos = pos;
