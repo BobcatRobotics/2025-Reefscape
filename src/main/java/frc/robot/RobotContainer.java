@@ -48,6 +48,7 @@ import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
 import frc.robot.subsystems.Drive.GyroIOPigeon2;
+import frc.robot.subsystems.Drive.ScoreSide;
 import frc.robot.subsystems.Drive.SwerveModuleIO;
 import frc.robot.subsystems.Drive.SwerveModuleIOSim;
 import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
@@ -254,6 +255,8 @@ public class RobotContainer {
         AutoCommands.fullAutoReefScore(
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
 
+    autoChooser.addOption("AutoScoreTest", 
+    AutoCommands.drive2Reef(drive, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, superstructure, endEffector));
     // Set up SysId routines
     // drivetrain
     // autoChooser.addOption(
@@ -545,8 +548,8 @@ public class RobotContainer {
             superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
             superstructure::isScoring));
 
-    joystick.bottom12.onTrue(
-        superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
+    // joystick.bottom12.onTrue(
+    //     superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
 
     // stow
     joystick
@@ -626,9 +629,12 @@ public class RobotContainer {
                 .alongWith(endEffector.outtakeCommand()))
         .onFalse(endEffector.idleCoralCommand());
 
+    // manual override
     joystick.bottom12.whileTrue(
-        superstructure.manualOverride(() -> 0.2, () -> 0.2) // TODO FIX
+        superstructure.manualOverride(joystick.zAxis, joystick.yAxis) // TODO FIX
         );
+
+    
 
     // rightRuffy
     // .axisGreaterThan(1, .5)

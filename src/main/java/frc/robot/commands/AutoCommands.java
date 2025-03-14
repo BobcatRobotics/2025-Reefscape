@@ -465,7 +465,7 @@ public class AutoCommands {
             });
   }
 
-  public Command drive2Reef(
+  public static Command drive2Reef(
       Drive drive,
       BranchSide side,
       ScoringLevel level,
