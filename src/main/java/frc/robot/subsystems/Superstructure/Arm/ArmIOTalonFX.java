@@ -17,14 +17,11 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.wpilibj.DutyCycle;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -129,7 +126,6 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.distanceToAlignment = Math.abs(position.getValueAsDouble() - rotations) * 360;
     inputs.isOverridden = isOverridden;
   }
-
 
   /**
    * should be called every cycle, so that the arm collision avoidance gets updated

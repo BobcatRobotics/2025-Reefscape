@@ -69,6 +69,10 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  public void setManualOverride(double override) {
+    io.manualOverride(override);
+  }
+
   public ArmState getState() {
     return inputs.state;
   }

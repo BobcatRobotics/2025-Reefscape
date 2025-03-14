@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -217,7 +218,7 @@ public class Superstructure {
         goal = SuperstructureState.CORAL_SCORE_L3;
         break;
       case CORAL_L4:
-        goal = SuperstructureState.CORAL_SCORE_L4;
+        goal = SuperstructureState.POST_CORAL_SCORE_L4;
         break;
       case ALGAE_L2:
         goal = SuperstructureState.ALGAE_PREP_L2;
@@ -343,6 +344,16 @@ public class Superstructure {
 
   public boolean isScoring() {
     return isScoring;
+  }
+
+  public Command manualOverride(DoubleSupplier arm, DoubleSupplier elevator) {
+    return Commands.run(
+        () -> {
+          this.arm.setManualOverride(arm.getAsDouble());
+          this.elevator.setManualOverride(elevator.getAsDouble());
+        },
+        this.arm,
+        this.elevator);
   }
 
   /**

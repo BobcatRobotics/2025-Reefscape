@@ -162,9 +162,10 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.POST_CORAL_SCORE_L4,
-           },
+            },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L1,
               SuperstructureState.CORAL_PREP_L1,
@@ -194,7 +195,8 @@ public class StateGraph {
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.POST_CORAL_SCORE_L4,
-              SuperstructureState.PRE_CORAL_PREP_L4
+              SuperstructureState.PRE_CORAL_PREP_L4,
+              SuperstructureState.CORAL_PREP_L4
             },
             new SuperstructureState[] {
               SuperstructureState.POST_CORAL_SCORE_L4,

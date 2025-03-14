@@ -626,6 +626,10 @@ public class RobotContainer {
                 .alongWith(endEffector.outtakeCommand()))
         .onFalse(endEffector.idleCoralCommand());
 
+    joystick.bottom12.whileTrue(
+        superstructure.manualOverride(() -> 0.2, () -> 0.2) // TODO FIX
+        );
+
     // rightRuffy
     // .axisGreaterThan(1, .5)
     // .whileTrue(

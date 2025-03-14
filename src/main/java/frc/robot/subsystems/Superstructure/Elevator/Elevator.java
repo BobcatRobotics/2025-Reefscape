@@ -76,6 +76,10 @@ public class Elevator extends SubsystemBase {
     return desiredState;
   }
 
+  public void setManualOverride(double override) {
+    io.manualOverride(override);
+  }
+
   public boolean inTolerance() {
     return inputs.aligned
         || (desiredState == ElevatorState.CORAL_L4

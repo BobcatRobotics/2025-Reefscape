@@ -30,5 +30,4 @@ public interface ArmIO {
   public default void setDesiredState(ArmState state, boolean flipped, boolean hasPiece) {}
 
   public default void manualOverride(double percent) {}
-
 }
