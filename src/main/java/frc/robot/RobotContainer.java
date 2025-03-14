@@ -315,7 +315,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "ScoreCoralL4CW",
         AutoCommands.drive3Reef(
-            drive,BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, superstructure, endEffector));
+            drive, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, superstructure, endEffector));
 
     NamedCommands.registerCommand(
         "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));
