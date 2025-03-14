@@ -49,7 +49,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean inTolerance(SuperstructureState desiredState) {
-    if (desiredState.armState == ArmState.NO_OP) {
+    if (desiredState.armState == ArmState.NO_OP || desiredState.armState == ArmState.UNKOWN) {
       return true;
     }
     double rotations =
