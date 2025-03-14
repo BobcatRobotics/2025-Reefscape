@@ -314,7 +314,7 @@ public class RobotContainer {
             ScoringLevel.CORAL_L4));
     NamedCommands.registerCommand(
         "ScoreCoralL4CW",
-        AutoCommands.drive3Reef(
+        AutoCommands.drive2Reef(
             drive, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, superstructure, endEffector));
 
     NamedCommands.registerCommand(
