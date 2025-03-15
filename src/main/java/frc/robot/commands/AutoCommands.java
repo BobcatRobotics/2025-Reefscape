@@ -648,6 +648,6 @@ public class AutoCommands {
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
                     .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
-                () -> isL4));
+                () -> !isL4));
   }
 }
