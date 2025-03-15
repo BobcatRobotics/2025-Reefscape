@@ -390,7 +390,8 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired, level))
+        .andThen(superstructure.setState(level.postState, endEffector::hasPiece))
+        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
@@ -585,9 +586,9 @@ public class AutoCommands {
                           ? drive.getRotation().plus(new Rotation2d(Math.PI))
                           : drive.getRotation()));
 
-              if (xController.getPositionError() < 0.4
-                  && yController.getPositionError() < 0.4
-                  && angleController.getPositionError() < Math.toRadians(2)) {
+              if (Math.abs(xController.getPositionError()) < 0.4
+                  && Math.abs(yController.getPositionError()) < 0.4
+                  && Math.abs(angleController.getPositionError()) < Math.toRadians(2)) {
                 SuperstructureActions.prepScore(
                     level, drive::isCoralSideDesired, superstructure, endEffector);
               }
