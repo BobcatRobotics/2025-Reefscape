@@ -6,7 +6,7 @@ import edu.wpi.first.units.measure.Angle;
 
 public enum IntakeState {
   DEPLOY(13.5), // TODO find this
-  RETRACT(1.25),
+  RETRACT(0.74),
   ALGAE_PICKUP(8),
   UNKNOWN(-1);
 

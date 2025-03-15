@@ -391,7 +391,6 @@ public class AutoCommands {
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
         .andThen(drive3Reef(drive, level, superstructure, endEffector))
-        
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
