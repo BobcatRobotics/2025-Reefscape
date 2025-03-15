@@ -329,10 +329,10 @@ public class AutoCommands {
                                   adjustX, drive.getAdjustY() + transformY, new Rotation2d()))
                           .getTranslation(),
                       poseDirection.getRotation());
-              Logger.recordOutput("adjustY", drive.getAdjustY());
+              Logger.recordOutput("driveToReef/adjustY", drive.getAdjustY());
 
-              Logger.recordOutput("reef_face/adjustY", drive.getAdjustY());
-              Logger.recordOutput("reef_face/offset", offsetFace);
+              Logger.recordOutput("driveToReef/reef_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("driveToReef/reef_face/offset", offsetFace);
 
               double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
               double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());

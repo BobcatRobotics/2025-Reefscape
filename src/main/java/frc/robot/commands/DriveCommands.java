@@ -406,21 +406,8 @@ public class DriveCommands {
               }
 
               Pose2d nearestFace = drive.getPose().nearest(flippedFaces);
-              Logger.recordOutput("reef_face/raw", nearestFace);
+              Logger.recordOutput("driveToReef/reef_face/raw", nearestFace);
 
-              // List<Map<ReefHeight, Pose3d>> offsetPositions =
-              // FieldConstants.Reef.branchPositions;
-
-              // double xOffset =
-              // ALIGN_DISTANCE.baseUnitMagnitude()
-              // * Math.cos(nearestFace.getRotation().getRadians());
-              // double yOffset =
-              // ALIGN_DISTANCE.baseUnitMagnitude()
-              // * Math.sin(nearestFace.getRotation().getRadians());
-
-              // Pose2d offsetFace =
-              // nearestFace.plus(new Transform2d(xOffset, yOffset, new Rotation2d()));
-              // Logger.recordOutput("reef_face/offset", offsetFace);
               int faceIndex = -1;
               for (int i = 0; i < flippedFaces.size(); i++) {
                 if (flippedFaces.get(i) == nearestFace) {
@@ -435,8 +422,8 @@ public class DriveCommands {
                           (FieldConstants.Reef.center),
                           (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
 
-              Logger.recordOutput("reef_face/poseDirection", poseDirection);
-              Logger.recordOutput("reef_face/faceIndex", faceIndex);
+              Logger.recordOutput("driveToReef/reef_face/poseDirection", poseDirection);
+              Logger.recordOutput("driveToReef/reef_face/faceIndex", faceIndex);
 
               double diff =
                   RotationUtil.wrapRot2d(drive.getPose().getRotation())
@@ -471,8 +458,10 @@ public class DriveCommands {
                       poseDirection.getRotation());
               Logger.recordOutput("adjustY", drive.getAdjustY());
 
-              Logger.recordOutput("reef_face/adjustY", drive.getAdjustY());
-              Logger.recordOutput("reef_face/offset", offsetFace);
+              Logger.recordOutput("driveToReef/reef_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("driveToReef/reef_face/transformY", transformY);
+
+              Logger.recordOutput("driveToReef/reef_face/offset", offsetFace);
 
               double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
               double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
