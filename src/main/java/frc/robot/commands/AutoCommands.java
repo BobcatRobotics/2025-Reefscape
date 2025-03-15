@@ -629,7 +629,7 @@ public class AutoCommands {
             superstructure.setState(
                 SuperstructureState.CORAL_SCORE_L4,
                 drive::isCoralSideDesired,
-                endEffector::hasPiece))
+                endEffector::hasPiece).alongWith(endEffector.coralOut(superstructure::getScoringLevel)))
         .andThen(
             superstructure.setState(
                 SuperstructureState.RIGHT_SIDE_UP_IDLE,
