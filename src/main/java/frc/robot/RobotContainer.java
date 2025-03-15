@@ -547,8 +547,7 @@ public class RobotContainer {
         new ConditionalCommand(
             superstructure.gotToLastPrepPosition(endEffector::hasPiece),
             superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
-            superstructure::isScoring)
-            );
+            superstructure::isScoring));
 
     // joystick.bottom12.onTrue(
     //     superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
@@ -560,7 +559,7 @@ public class RobotContainer {
             new ConditionalCommand(
                 superstructure
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
-                    .deadlineFor(endEffector.scoreCommand(superstructure::getState))
+                    .alongWith(endEffector.scoreCommand(superstructure::getState))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
                 superstructure
                     .setState(SuperstructureState.POST_HUMAN_INTAKE, endEffector::hasPiece)
