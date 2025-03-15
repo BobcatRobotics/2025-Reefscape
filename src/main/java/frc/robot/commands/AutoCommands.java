@@ -637,7 +637,7 @@ public class AutoCommands {
                 superstructure
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
-                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)).alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", true))),
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)).alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", false))),
                 superstructure
                     .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
                     .withTimeout(3)
@@ -646,7 +646,7 @@ public class AutoCommands {
                             SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
-                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", false))),
+                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", true))),
                 () -> isL4));
   }
 }
