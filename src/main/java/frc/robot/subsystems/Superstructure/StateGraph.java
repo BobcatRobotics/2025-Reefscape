@@ -106,7 +106,13 @@ public class StateGraph {
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
-              SuperstructureState.IDLE_ALGAE
+              SuperstructureState.IDLE_ALGAE,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.PRE_CORAL_PREP_L4,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3
             },
             new SuperstructureState[] {
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
