@@ -560,10 +560,12 @@ public class RobotContainer {
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
-                    superstructure
+                superstructure
                     .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
-                    .alongWith(endEffector.scoreCommand(superstructure::getState))
-                    .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+                    .deadlineFor(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(
+                        superstructure.setState(
+                            SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
                 () -> superstructure.getState() != SuperstructureState.CORAL_SCORE_L4));
 
