@@ -612,4 +612,25 @@ public class AutoCommands {
               drive.setAdjustY(-1);
             });
   }
+
+  public static Command drive3Reef(
+      Drive drive,
+      BranchSide side,
+      ScoringLevel level,
+      Superstructure superstructure,
+      EndEffector endEffector) {
+
+    return SuperstructureActions.prepScore(
+            level, drive::isCoralSideDesired, superstructure, endEffector)
+        .andThen(
+            superstructure.setState(
+                SuperstructureState.POST_CORAL_SCORE_L4,
+                drive::isCoralSideDesired,
+                endEffector::hasPiece))
+        .andThen(
+            superstructure.setState(
+                SuperstructureState.RIGHT_SIDE_UP_IDLE,
+                drive::isCoralSideDesired,
+                endEffector::hasPiece));
+  }
 }

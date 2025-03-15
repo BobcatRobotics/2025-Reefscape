@@ -200,11 +200,11 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.POST_CORAL_SCORE_L4,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.PRE_CORAL_PREP_L4,
-              SuperstructureState.CORAL_PREP_L4,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE,
-              SuperstructureState.UPSIDE_DOWN_IDLE
+              SuperstructureState.CORAL_PREP_L4
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE,
