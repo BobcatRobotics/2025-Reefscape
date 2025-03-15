@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
-  public static double MAX_ROTATIONS = 14; // TODO slightly more than this
+  public static double MAX_ROTATIONS = 14; // TODO slightly more than this?
 
   public static Distance LASER_THRESHOLD = Inches.of(1);
 

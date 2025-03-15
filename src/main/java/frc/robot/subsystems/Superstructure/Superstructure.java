@@ -232,8 +232,6 @@ public class Superstructure {
         goal = SuperstructureState.NET_SCORE;
     }
 
-    Logger.recordOutput("wtf", goal);
-
     return goal;
   }
 
