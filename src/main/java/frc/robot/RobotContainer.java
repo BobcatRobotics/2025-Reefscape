@@ -501,8 +501,8 @@ public class RobotContainer {
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
             drive,
-            () -> leftRuffy.yAxis.getAsDouble(),
-            () -> -leftRuffy.xAxis.getAsDouble(),
+            () -> -leftRuffy.yAxis.getAsDouble(),
+            () -> leftRuffy.xAxis.getAsDouble(),
             () -> -rightRuffy.xAxis.getAsDouble(),
             joystick.povRight(),
             joystick.povLeft(),
@@ -639,7 +639,7 @@ public class RobotContainer {
         .whileTrue(
             superstructure.manualOverride(
                 () -> joystick.zAxis.getAsDouble() * 0.15,
-                () -> joystick.yAxis.getAsDouble() * 0.4) // TODO FIX
+                () -> -joystick.yAxis.getAsDouble() * 0.4) // TODO FIX
             )
         .onFalse(superstructure.manualOverride(() -> 0, () -> 0));
 
