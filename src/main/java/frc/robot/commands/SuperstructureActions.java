@@ -30,6 +30,7 @@ public class SuperstructureActions {
             () -> {
               superstructure.recordScoringLevel(level);
               superstructure.setLastPrepPosition(level.prepState);
+              
             });
   }
 
