@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -622,7 +623,11 @@ public class AutoCommands {
   }
 
   public static Command drive3Reef(
-      Drive drive, ScoringLevel level, Superstructure superstructure, EndEffector endEffector, boolean isL4) {
+      Drive drive,
+      ScoringLevel level,
+      Superstructure superstructure,
+      EndEffector endEffector,
+      boolean isL4) {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
@@ -632,16 +637,16 @@ public class AutoCommands {
                 superstructure
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
-                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)).alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", true))),
                 superstructure
                     .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
                     .withTimeout(3)
                     .andThen(
                         superstructure.setState(
                             SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
-                    .alongWith(endEffector.scoreCommand(superstructure::getState)
-                    )   
-                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
+                    .alongWith(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
+                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", false))),
                 () -> isL4));
   }
 }
