@@ -344,14 +344,14 @@ public class Superstructure {
     return isScoring;
   }
 
-  public Command manualOverride(DoubleSupplier arm, DoubleSupplier elevator) {
+  public Command manualOverride(DoubleSupplier armSupplier, DoubleSupplier elevatorSupplier) {
     return Commands.run(
         () -> {
-          this.arm.setManualOverride(arm.getAsDouble());
-          this.elevator.setManualOverride(elevator.getAsDouble());
+          arm.setManualOverride(armSupplier.getAsDouble());
+          elevator.setManualOverride(elevatorSupplier.getAsDouble());
         },
-        this.arm,
-        this.elevator);
+        arm,
+        elevator);
   }
 
   /**

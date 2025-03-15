@@ -636,7 +636,7 @@ public class RobotContainer {
     // manual override
     joystick.bottom12.whileTrue(
         superstructure.manualOverride(joystick.zAxis, joystick.yAxis) // TODO FIX
-        );
+        ).onFalse(superstructure.manualOverride(()->0, ()->0));
 
     // rightRuffy
     // .axisGreaterThan(1, .5)
