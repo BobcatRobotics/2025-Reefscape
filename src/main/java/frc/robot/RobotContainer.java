@@ -252,12 +252,12 @@ public class RobotContainer {
     autoChooser.addOption(
         "MVP CW L4",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
 
     autoChooser.addOption(
         "AutoScoreTest",
-        AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector));
-    // Set up SysId routines
+        AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector, true));
+    // Set up SysId routine
     // drivetrain
     // autoChooser.addOption(
     // "Drive Wheel Radius Characterization",
@@ -310,11 +310,12 @@ public class RobotContainer {
             superstructure,
             endEffector,
             BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L4));
+            ScoringLevel.CORAL_L4,
+            true));
     NamedCommands.registerCommand(
         "ScoreCoralL4CW",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
 
     NamedCommands.registerCommand(
         "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));

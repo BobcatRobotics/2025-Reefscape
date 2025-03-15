@@ -233,7 +233,8 @@ public class AutoCommands {
       Superstructure superstructure,
       EndEffector endEffector,
       BranchSide branchSide,
-      ScoringLevel level) {
+      ScoringLevel level,
+      boolean isL4) {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 
@@ -392,7 +393,7 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(drive3Reef(drive, level, superstructure, endEffector))
+        .andThen(drive3Reef(drive, level, superstructure, endEffector, isL4))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
@@ -621,12 +622,11 @@ public class AutoCommands {
   }
 
   public static Command drive3Reef(
-      Drive drive, ScoringLevel level, Superstructure superstructure, EndEffector endEffector) {
+      Drive drive, ScoringLevel level, Superstructure superstructure, EndEffector endEffector, boolean isL4) {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
         .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece))
-        .withTimeout(3)
         .andThen(
             new ConditionalCommand(
                 superstructure
@@ -635,12 +635,13 @@ public class AutoCommands {
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
                 superstructure
                     .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
-                    .deadlineFor(endEffector.scoreCommand(superstructure::getState))
                     .withTimeout(3)
                     .andThen(
                         superstructure.setState(
                             SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+                    .alongWith(endEffector.scoreCommand(superstructure::getState)
+                    )   
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
-                () -> level == ScoringLevel.CORAL_L4));
+                () -> isL4));
   }
 }
