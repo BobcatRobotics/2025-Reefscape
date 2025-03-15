@@ -634,9 +634,12 @@ public class RobotContainer {
         .onFalse(endEffector.idleCoralCommand());
 
     // manual override
-    joystick.bottom12.whileTrue(
-        superstructure.manualOverride(joystick.zAxis, joystick.yAxis) // TODO FIX
-        ).onFalse(superstructure.manualOverride(()->0, ()->0));
+    joystick
+        .bottom12
+        .whileTrue(
+            superstructure.manualOverride(() -> joystick.zAxis.getAsDouble() * 0.1, () -> joystick.yAxis.getAsDouble() * 0.1) // TODO FIX
+            )
+        .onFalse(superstructure.manualOverride(() -> 0, () -> 0));
 
     // rightRuffy
     // .axisGreaterThan(1, .5)

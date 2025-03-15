@@ -135,6 +135,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   @Override
   public void manualOverride(double percent) {
     MathUtil.clamp(percent, -1, 1);
+    percent = MathUtil.applyDeadband(percent, 0.05);
     motor.setControl(percentOutputRequest.withOutput(percent));
     isOverridden = true;
   }
