@@ -622,7 +622,6 @@ public class AutoCommands {
 
   public static Command drive3Reef(
       Drive drive,
-      BranchSide side,
       ScoringLevel level,
       Superstructure superstructure,
       EndEffector endEffector) {
