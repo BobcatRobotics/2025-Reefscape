@@ -391,7 +391,8 @@ public class AutoCommands {
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
         .andThen(superstructure.setState(level.postState, endEffector::hasPiece))
-        .andThen(superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+        .andThen(
+            superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
