@@ -67,7 +67,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     rollerConfig.CurrentLimits.StatorCurrentLimit = 120;
     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // TODO check
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    rollerConfig.Slot0.kP = 0.3; // // TODO tune
+    rollerConfig.Slot0.kP = 0.5; // // TODO tune
     roller.getConfigurator().apply(rollerConfig);
 
     pivot = new TalonFX(pivotMotorID);
