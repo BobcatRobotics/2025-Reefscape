@@ -626,14 +626,12 @@ public class AutoCommands {
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
         .andThen(
-            superstructure.setState(
-                SuperstructureState.CORAL_SCORE_L4,
-                drive::isCoralSideDesired,
-                endEffector::hasPiece).alongWith(endEffector.coralOut(superstructure::getScoringLevel)))
+            superstructure
+                .score(drive::isCoralSideDesired, endEffector::hasPiece)).withTimeout(3)
         .andThen(
-            superstructure.setState(
-                SuperstructureState.RIGHT_SIDE_UP_IDLE,
-                drive::isCoralSideDesired,
-                endEffector::hasPiece));
+          superstructure
+          .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+          .alongWith(endEffector.scoreCommand(superstructure::getState))
+          .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)));
   }
 }
