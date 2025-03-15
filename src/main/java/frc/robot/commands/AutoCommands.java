@@ -390,9 +390,16 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(superstructure.setState(level.postState, endEffector::hasPiece))
-        .andThen(
-            superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+                    .andThen(
+                      superstructure
+                          .score(drive::isCoralSideDesired, endEffector::hasPiece)
+                          )
+                  .withTimeout(3)
+                  .andThen(
+                    superstructure
+                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                    .alongWith(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(endEffector.idleCoralCommand()))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
@@ -625,7 +632,10 @@ public class AutoCommands {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
-        .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece).alongWith(endEffector.scoreCommand(superstructure::getState)))
+        .andThen(
+            superstructure
+                .score(drive::isCoralSideDesired, endEffector::hasPiece)
+                .alongWith(endEffector.scoreCommand(superstructure::getState)))
         .withTimeout(3)
         .andThen(
             superstructure
