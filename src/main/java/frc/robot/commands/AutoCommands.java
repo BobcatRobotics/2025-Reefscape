@@ -621,16 +621,13 @@ public class AutoCommands {
   }
 
   public static Command drive3Reef(
-      Drive drive,
-      ScoringLevel level,
-      Superstructure superstructure,
-      EndEffector endEffector) {
+      Drive drive, ScoringLevel level, Superstructure superstructure, EndEffector endEffector) {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
         .andThen(
             superstructure.setState(
-                SuperstructureState.POST_CORAL_SCORE_L4,
+                SuperstructureState.CORAL_SCORE_L4,
                 drive::isCoralSideDesired,
                 endEffector::hasPiece))
         .andThen(

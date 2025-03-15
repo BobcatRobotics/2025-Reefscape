@@ -256,8 +256,7 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "AutoScoreTest",
-        AutoCommands.drive3Reef(
-            drive, ScoringLevel.CORAL_L4, superstructure, endEffector));
+        AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector));
     // Set up SysId routines
     // drivetrain
     // autoChooser.addOption(
