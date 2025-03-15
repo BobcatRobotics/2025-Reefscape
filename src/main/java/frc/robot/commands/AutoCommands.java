@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -9,6 +10,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -39,6 +41,8 @@ import org.littletonrobotics.junction.Logger;
 public class AutoCommands {
   private static final double TRANSLATION_TOLERANCE = 0.1;
   private static final double THETA_TOLERANCE = 0.1;
+    static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 2.5); // towards climber
+
 
   public static Command fullAutoReefScoreOverride(
       Drive drive,
@@ -124,10 +128,10 @@ public class AutoCommands {
               if (Math.abs(diff) >= 90) { // use coral side
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
-                transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
-                transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -314,10 +318,10 @@ public class AutoCommands {
               if (Math.abs(diff) >= 90) { // use coral side
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
-                transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
-                transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -540,10 +544,10 @@ public class AutoCommands {
               if (Math.abs(diff) >= 90) { // use coral side
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
-                transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
-                transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =

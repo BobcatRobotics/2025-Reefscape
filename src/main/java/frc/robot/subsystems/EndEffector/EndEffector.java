@@ -135,7 +135,7 @@ public class EndEffector extends SubsystemBase {
               io.setSpeed(CORAL_SCORE_SPEED);
               break;
             case NET_SCORE:
-              io.setSpeed(OUTTAKE_SPEED );
+              io.setSpeed(OUTTAKE_SPEED);
               break;
             case ALGAE_PREP_L2:
               io.setSpeed(INTAKE_ALGAE_SPEED);

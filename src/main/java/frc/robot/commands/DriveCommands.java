@@ -45,7 +45,7 @@ public class DriveCommands {
   static final double ANGLE_MAX_ACCELERATION = 4;
   static final Distance ALIGN_DISTANCE = Inches.of(16); // TODO this should be zero
 
-  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 2.5); // towards climber
+  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 1); // towards climber
 
   private DriveCommands() {}
 
