@@ -367,12 +367,12 @@ public class AutoCommands {
               // Logger.recordOutput("ppoverride/y", yOutput);
               // Logger.recordOutput("ppoverride/theta", omegaOutput);
 
-              if ((xController.getPositionError() < 0.4)
-                  && (yController.getPositionError() < 0.4)
-                  && (angleController.getPositionError() < Math.toRadians(2))) {
-                SuperstructureActions.prepScore(
-                    level, drive::isCoralSideDesired, superstructure, endEffector);
-              }
+              // if ((xController.getPositionError() < 0.4)
+              //     && (yController.getPositionError() < 0.4)
+              //     && (angleController.getPositionError() < Math.toRadians(2))) {
+              //   SuperstructureActions.prepScore(
+              //       level, drive::isCoralSideDesired, superstructure, endEffector);
+              // }
               Logger.recordOutput("Auto/AlignXError", xController.getPositionError());
               Logger.recordOutput("Auto/AlignYError", yController.getPositionError());
               Logger.recordOutput("Auto/AlignThetaError", angleController.getPositionError());
@@ -390,9 +390,8 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece))
-        .andThen(
-            superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+        .andThen(drive3Reef(drive, level, superstructure, endEffector))
+        
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
@@ -625,13 +624,12 @@ public class AutoCommands {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
+        .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece))
+        .withTimeout(3)
         .andThen(
             superstructure
-                .score(drive::isCoralSideDesired, endEffector::hasPiece)).withTimeout(3)
-        .andThen(
-            superstructure
-                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
-                    .alongWith(endEffector.scoreCommand(superstructure::getState))
-                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)));
+                .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                .alongWith(endEffector.scoreCommand(superstructure::getState))
+                .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)));
   }
 }
