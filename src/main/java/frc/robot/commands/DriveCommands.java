@@ -503,9 +503,9 @@ public class DriveCommands {
                           + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
                       (omegaOutput * (1 - omegaOverride))
                           + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
-              boolean isFlipped = //false;
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Blue;
+              boolean isFlipped = // false;
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Blue;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                           speeds,
