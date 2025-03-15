@@ -23,7 +23,7 @@ public class EndEffector extends SubsystemBase {
   public static double ALGAE_IDLE_SPEED = 200;
   public static double INTAKE_CORAL_SPEED = 500;
   public static double INTAKE_ALGAE_SPEED = 500;
-  public static double OUTTAKE_SPEED = -150;
+  public static double OUTTAKE_SPEED = -50;
   public static double OUTTAKE_FAST_SPEED = -1000;
   public static double CORAL_SCORE_SPEED = -20;
 
@@ -135,7 +135,7 @@ public class EndEffector extends SubsystemBase {
               io.setSpeed(CORAL_SCORE_SPEED);
               break;
             case NET_SCORE:
-              io.setSpeed(OUTTAKE_FAST_SPEED);
+              io.setSpeed(OUTTAKE_SPEED );
               break;
             case ALGAE_PREP_L2:
               io.setSpeed(INTAKE_ALGAE_SPEED);
