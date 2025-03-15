@@ -637,7 +637,9 @@ public class RobotContainer {
     joystick
         .bottom12
         .whileTrue(
-            superstructure.manualOverride(() -> joystick.zAxis.getAsDouble() * 0.1, () -> joystick.yAxis.getAsDouble() * 0.1) // TODO FIX
+            superstructure.manualOverride(
+                () -> joystick.zAxis.getAsDouble() * 0.15,
+                () -> joystick.yAxis.getAsDouble() * 0.4) // TODO FIX
             )
         .onFalse(superstructure.manualOverride(() -> 0, () -> 0));
 
