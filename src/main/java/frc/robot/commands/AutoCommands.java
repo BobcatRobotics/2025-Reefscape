@@ -41,8 +41,7 @@ import org.littletonrobotics.junction.Logger;
 public class AutoCommands {
   private static final double TRANSLATION_TOLERANCE = 0.1;
   private static final double THETA_TOLERANCE = 0.1;
-    static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 2.5); // towards climber
-
+  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 2.5); // towards climber
 
   public static Command fullAutoReefScoreOverride(
       Drive drive,
