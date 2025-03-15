@@ -438,10 +438,10 @@ public class DriveCommands {
               if (Math.abs(diff) >= 90) { // use coral side
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
-                transformY = END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
-                transformY = -END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =

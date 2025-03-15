@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Superstructure.RobotVisualizer;
-
 import org.littletonrobotics.junction.Logger;
 
 public class CoralIntake extends SubsystemBase {
@@ -20,9 +19,13 @@ public class CoralIntake extends SubsystemBase {
 
   /** the mazimum travel distance of the elevator */
   public static final Rotation2d RANGE_OF_MOTION = Rotation2d.fromDegrees(125);
-  public static final double DEGREES_PER_ROTATION = RANGE_OF_MOTION.getDegrees() / CoralIntakeIOTalonFX.MAX_ROTATIONS; //TODO verify
-  private final Alert rollerDisconnectedAlert = new Alert("Intake roller motor disconnected!", AlertType.kWarning);
-  private final Alert pivotDisconnectedAlert = new Alert("Intake pivot motor disconnected!", AlertType.kWarning);
+
+  public static final double DEGREES_PER_ROTATION =
+      RANGE_OF_MOTION.getDegrees() / CoralIntakeIOTalonFX.MAX_ROTATIONS; // TODO verify
+  private final Alert rollerDisconnectedAlert =
+      new Alert("Intake roller motor disconnected!", AlertType.kWarning);
+  private final Alert pivotDisconnectedAlert =
+      new Alert("Intake pivot motor disconnected!", AlertType.kWarning);
 
   private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
   private CoralIntakeIO io;
@@ -87,8 +90,6 @@ public class CoralIntake extends SubsystemBase {
     rollerDisconnectedAlert.set(!inputs.rollerMotorConnected);
     pivotDisconnectedAlert.set(!inputs.rollerMotorConnected);
     visualizer.setIntakeRotation(
-      Rotation2d.fromDegrees(inputs.positionRotations *DEGREES_PER_ROTATION)
-    );
-
+        Rotation2d.fromDegrees(inputs.positionRotations * DEGREES_PER_ROTATION));
   }
 }
