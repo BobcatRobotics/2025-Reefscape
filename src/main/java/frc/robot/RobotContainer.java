@@ -546,8 +546,9 @@ public class RobotContainer {
     joystick.thumb.onTrue(
         new ConditionalCommand(
             superstructure.gotToLastPrepPosition(endEffector::hasPiece),
-            superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
-            superstructure::isScoring));
+            superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece).deadlineFor(endEffector.coralOut(superstructure::getScoringLevel).andThen(endEffector.idleCoralCommand())),
+            superstructure::isScoring)
+            );
 
     // joystick.bottom12.onTrue(
     //     superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
