@@ -497,25 +497,37 @@ public class DriveCommands {
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      (xOutput * (1 - linearVelocity.getX()))
-                          + (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
-                      (yOutput * (1 - linearVelocity.getY()))
-                          + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
-                      (omegaOutput * (1 - omegaOverride))
-                          + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
-              boolean isFlipped = false;
-              // DriverStation.getAlliance().isPresent()
-              //     && DriverStation.getAlliance().get() == Alliance.Blue;
+                      (xOutput * (1 - Math.abs(linearVelocity.getX()))),
+                          // + (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (yOutput * (1 - Math.abs(linearVelocity.getY()))),
+                          // + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (omegaOutput * (1 - Math.abs(omegaOverride))));
+                          // + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
+
+              ChassisSpeeds overrideSpeeds = new ChassisSpeeds(
+                linearVelocity.getX()*drive.getMaxLinearSpeedMetersPerSec(),
+                linearVelocity.getY()*drive.getMaxLinearSpeedMetersPerSec(),
+                omegaOverride*drive.getMaxAngularSpeedRadPerSec()
+              );
+              boolean isFlipped = //false;
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Blue;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                           speeds,
-                          isFlipped
-                              ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                              : drive.getRotation())
+                          // isFlipped
+                              // ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                              //: 
+                              drive.getRotation())
                       // AidenAlign
                       .plus(
                           new ChassisSpeeds(
-                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0)));
+                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0))
+                      .plus(ChassisSpeeds.fromFieldRelativeSpeeds(overrideSpeeds, 
+                      isFlipped
+                              ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                              : 
+                              drive.getRotation())));
             },
             drive)
         .beforeStarting(
