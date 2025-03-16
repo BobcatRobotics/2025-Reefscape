@@ -648,7 +648,9 @@ public class AutoCommands {
                     .andThen(
                         superstructure.setState(
                             SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
-                    .alongWith(new WaitCommand(0.2).andThen(endEffector.scoreCommand(superstructure::getState)))
+                    .alongWith(
+                        new WaitCommand(1)
+                            .andThen(endEffector.scoreCommand(superstructure::getState)))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
                     .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
                 () -> !isL4));
