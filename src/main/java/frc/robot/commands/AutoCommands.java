@@ -634,6 +634,7 @@ public class AutoCommands {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
+        .andThen(new WaitCommand(1.5))
         .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece))
         .andThen(
             new ConditionalCommand(
