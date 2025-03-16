@@ -644,7 +644,7 @@ public class AutoCommands {
                     .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
                 superstructure
                     .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
-                    .withTimeout(3)
+                    .withTimeout(2)
                     .andThen(
                         superstructure.setState(
                             SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
