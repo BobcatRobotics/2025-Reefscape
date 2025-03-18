@@ -25,6 +25,9 @@ public interface ElevatorIO {
 
     boolean motorConnected = false;
     boolean encoderConnected = false;
+
+    double appliedVolts = 0;
+    double supplyCurrentAmps = 0;
   }
 
   public default void updateInputs(ElevatorIOInputs inputs) {}

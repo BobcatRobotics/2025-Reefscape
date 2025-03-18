@@ -65,6 +65,7 @@ import frc.robot.subsystems.Superstructure.Arm.ArmIO;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
@@ -207,7 +208,7 @@ public class RobotContainer {
                 new SwerveModuleIOSim(TunerConstants25.BackLeft),
                 new SwerveModuleIOSim(TunerConstants25.BackRight));
         superstructure =
-            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
+            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIOSim()));
         endEffector = new EndEffector(new EndEffectorIO() {});
 
         limelightfl = new Vision(drive, new VisionIO() {});
@@ -252,11 +253,12 @@ public class RobotContainer {
     autoChooser.addOption(
         "MVP CW L4",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
 
-    autoChooser.addOption(
-        "AutoScoreTest",
-        AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector, true));
+    // autoChooser.addOption(
+    //     "AutoScoreTest",
+    //     AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector,
+    // true));
     // Set up SysId routine
     // drivetrain
     // autoChooser.addOption(
@@ -310,12 +312,11 @@ public class RobotContainer {
             superstructure,
             endEffector,
             BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L4,
-            true));
+            ScoringLevel.CORAL_L4));
     NamedCommands.registerCommand(
         "ScoreCoralL4CW",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
 
     NamedCommands.registerCommand(
         "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));
