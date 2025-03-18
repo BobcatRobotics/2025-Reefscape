@@ -62,6 +62,7 @@ import frc.robot.subsystems.PhotonVision.PhotonIO;
 import frc.robot.subsystems.PhotonVision.PhotonIOPhoton;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
+import frc.robot.subsystems.Superstructure.Arm.ArmIOSim;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
@@ -208,7 +209,7 @@ public class RobotContainer {
                 new SwerveModuleIOSim(TunerConstants25.BackLeft),
                 new SwerveModuleIOSim(TunerConstants25.BackRight));
         superstructure =
-            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIOSim()));
+            new Superstructure(new Arm(new ArmIOSim()), new Elevator(new ElevatorIOSim()));
         endEffector = new EndEffector(new EndEffectorIO() {});
 
         limelightfl = new Vision(drive, new VisionIO() {});
@@ -254,7 +255,10 @@ public class RobotContainer {
         "MVP CW L4",
         AutoCommands.fullAutoReefScore(
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
-
+    autoChooser.addOption(
+        "simTest",
+        AutoCommands.drive3Reef(
+            drive, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, superstructure, endEffector));
     // autoChooser.addOption(
     //     "AutoScoreTest",
     //     AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector,
