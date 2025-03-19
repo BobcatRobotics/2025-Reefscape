@@ -37,6 +37,7 @@ import org.littletonrobotics.junction.Logger;
 public class AutoCommands {
   private static final double TRANSLATION_TOLERANCE = 0.1;
   private static final double THETA_TOLERANCE = 0.1;
+  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 1.25); // towards climber //-2.5
 
   public static Command fullAutoReefScoreOverride(
       Drive drive,
@@ -622,15 +623,26 @@ public class AutoCommands {
 
     return SuperstructureActions.prepScore(
             level, drive::isCoralSideDesired, superstructure, endEffector)
+        .andThen(new WaitCommand(1.5))
+        .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece))
         .andThen(
-            superstructure.setState(
-                SuperstructureState.POST_CORAL_SCORE_L4,
-                drive::isCoralSideDesired,
-                endEffector::hasPiece))
-        .andThen(
-            superstructure.setState(
-                SuperstructureState.RIGHT_SIDE_UP_IDLE,
-                drive::isCoralSideDesired,
-                endEffector::hasPiece));
+            new ConditionalCommand(
+                superstructure
+                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                    .alongWith(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
+                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
+                superstructure
+                    .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
+                    .withTimeout(1)
+                    .andThen(
+                        superstructure.setState(
+                            SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+                    .alongWith(
+                        new WaitCommand(0.5)
+                            .andThen(endEffector.scoreCommand(superstructure::getState)))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
+                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
+                () -> !isL4));
   }
 }
