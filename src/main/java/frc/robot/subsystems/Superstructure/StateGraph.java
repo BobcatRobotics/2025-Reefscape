@@ -80,11 +80,11 @@ public class StateGraph {
         List.of(
             new SuperstructureState[] {
               SuperstructureState.UNKNOWN,
+              SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.PRE_CORAL_PREP_L4,
-              SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
