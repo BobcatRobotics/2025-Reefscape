@@ -12,6 +12,7 @@ public enum ArmState {
   CORAL_PREP_L3(180 - 90),
   PRE_CORAL_PREP_L4(180 - 90),
   CORAL_PREP_L4(180), // TODO tune
+  HANDOFF_FLIP_SAFE_ZONE(180),
 
   CORAL_SCORE_L1(180 + 25), // normal side
   CORAL_SCORE_L2(180 - 35),
@@ -31,7 +32,7 @@ public enum ArmState {
   FLIPPED_ALGAE_SCORE_L3(0),
 
   ALGAE_GROUND(180 + 15),
-  ALGAE_SCORE_PROCESSOR(180 - 45),
+  ALGAE_SCORE_PROCESSOR(180 - 10),
   IDLE_ALGAE(180 - 45), // coral handoff
   NET_SCORE(50),
   NET_PREP(180 - 45),

@@ -494,7 +494,7 @@ public class Superstructure {
   public Command goToPrepPos(ScoringLevel level, BooleanSupplier flipped) {
     switch (level) {
       case CORAL_L1:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+        return setState(SuperstructureState.CORAL_SCORE_L1, flipped);
       case CORAL_L2:
         return setState(SuperstructureState.CORAL_PREP_L2, flipped);
       case CORAL_L3:

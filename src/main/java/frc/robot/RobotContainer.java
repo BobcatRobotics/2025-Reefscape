@@ -600,9 +600,6 @@ public class RobotContainer {
             superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
             superstructure::isScoring));
 
-    // joystick.bottom12.onTrue(
-    //     superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
-
     // stow
     joystick
         .povDown()
@@ -629,6 +626,9 @@ public class RobotContainer {
                 .finallyDo(() -> endEffector.idleCoral()));
 
     // intake from ground
+    joystick.bottomLeft.onTrue(
+        superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece));
+
     joystick.bottomLeft.whileTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
     // handoff
@@ -637,24 +637,11 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> intake.setSpeed(Amps.of(10)))));
 
     // intake algae from ground
-    joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
+    joystick.topLeft.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
 
     // score algae into the processor
-    joystick
-        .topLeft
-        .onTrue(
-            superstructure.setState(
-                SuperstructureState.ALGAE_SCORE_PROCESSOR, endEffector::hasPiece))
-        .onFalse(
-            endEffector
-                .outtakeCommand()
-                .until(() -> !endEffector.hasPiece())
-                .andThen(
-                    endEffector
-                        .idleCoralCommand()
-                        .alongWith(
-                            superstructure.setState(
-                                SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))));
+    joystick.topRight.onTrue(
+        superstructure.setState(SuperstructureState.ALGAE_SCORE_PROCESSOR, endEffector::hasPiece));
 
     // zero intake
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()).ignoringDisable(true));
