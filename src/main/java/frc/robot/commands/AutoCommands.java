@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -646,8 +645,7 @@ public class AutoCommands {
                 superstructure
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
-                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
-                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
                 superstructure
                     .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
                     .withTimeout(3)
@@ -655,8 +653,7 @@ public class AutoCommands {
                         superstructure.setState(
                             SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
                     .alongWith(endEffector.scoreCommand(superstructure::getState))
-                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState))
-                    .alongWith(new InstantCommand(() -> Logger.recordOutput("hmmm", isL4))),
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
                 () -> !isL4));
   }
 }

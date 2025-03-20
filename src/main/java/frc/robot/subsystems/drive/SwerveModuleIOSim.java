@@ -36,7 +36,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   private static final double DRIVE_KS = 0.0;
   private static final double DRIVE_KV_ROT =
       0.91035; // Same units as TunerConstants: (volt * secs) / rotation
-  private static final double DRIVE_KV = 1.0 / Units.rotationsToRadians(1.0 / DRIVE_KV_ROT);
+  private static final double DRIVE_KV = 0.85 / Units.rotationsToRadians(1.0 / DRIVE_KV_ROT);
   private static final double TURN_KP = 8.0;
   private static final double TURN_KD = 0.0;
   private static final DCMotor DRIVE_GEARBOX = DCMotor.getKrakenX60Foc(1);

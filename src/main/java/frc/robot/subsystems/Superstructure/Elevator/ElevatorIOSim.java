@@ -40,7 +40,7 @@ public class ElevatorIOSim implements ElevatorIO {
   private double inputTorqueCurrent = 0.0;
   private double appliedVolts = 0.0;
 
-  private final PIDController controller = new PIDController(10000.0, 0.0, 0.0);
+  private final PIDController controller = new PIDController(20000.0, 0.0, 0.0);
   private boolean closedLoop = false;
   private double feedforward = 0.0;
 

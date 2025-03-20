@@ -9,7 +9,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants.Constants;
-import org.littletonrobotics.junction.Logger;
 
 public class ArmIOSim implements ArmIO {
   private static final double autoStartAngle = Units.degreesToRadians(90.0);
@@ -75,12 +74,6 @@ public class ArmIOSim implements ArmIO {
     inputs.appliedVolts = appliedVoltage;
     inputs.state = desiredState;
 
-    Logger.recordOutput("upperLimit", sim.hasHitUpperLimit());
-    Logger.recordOutput("lowerLimit", sim.hasHitLowerLimit());
-
-    // Reset input
-    Logger.recordOutput("desired", true);
-    Logger.recordOutput("diff", controller.getPositionError());
     runVolts(controller.calculate(sim.getAngleRads(), desiredRads));
   }
 

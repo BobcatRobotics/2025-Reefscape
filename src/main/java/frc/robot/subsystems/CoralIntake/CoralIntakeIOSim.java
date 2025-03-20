@@ -1,7 +1,6 @@
 package frc.robot.subsystems.CoralIntake;
 
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotations;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -15,11 +14,10 @@ import org.littletonrobotics.junction.Logger;
 
 public class CoralIntakeIOSim implements CoralIntakeIO {
   private static final double autoStartAngle = Units.degreesToRadians(90.0);
-  private static final double armLength = Units.inchesToMeters(20.145958); // from cad
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
           DCMotor.getKrakenX60Foc(10),
-          1, // TODO this is probably wrong?
+          1,
           0.2,
           0.6096,
           -1000,
@@ -72,8 +70,8 @@ public class CoralIntakeIOSim implements CoralIntakeIO {
     inputs.state = desiredState;
     inputs.rollerMotorConnected = true;
     inputs.pivotMotorConnected = true;
-    Logger.recordOutput("desiredRotations", desiredState.simAngle.in(Rotations));
 
+    Logger.recordOutput("desiredAngleRads", desiredState.simAngle.in(Radians));
     runVolts(controller.calculate(sim.getAngleRads(), desiredState.simAngle.in(Radians)));
   }
 

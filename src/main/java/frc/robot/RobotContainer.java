@@ -253,17 +253,9 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption("Popsicle", new PathPlannerAuto("Popsicle"));
     autoChooser.addOption(
-        "IntakeTest",
-        new RunCommand(() -> intake.deploy())
-            .withTimeout(3)
-            .andThen(new RunCommand(() -> intake.retract()).withTimeout(1)));
-    autoChooser.addOption(
         "MVP CW L4",
         AutoCommands.fullAutoReefScore(
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
-    autoChooser.addOption(
-        "simTest",
-        AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector, true));
     // autoChooser.addOption(
     //     "AutoScoreTest",
     //     AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector,
@@ -308,11 +300,23 @@ public class RobotContainer {
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
                     .alongWith(endEffector.idleCoralCommand())));
 
-    // NamedCommands.registerCommand(
-    // "Prep Coral L4",
-    // SuperstructureActions.prepScore(
-    // ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure,
-    // endEffector));
+    // retract and start intaking
+    NamedCommands.registerCommand(
+        "RetractThatThang",
+        superstructure
+            .setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece)
+            .deadlineFor(endEffector.coralOut(() -> ScoringLevel.CORAL_L4))
+            .alongWith(
+                Commands.run(
+                        () -> {
+                          intake.deploy();
+                          intake.runIn();
+                        },
+                        intake)
+                    .until(intake::hasPiece)));
+
+    NamedCommands.registerCommand(
+        "HandoffThenPrep", SuperstructureActions.handoffThenPrepL4(superstructure, endEffector));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCW",
@@ -327,9 +331,6 @@ public class RobotContainer {
         "ScoreCoralL4CW",
         AutoCommands.fullAutoReefScore(
             drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
-
-    NamedCommands.registerCommand(
-        "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCWOverride",
@@ -377,7 +378,13 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "PrepL4", superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false));
-
+    NamedCommands.registerCommand(
+        "PlaceL4",
+        superstructure
+            .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
+            .andThen(
+                superstructure.setState(
+                    SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)));
     NamedCommands.registerCommand(
         "FlipAndIntake",
         new RunCommand(() -> intake.deploy())
@@ -441,6 +448,21 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Stow",
         superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "StowIntake",
+        new InstantCommand(
+            () -> {
+              intake.retract();
+            }));
+    NamedCommands.registerCommand(
+        "DeployIntakeEndDeployed",
+        new RunCommand(() -> intake.deploy())
+            .alongWith(
+                new RunCommand(
+                    () -> {
+                      intake.setSpeed(Amps.of(-30));
+                    })));
   }
 
   public void updateControllerAlerts() {
