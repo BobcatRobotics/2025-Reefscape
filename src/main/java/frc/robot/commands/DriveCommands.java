@@ -71,11 +71,19 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      DoubleSupplier elevatorHeightPercentage) {
+      DoubleSupplier elevatorHeightPercentage,
+      DoubleSupplier fineStrafeXSupplier,
+      DoubleSupplier fineStrafeYSupplier) {
     return Commands.run(
         () -> {
           double maxSpeed = drive.getMaxLinearSpeedMetersPerSec();
+          boolean useFineStrafe =
+              Math.abs(fineStrafeXSupplier.getAsDouble()) > 0.25
+                  || Math.abs(fineStrafeYSupplier.getAsDouble()) > 0.25; // TODO verify deadzone
 
+          if (useFineStrafe) {
+            maxSpeed = maxSpeed * 0.25;
+          }
           // TODO finalize this step
           if (DriverStation.isTeleop()) {
             if (elevatorHeightPercentage.getAsDouble() > 0.75) {
@@ -87,7 +95,11 @@ public class DriveCommands {
 
           // Get linear velocity
           Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              useFineStrafe
+                  ? getLinearVelocityFromJoysticks(
+                      fineStrafeXSupplier.getAsDouble(), fineStrafeYSupplier.getAsDouble())
+                  : getLinearVelocityFromJoysticks(
+                      xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
           // Apply rotation deadband
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);

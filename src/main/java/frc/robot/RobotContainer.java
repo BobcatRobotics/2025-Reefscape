@@ -44,6 +44,7 @@ import frc.robot.subsystems.Climber.ClimberIO;
 import frc.robot.subsystems.Climber.ClimberIOTalonFX;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIO;
+import frc.robot.subsystems.CoralIntake.CoralIntakeIOSim;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
@@ -217,7 +218,7 @@ public class RobotContainer {
         limelightbl = new Vision(drive, new VisionIO() {});
         limelightbr = new Vision(drive, new VisionIO() {});
         photon = new Photon(new PhotonIO() {}, "Sim");
-        intake = new CoralIntake(new CoralIntakeIO() {});
+        intake = new CoralIntake(new CoralIntakeIOSim() {});
         climber = new Climber(new ClimberIO() {});
         break;
 
@@ -252,13 +253,17 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption("Popsicle", new PathPlannerAuto("Popsicle"));
     autoChooser.addOption(
+        "IntakeTest",
+        new RunCommand(() -> intake.deploy())
+            .withTimeout(3)
+            .andThen(new RunCommand(() -> intake.retract()).withTimeout(1)));
+    autoChooser.addOption(
         "MVP CW L4",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
     autoChooser.addOption(
         "simTest",
-        AutoCommands.drive3Reef(
-            drive, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, superstructure, endEffector));
+        AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector, true));
     // autoChooser.addOption(
     //     "AutoScoreTest",
     //     AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector,
@@ -316,11 +321,12 @@ public class RobotContainer {
             superstructure,
             endEffector,
             BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L4));
+            ScoringLevel.CORAL_L4,
+            true));
     NamedCommands.registerCommand(
         "ScoreCoralL4CW",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
 
     NamedCommands.registerCommand(
         "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));
@@ -462,7 +468,9 @@ public class RobotContainer {
             () -> -leftRuffy.yAxis.getAsDouble() * stickInvert,
             () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
             () -> -rightRuffy.xAxis.getAsDouble(),
-            superstructure::getElevatorPercentage));
+            superstructure::getElevatorPercentage,
+            rightRuffy::getZ,
+            leftRuffy::getZ));
 
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(

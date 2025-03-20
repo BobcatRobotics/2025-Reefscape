@@ -229,7 +229,8 @@ public class StateGraph {
               SuperstructureState.INTAKE_ALGAE_GROUND,
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.ELEVATOR_AND_ARM_SAFE_ZONE,
-              SuperstructureState.IDLE_ALGAE
+              SuperstructureState.IDLE_ALGAE,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
               SuperstructureState.ELEVATOR_AND_ARM_SAFE_ZONE, SuperstructureState.RIGHT_SIDE_UP_IDLE
