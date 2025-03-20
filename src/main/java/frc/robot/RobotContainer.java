@@ -463,6 +463,22 @@ public class RobotContainer {
                     () -> {
                       intake.setSpeed(Amps.of(-30));
                     })));
+
+    NamedCommands.registerCommand(
+        "PrepAlgaePluck",
+        SuperstructureActions.prepScore(
+                ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector)
+            .alongWith(endEffector.intakeAlgaeCommand())
+            .until(endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "ScoreAlgae",
+        superstructure
+            .setState(SuperstructureState.NET_SCORE, endEffector::hasPiece)
+            .andThen(endEffector.outtakeCommand().until(() -> !endEffector.hasPiece()))
+            .andThen(
+                superstructure.setState(
+                    SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)));
   }
 
   public void updateControllerAlerts() {

@@ -211,7 +211,9 @@ public class StateGraph {
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.CORAL_SCORE_L4,
               SuperstructureState.PRE_CORAL_PREP_L4,
-              SuperstructureState.CORAL_PREP_L4
+              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3,
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE,

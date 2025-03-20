@@ -1,0 +1,82 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.832406015037594,
+        "y": 4.173449248120301
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.068276426742607,
+        "y": 4.256305442107883
+      },
+      "isLocked": false,
+      "linkedName": "Algae-1-end"
+    },
+    {
+      "anchor": {
+        "x": 6.353627819548872,
+        "y": 4.021701127819549
+      },
+      "prevControl": {
+        "x": 6.5907986440615005,
+        "y": 4.100758069323757
+      },
+      "nextControl": {
+        "x": 6.116456995036243,
+        "y": 3.94264418631534
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.806015037593985,
+        "y": 4.021701127819549
+      },
+      "prevControl": {
+        "x": 6.037200506390017,
+        "y": 3.9265524072944737
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Algae-2-End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PrepAlgaePluck",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepAlgaePluck"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Algae Pluck",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": false
+}
