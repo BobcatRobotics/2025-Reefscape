@@ -77,7 +77,7 @@ public class RobotVisualizer {
 
   private void updateReal() {
     // the distance between each stage of the elevator
-    double stageHeight = elevatorHeightMeters * oscilator() / 3; // elevatorHeightMeters / 3;
+    double stageHeight = elevatorHeightMeters / 3; // elevatorHeightMeters / 3;
     double intakeAngle = minArmAngle.getRadians() - intakeAngleRadians;
 
     Logger.recordOutput("Visualization/Debug/ZeroedRobotPose", new Pose2d());

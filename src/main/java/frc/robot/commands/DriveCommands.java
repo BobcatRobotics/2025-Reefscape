@@ -45,7 +45,7 @@ public class DriveCommands {
   static final double ANGLE_MAX_ACCELERATION = 4;
   static final Distance ALIGN_DISTANCE = Inches.of(16); // TODO this should be zero
 
-  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3); // towards elevator
+  static final Distance END_EFFECTOR_BIAS = Inches.of(2.3); // towards climber
 
   private DriveCommands() {}
 
@@ -71,11 +71,19 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      DoubleSupplier elevatorHeightPercentage) {
+      DoubleSupplier elevatorHeightPercentage,
+      DoubleSupplier fineStrafeXSupplier,
+      DoubleSupplier fineStrafeYSupplier) {
     return Commands.run(
         () -> {
           double maxSpeed = drive.getMaxLinearSpeedMetersPerSec();
+          boolean useFineStrafe =
+              Math.abs(fineStrafeXSupplier.getAsDouble()) > 0.25
+                  || Math.abs(fineStrafeYSupplier.getAsDouble()) > 0.25; // TODO verify deadzone
 
+          if (useFineStrafe) {
+            maxSpeed = maxSpeed * 0.25;
+          }
           // TODO finalize this step
           if (DriverStation.isTeleop()) {
             if (elevatorHeightPercentage.getAsDouble() > 0.75) {
@@ -87,7 +95,11 @@ public class DriveCommands {
 
           // Get linear velocity
           Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              useFineStrafe
+                  ? getLinearVelocityFromJoysticks(
+                      fineStrafeXSupplier.getAsDouble(), fineStrafeYSupplier.getAsDouble())
+                  : getLinearVelocityFromJoysticks(
+                      xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
           // Apply rotation deadband
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
@@ -406,21 +418,8 @@ public class DriveCommands {
               }
 
               Pose2d nearestFace = drive.getPose().nearest(flippedFaces);
-              Logger.recordOutput("reef_face/raw", nearestFace);
+              Logger.recordOutput("driveToReef/reef_face/raw", nearestFace);
 
-              // List<Map<ReefHeight, Pose3d>> offsetPositions =
-              // FieldConstants.Reef.branchPositions;
-
-              // double xOffset =
-              // ALIGN_DISTANCE.baseUnitMagnitude()
-              // * Math.cos(nearestFace.getRotation().getRadians());
-              // double yOffset =
-              // ALIGN_DISTANCE.baseUnitMagnitude()
-              // * Math.sin(nearestFace.getRotation().getRadians());
-
-              // Pose2d offsetFace =
-              // nearestFace.plus(new Transform2d(xOffset, yOffset, new Rotation2d()));
-              // Logger.recordOutput("reef_face/offset", offsetFace);
               int faceIndex = -1;
               for (int i = 0; i < flippedFaces.size(); i++) {
                 if (flippedFaces.get(i) == nearestFace) {
@@ -435,8 +434,8 @@ public class DriveCommands {
                           (FieldConstants.Reef.center),
                           (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
 
-              Logger.recordOutput("reef_face/poseDirection", poseDirection);
-              Logger.recordOutput("reef_face/faceIndex", faceIndex);
+              Logger.recordOutput("driveToReef/reef_face/poseDirection", poseDirection);
+              Logger.recordOutput("driveToReef/reef_face/faceIndex", faceIndex);
 
               double diff =
                   RotationUtil.wrapRot2d(drive.getPose().getRotation())
@@ -471,8 +470,10 @@ public class DriveCommands {
                       poseDirection.getRotation());
               Logger.recordOutput("adjustY", drive.getAdjustY());
 
-              Logger.recordOutput("reef_face/adjustY", drive.getAdjustY());
-              Logger.recordOutput("reef_face/offset", offsetFace);
+              Logger.recordOutput("driveToReef/reef_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("driveToReef/reef_face/transformY", transformY);
+
+              Logger.recordOutput("driveToReef/reef_face/offset", offsetFace);
 
               double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
               double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
@@ -508,25 +509,38 @@ public class DriveCommands {
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      (xOutput * (1 - linearVelocity.getX()))
-                          + (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
-                      (yOutput * (1 - linearVelocity.getY()))
-                          + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
-                      (omegaOutput * (1 - omegaOverride))
-                          + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
-              boolean isFlipped = false;
-              // DriverStation.getAlliance().isPresent()
-              //     && DriverStation.getAlliance().get() == Alliance.Red;
+                      (xOutput * (1 - Math.abs(linearVelocity.getX()))),
+                      // + (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (yOutput * (1 - Math.abs(linearVelocity.getY()))),
+                      // + (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()),
+                      (omegaOutput * (1 - Math.abs(omegaOverride))));
+              // + (omegaOverride * drive.getMaxLinearSpeedMetersPerSec()));
+
+              ChassisSpeeds overrideSpeeds =
+                  new ChassisSpeeds(
+                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      omegaOverride * drive.getMaxAngularSpeedRadPerSec());
+              boolean isFlipped = // false;
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Blue;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                           speeds,
-                          isFlipped
-                              ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                              : drive.getRotation())
+                          // isFlipped
+                          // ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          // :
+                          drive.getRotation())
                       // AidenAlign
                       .plus(
                           new ChassisSpeeds(
-                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0)));
+                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0))
+                      .plus(
+                          ChassisSpeeds.fromFieldRelativeSpeeds(
+                              overrideSpeeds,
+                              isFlipped
+                                  ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                                  : drive.getRotation())));
             },
             drive)
         .beforeStarting(

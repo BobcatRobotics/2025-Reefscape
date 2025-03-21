@@ -123,6 +123,18 @@ public class SuperstructureActions {
                 .alongWith(endEffector.idleCoralCommand()));
   }
 
+  public static Command handoffThenPrepL4(Superstructure superstructure, EndEffector endEffector) {
+    return superstructure
+        .setState(SuperstructureState.CORAL_HANDOFF, () -> false)
+        .alongWith(endEffector.intakeCoralCommand())
+        .until(endEffector::hasPiece)
+        .withTimeout(0.75)
+        .andThen(
+            superstructure
+                .setState(SuperstructureState.CORAL_PREP_L4, () -> false)
+                .alongWith(endEffector.idleCoralCommand()));
+  }
+
   public static Command handoffNoIdle(Superstructure superstructure, EndEffector endEffector) {
     return superstructure
         .setState(SuperstructureState.CORAL_HANDOFF, () -> false)

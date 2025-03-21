@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -9,9 +10,11 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -37,6 +40,7 @@ import org.littletonrobotics.junction.Logger;
 public class AutoCommands {
   private static final double TRANSLATION_TOLERANCE = 0.1;
   private static final double THETA_TOLERANCE = 0.1;
+  static final Distance END_EFFECTOR_BIAS = Inches.of(3.3 - 2.5); // towards climber
 
   public static Command fullAutoReefScoreOverride(
       Drive drive,
@@ -123,9 +127,11 @@ public class AutoCommands {
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
                 transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
                 transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -165,13 +171,13 @@ public class AutoCommands {
               // boolean isFlipped = false;
 
               // DriverStation.getAlliance().isPresent()
-              //     && DriverStation.getAlliance().get() == Alliance.Red;
+              // && DriverStation.getAlliance().get() == Alliance.Red;
               // drive.runVelocity(
-              //     ChassisSpeeds.fromFieldRelativeSpeeds(
-              //         speeds,
-              //         isFlipped
-              //             ? drive.getRotation().plus(new Rotation2d(Math.PI))
-              //             : drive.getRotation()));
+              // ChassisSpeeds.fromFieldRelativeSpeeds(
+              // speeds,
+              // isFlipped
+              // ? drive.getRotation().plus(new Rotation2d(Math.PI))
+              // : drive.getRotation()));
 
               // Convert to field relative speeds & send command
 
@@ -198,13 +204,14 @@ public class AutoCommands {
                       && timer.hasElapsed(1));
             })
         // .until(
-        //     () ->
-        //         (xController.atSetpoint())
-        //             && (yController.atSetpoint())
-        //             && (angleController.atSetpoint())
-        //             && timer.hasElapsed(1))
+        // () ->
+        // (xController.atSetpoint())
+        // && (yController.atSetpoint())
+        // && (angleController.atSetpoint())
+        // && timer.hasElapsed(1))
 
-        // .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired,
+        // .andThen(autoScoreNoRetract(superstructure, endEffector,
+        // drive::isCoralSideDesired,
         // level))
         .beforeStarting(
             () -> {
@@ -231,7 +238,8 @@ public class AutoCommands {
       Superstructure superstructure,
       EndEffector endEffector,
       BranchSide branchSide,
-      ScoringLevel level) {
+      ScoringLevel level,
+      boolean isL4) {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 
@@ -311,9 +319,11 @@ public class AutoCommands {
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
                 transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
                 transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -329,10 +339,10 @@ public class AutoCommands {
                                   adjustX, drive.getAdjustY() + transformY, new Rotation2d()))
                           .getTranslation(),
                       poseDirection.getRotation());
-              Logger.recordOutput("adjustY", drive.getAdjustY());
+              Logger.recordOutput("driveToReef/adjustY", drive.getAdjustY());
 
-              Logger.recordOutput("reef_face/adjustY", drive.getAdjustY());
-              Logger.recordOutput("reef_face/offset", offsetFace);
+              Logger.recordOutput("driveToReef/reef_face/adjustY", drive.getAdjustY());
+              Logger.recordOutput("driveToReef/reef_face/offset", offsetFace);
 
               double yOutput = yController.calculate(drive.getPose().getY(), offsetFace.getY());
               double xOutput = xController.calculate(drive.getPose().getX(), offsetFace.getX());
@@ -353,7 +363,7 @@ public class AutoCommands {
               boolean isFlipped = false;
 
               // DriverStation.getAlliance().isPresent()
-              //     && DriverStation.getAlliance().get() == Alliance.Red;
+              // && DriverStation.getAlliance().get() == Alliance.Red;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,
@@ -367,12 +377,12 @@ public class AutoCommands {
               // Logger.recordOutput("ppoverride/y", yOutput);
               // Logger.recordOutput("ppoverride/theta", omegaOutput);
 
-              if ((xController.getPositionError() < 0.4)
-                  && (yController.getPositionError() < 0.4)
-                  && (angleController.getPositionError() < Math.toRadians(2))) {
-                SuperstructureActions.prepScore(
-                    level, drive::isCoralSideDesired, superstructure, endEffector);
-              }
+              // if ((xController.getPositionError() < 0.4)
+              // && (yController.getPositionError() < 0.4)
+              // && (angleController.getPositionError() < Math.toRadians(2))) {
+              // SuperstructureActions.prepScore(
+              // level, drive::isCoralSideDesired, superstructure, endEffector);
+              // }
               Logger.recordOutput("Auto/AlignXError", xController.getPositionError());
               Logger.recordOutput("Auto/AlignYError", yController.getPositionError());
               Logger.recordOutput("Auto/AlignThetaError", angleController.getPositionError());
@@ -390,7 +400,7 @@ public class AutoCommands {
                     && (yController.atSetpoint())
                     && (angleController.atSetpoint())
                     && timer.hasElapsed(1))
-        .andThen(autoScoreNoRetract(superstructure, endEffector, drive::isCoralSideDesired, level))
+        .andThen(drive3Reef(drive, level, superstructure, endEffector, isL4))
         .beforeStarting(
             () -> {
               xController.reset(drive.getPose().getX());
@@ -465,7 +475,7 @@ public class AutoCommands {
             });
   }
 
-  public Command drive2Reef(
+  public static Command drive2Reef(
       Drive drive,
       BranchSide side,
       ScoringLevel level,
@@ -537,9 +547,11 @@ public class AutoCommands {
                 drive.setDesiredScoringSide(ScoreSide.FRONT);
                 closestRotation = closestRotation.plus(Rotation2d.k180deg);
                 transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = END_EFFECTOR_BIAS.in(Meters);
               } else { // use front
                 drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
                 transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
+                transformY = -END_EFFECTOR_BIAS.in(Meters);
               }
 
               double adjustX =
@@ -577,7 +589,7 @@ public class AutoCommands {
 
               boolean isFlipped = false;
               // DriverStation.getAlliance().isPresent()
-              //     && DriverStation.getAlliance().get() == Alliance.Red;
+              // && DriverStation.getAlliance().get() == Alliance.Red;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,
@@ -585,14 +597,19 @@ public class AutoCommands {
                           ? drive.getRotation().plus(new Rotation2d(Math.PI))
                           : drive.getRotation()));
 
-              if (xController.getPositionError() < 0.4
-                  && yController.getPositionError() < 0.4
-                  && angleController.getPositionError() < Math.toRadians(2)) {
+              if (Math.abs(xController.getPositionError()) < 0.4
+                  && Math.abs(yController.getPositionError()) < 0.4
+                  && Math.abs(angleController.getPositionError()) < Math.toRadians(2)) {
                 SuperstructureActions.prepScore(
                     level, drive::isCoralSideDesired, superstructure, endEffector);
               }
             },
             drive)
+        .andThen(
+            superstructure.setState(
+                SuperstructureState.POST_CORAL_SCORE_L4,
+                drive::isCoralSideDesired,
+                endEffector::hasPiece))
         .andThen(
             superstructure.setState(
                 SuperstructureState.RIGHT_SIDE_UP_IDLE,
@@ -611,5 +628,32 @@ public class AutoCommands {
               drive.setDesiredScoringSide(ScoreSide.FRONT);
               drive.setAdjustY(-1);
             });
+  }
+
+  public static Command drive3Reef(
+      Drive drive,
+      ScoringLevel level,
+      Superstructure superstructure,
+      EndEffector endEffector,
+      boolean isL4) {
+
+    return SuperstructureActions.prepScore(
+            level, drive::isCoralSideDesired, superstructure, endEffector)
+        .andThen(superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece))
+        .andThen(
+            new ConditionalCommand(
+                superstructure
+                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                    .alongWith(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
+                superstructure
+                    .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
+                    .withTimeout(3)
+                    .andThen(
+                        superstructure.setState(
+                            SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+                    .alongWith(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
+                () -> !isL4));
   }
 }

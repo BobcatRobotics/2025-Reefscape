@@ -5,34 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Popsicle1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DeployTounge"
-                }
-              }
-            ]
+            "pathName": "Popsicle1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ScoreCoralL4CW"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stow"
+            "name": "ScoreCoralL4CCW"
           }
         }
       ]

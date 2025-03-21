@@ -218,7 +218,7 @@ public class Superstructure {
         goal = SuperstructureState.CORAL_SCORE_L3;
         break;
       case CORAL_L4:
-        goal = SuperstructureState.POST_CORAL_SCORE_L4;
+        goal = SuperstructureState.CORAL_SCORE_L4;
         break;
       case ALGAE_L2:
         goal = SuperstructureState.ALGAE_PREP_L2;
@@ -231,8 +231,6 @@ public class Superstructure {
       default:
         goal = SuperstructureState.NET_SCORE;
     }
-
-    Logger.recordOutput("wtf", goal);
 
     return goal;
   }
@@ -346,14 +344,14 @@ public class Superstructure {
     return isScoring;
   }
 
-  public Command manualOverride(DoubleSupplier arm, DoubleSupplier elevator) {
+  public Command manualOverride(DoubleSupplier armSupplier, DoubleSupplier elevatorSupplier) {
     return Commands.run(
         () -> {
-          this.arm.setManualOverride(arm.getAsDouble());
-          this.elevator.setManualOverride(elevator.getAsDouble());
+          arm.setManualOverride(armSupplier.getAsDouble());
+          elevator.setManualOverride(elevatorSupplier.getAsDouble());
         },
-        this.arm,
-        this.elevator);
+        arm,
+        elevator);
   }
 
   /**
@@ -496,7 +494,7 @@ public class Superstructure {
   public Command goToPrepPos(ScoringLevel level, BooleanSupplier flipped) {
     switch (level) {
       case CORAL_L1:
-        return setState(SuperstructureState.CORAL_PREP_L1, flipped);
+        return setState(SuperstructureState.CORAL_SCORE_L1, flipped);
       case CORAL_L2:
         return setState(SuperstructureState.CORAL_PREP_L2, flipped);
       case CORAL_L3:

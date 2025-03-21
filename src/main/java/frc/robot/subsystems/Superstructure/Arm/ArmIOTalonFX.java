@@ -153,6 +153,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void manualOverride(double percent) {
     MathUtil.clamp(percent, -1, 1);
+    percent = MathUtil.applyDeadband(percent, 0.05);
     motor.setControl(manualRequest.withOutput(percent));
     isOverridden = true;
   }

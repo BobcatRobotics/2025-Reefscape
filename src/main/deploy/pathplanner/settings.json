@@ -3,9 +3,11 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+    "Combo Meal",
+    "DCMP",
     "Its a start",
     "MVP",
-    "Combo Meal",
+    "Algae Pluck",
     "Popsicle"
   ],
   "autoFolders": [

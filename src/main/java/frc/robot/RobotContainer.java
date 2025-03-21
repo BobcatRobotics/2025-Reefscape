@@ -44,6 +44,7 @@ import frc.robot.subsystems.Climber.ClimberIO;
 import frc.robot.subsystems.Climber.ClimberIOTalonFX;
 import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIO;
+import frc.robot.subsystems.CoralIntake.CoralIntakeIOSim;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
@@ -62,9 +63,11 @@ import frc.robot.subsystems.PhotonVision.PhotonIO;
 import frc.robot.subsystems.PhotonVision.PhotonIOPhoton;
 import frc.robot.subsystems.Superstructure.Arm.Arm;
 import frc.robot.subsystems.Superstructure.Arm.ArmIO;
+import frc.robot.subsystems.Superstructure.Arm.ArmIOSim;
 import frc.robot.subsystems.Superstructure.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Superstructure.Elevator.Elevator;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIO;
+import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
@@ -207,7 +210,7 @@ public class RobotContainer {
                 new SwerveModuleIOSim(TunerConstants25.BackLeft),
                 new SwerveModuleIOSim(TunerConstants25.BackRight));
         superstructure =
-            new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
+            new Superstructure(new Arm(new ArmIOSim()), new Elevator(new ElevatorIOSim()));
         endEffector = new EndEffector(new EndEffectorIO() {});
 
         limelightfl = new Vision(drive, new VisionIO() {});
@@ -215,7 +218,7 @@ public class RobotContainer {
         limelightbl = new Vision(drive, new VisionIO() {});
         limelightbr = new Vision(drive, new VisionIO() {});
         photon = new Photon(new PhotonIO() {}, "Sim");
-        intake = new CoralIntake(new CoralIntakeIO() {});
+        intake = new CoralIntake(new CoralIntakeIOSim() {});
         climber = new Climber(new ClimberIO() {});
         break;
 
@@ -252,9 +255,12 @@ public class RobotContainer {
     autoChooser.addOption(
         "MVP CW L4",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
-
-    // Set up SysId routines
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
+    // autoChooser.addOption(
+    //     "AutoScoreTest",
+    //     AutoCommands.drive3Reef(drive, ScoringLevel.CORAL_L4, superstructure, endEffector,
+    // true));
+    // Set up SysId routine
     // drivetrain
     // autoChooser.addOption(
     // "Drive Wheel Radius Characterization",
@@ -294,11 +300,23 @@ public class RobotContainer {
                     .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
                     .alongWith(endEffector.idleCoralCommand())));
 
-    // NamedCommands.registerCommand(
-    // "Prep Coral L4",
-    // SuperstructureActions.prepScore(
-    // ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure,
-    // endEffector));
+    // retract and start intaking
+    NamedCommands.registerCommand(
+        "RetractThatThang",
+        superstructure
+            .setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece)
+            .deadlineFor(endEffector.coralOut(() -> ScoringLevel.CORAL_L4))
+            .alongWith(
+                Commands.run(
+                        () -> {
+                          intake.deploy();
+                          intake.runIn();
+                        },
+                        intake)
+                    .until(intake::hasPiece)));
+
+    NamedCommands.registerCommand(
+        "HandoffThenPrep", SuperstructureActions.handoffThenPrepL4(superstructure, endEffector));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCW",
@@ -307,14 +325,12 @@ public class RobotContainer {
             superstructure,
             endEffector,
             BranchSide.COUNTER_CLOCKWISE,
-            ScoringLevel.CORAL_L4));
+            ScoringLevel.CORAL_L4,
+            true));
     NamedCommands.registerCommand(
         "ScoreCoralL4CW",
         AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4));
-
-    NamedCommands.registerCommand(
-        "TestRotation", DriveCommands.overridePP(drive, () -> 0, () -> 0, () -> 50));
+            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCWOverride",
@@ -362,7 +378,13 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "PrepL4", superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false));
-
+    NamedCommands.registerCommand(
+        "PlaceL4",
+        superstructure
+            .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
+            .andThen(
+                superstructure.setState(
+                    SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)));
     NamedCommands.registerCommand(
         "FlipAndIntake",
         new RunCommand(() -> intake.deploy())
@@ -426,6 +448,37 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Stow",
         superstructure.setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "StowIntake",
+        new InstantCommand(
+            () -> {
+              intake.retract();
+            }));
+    NamedCommands.registerCommand(
+        "DeployIntakeEndDeployed",
+        new RunCommand(() -> intake.deploy())
+            .alongWith(
+                new RunCommand(
+                    () -> {
+                      intake.setSpeed(Amps.of(-30));
+                    })));
+
+    NamedCommands.registerCommand(
+        "PrepAlgaePluck",
+        SuperstructureActions.prepScore(
+                ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector)
+            .alongWith(endEffector.intakeAlgaeCommand())
+            .until(endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "ScoreAlgae",
+        superstructure
+            .setState(SuperstructureState.NET_SCORE, endEffector::hasPiece)
+            .andThen(endEffector.outtakeCommand().until(() -> !endEffector.hasPiece()))
+            .andThen(
+                superstructure.setState(
+                    SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)));
   }
 
   public void updateControllerAlerts() {
@@ -453,7 +506,9 @@ public class RobotContainer {
             () -> -leftRuffy.yAxis.getAsDouble() * stickInvert,
             () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
             () -> -rightRuffy.xAxis.getAsDouble(),
-            superstructure::getElevatorPercentage));
+            superstructure::getElevatorPercentage,
+            rightRuffy::getZ,
+            leftRuffy::getZ));
 
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(
@@ -497,8 +552,8 @@ public class RobotContainer {
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
             drive,
-            () -> leftRuffy.yAxis.getAsDouble(),
-            () -> -leftRuffy.xAxis.getAsDouble(),
+            () -> -leftRuffy.yAxis.getAsDouble(),
+            () -> leftRuffy.xAxis.getAsDouble(),
             () -> -rightRuffy.xAxis.getAsDouble(),
             joystick.povRight(),
             joystick.povLeft(),
@@ -545,9 +600,6 @@ public class RobotContainer {
             superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
             superstructure::isScoring));
 
-    joystick.bottom12.onTrue(
-        superstructure.setState(SuperstructureState.HUMAN_INTAKE, endEffector::hasPiece));
-
     // stow
     joystick
         .povDown()
@@ -558,10 +610,13 @@ public class RobotContainer {
                     .deadlineFor(endEffector.scoreCommand(superstructure::getState))
                     .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
                 superstructure
-                    .setState(SuperstructureState.POST_HUMAN_INTAKE, endEffector::hasPiece)
-                    .deadlineFor(endEffector.intakeCoralCommand())
-                    .andThen(endEffector.idleCoralCommand()),
-                () -> superstructure.getState() != SuperstructureState.HUMAN_INTAKE));
+                    .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
+                    .deadlineFor(endEffector.scoreCommand(superstructure::getState))
+                    .andThen(
+                        superstructure.setState(
+                            SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))
+                    .andThen(endEffector.idleCoralCommand().unless(superstructure::isInPrepState)),
+                () -> superstructure.getState() != SuperstructureState.CORAL_SCORE_L4));
 
     joystick
         .povUp()
@@ -571,6 +626,9 @@ public class RobotContainer {
                 .finallyDo(() -> endEffector.idleCoral()));
 
     // intake from ground
+    joystick.bottomLeft.onTrue(
+        superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece));
+
     joystick.bottomLeft.whileTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));
     // handoff
@@ -579,24 +637,11 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> intake.setSpeed(Amps.of(10)))));
 
     // intake algae from ground
-    joystick.topRight.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
+    joystick.topLeft.onTrue(SuperstructureActions.intakeAlgaeGround(superstructure, endEffector));
 
     // score algae into the processor
-    joystick
-        .topLeft
-        .onTrue(
-            superstructure.setState(
-                SuperstructureState.ALGAE_SCORE_PROCESSOR, endEffector::hasPiece))
-        .onFalse(
-            endEffector
-                .outtakeCommand()
-                .until(() -> !endEffector.hasPiece())
-                .andThen(
-                    endEffector
-                        .idleCoralCommand()
-                        .alongWith(
-                            superstructure.setState(
-                                SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece))));
+    joystick.topRight.onTrue(
+        superstructure.setState(SuperstructureState.ALGAE_SCORE_PROCESSOR, endEffector::hasPiece));
 
     // zero intake
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()).ignoringDisable(true));
@@ -626,9 +671,15 @@ public class RobotContainer {
                 .alongWith(endEffector.outtakeCommand()))
         .onFalse(endEffector.idleCoralCommand());
 
-    joystick.bottom12.whileTrue(
-        superstructure.manualOverride(() -> 0.2, () -> 0.2) // TODO FIX
-        );
+    // manual override
+    joystick
+        .bottom12
+        .whileTrue(
+            superstructure.manualOverride(
+                () -> joystick.zAxis.getAsDouble() * 0.15,
+                () -> -joystick.yAxis.getAsDouble() * 0.4) // TODO FIX
+            )
+        .onFalse(superstructure.manualOverride(() -> 0, () -> 0));
 
     // rightRuffy
     // .axisGreaterThan(1, .5)

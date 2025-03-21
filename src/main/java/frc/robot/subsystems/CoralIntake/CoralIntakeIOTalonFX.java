@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
-  public static double MAX_ROTATIONS = 14; // TODO slightly more than this
+  public static double MAX_ROTATIONS = 14; // TODO slightly more than this?
 
   public static Distance LASER_THRESHOLD = Inches.of(1);
 
@@ -77,7 +77,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
     pivotConfig.CurrentLimits.StatorCurrentLimit = 20;
     pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast; // TODO check
-    pivotConfig.Slot0.kP = 1; // TODO tune
+    pivotConfig.Slot0.kP = 2; // TODO tune
     pivot.getConfigurator().apply(pivotConfig);
     pivot.setPosition(0);
 

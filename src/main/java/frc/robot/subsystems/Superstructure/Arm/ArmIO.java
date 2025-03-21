@@ -10,7 +10,6 @@ public interface ArmIO {
   public static class ArmIOInputs {
     public Rotation2d absolutePosition = new Rotation2d();
     public ArmState state = ArmState.RIGHT_SIDE_UP;
-    // public ArmZone zone = ArmZone.BOTTOM_ZONE;
     public boolean motorConnected = false;
     public boolean encoderConnected = false;
     public double torqueCurrentAmps = -1;
@@ -22,6 +21,7 @@ public interface ArmIO {
     public double distanceToAlignment = 0;
     public boolean flipped = false;
     public boolean isOverridden = false;
+    public double appliedVolts = 0;
   }
 
   /** Updates the set of loggable inputs. */
