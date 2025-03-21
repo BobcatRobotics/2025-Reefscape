@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.806015037593985,
-        "y": 4.021701127819549
+        "x": 5.832406015037594,
+        "y": 3.989719309052359
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.806015037593985,
-        "y": 4.021701127819549
+        "x": 6.832406015037594,
+        "y": 3.989719309052359
       },
       "isLocked": false,
       "linkedName": "Algae-2-End"
@@ -25,13 +25,25 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Algae-3-end"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "PrepNetScore",
+      "waypointRelativePos": 0.640443213296398,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepNetScore"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.0,

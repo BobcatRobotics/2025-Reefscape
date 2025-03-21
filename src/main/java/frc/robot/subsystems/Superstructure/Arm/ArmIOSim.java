@@ -15,7 +15,7 @@ public class ArmIOSim implements ArmIO {
   private static final double armLength = Units.inchesToMeters(20.145958); // from cad
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
-          DCMotor.getKrakenX60Foc(2),
+          DCMotor.getKrakenX60Foc(10),
           83.06, // TODO this is probably wrong?
           1.06328,
           0.6096,

@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.832406015037594,
-        "y": 4.173449248120301
+        "x": 7.712763157894736,
+        "y": 6.571824942791761
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.081217743996923,
-        "y": 4.197795162197807
+        "x": 6.61304347826087,
+        "y": 6.765932494279175
       },
       "isLocked": false,
-      "linkedName": "Algae-1-end"
+      "linkedName": "Algae-4-End"
     },
     {
       "anchor": {
-        "x": 6.095302901742661,
-        "y": 4.173449248120301
+        "x": 4.839302059496568,
+        "y": 7.147454233409611
       },
       "prevControl": {
-        "x": 5.826701323518862,
-        "y": 4.1593112819521325
-      },
-      "nextControl": {
-        "x": 6.344957308290052,
-        "y": 4.186589921294456
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.832406015037594,
-        "y": 3.989719309052359
-      },
-      "prevControl": {
-        "x": 6.364330743493812,
-        "y": 3.941099819579259
+        "x": 5.475171624713959,
+        "y": 7.174227688787186
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Algae-2-End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -49,20 +33,20 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "PrepAlgaePluckL2",
+      "name": "Stow",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "PrepAlgaePluckL2"
+          "name": "Stow"
         }
       }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 1.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -70,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 46.169139327907494
   },
   "reversed": false,
   "folder": "Algae Pluck",
@@ -78,5 +62,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

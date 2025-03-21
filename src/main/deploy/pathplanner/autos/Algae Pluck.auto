@@ -39,6 +39,24 @@
           "data": {
             "name": "ScoreAlgae"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae-4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae-5"
+          }
         }
       ]
     }

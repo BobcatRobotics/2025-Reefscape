@@ -465,9 +465,16 @@ public class RobotContainer {
                     })));
 
     NamedCommands.registerCommand(
-        "PrepAlgaePluck",
+        "PrepAlgaePluckL2",
         SuperstructureActions.prepScore(
                 ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector)
+            .alongWith(endEffector.intakeAlgaeCommand())
+            .until(endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "PrepAlgaePluckL3",
+        SuperstructureActions.prepScore(
+                ScoringLevel.ALGAE_L3, drive::isCoralSideDesired, superstructure, endEffector)
             .alongWith(endEffector.intakeAlgaeCommand())
             .until(endEffector::hasPiece));
 
@@ -475,10 +482,10 @@ public class RobotContainer {
         "ScoreAlgae",
         superstructure
             .setState(SuperstructureState.NET_SCORE, endEffector::hasPiece)
-            .andThen(endEffector.outtakeCommand().until(() -> !endEffector.hasPiece()))
-            .andThen(
-                superstructure.setState(
-                    SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)));
+            .andThen(endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
+    NamedCommands.registerCommand(
+        "PrepNetScore",
+        superstructure.setState(SuperstructureState.NET_SCORE, endEffector::hasPiece));
   }
 
   public void updateControllerAlerts() {
