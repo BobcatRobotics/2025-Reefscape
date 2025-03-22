@@ -174,17 +174,17 @@ public class CharacterizationCommands {
 
   // this is dumb, fight me
   public static Command velocityRampTuning(Drive drive, Time timeout) {
-    return runVelocity(drive, new ChassisSpeeds(0.1, 0, 0))
+    return runDriveVelocity(drive, new ChassisSpeeds(0.1, 0, 0))
         .withTimeout(timeout)
-        .andThen(runVelocity(drive, new ChassisSpeeds(0.5, 0, 0)).withTimeout(timeout))
-        .andThen(runVelocity(drive, new ChassisSpeeds(1, 0, 0)).withTimeout(timeout))
-        .andThen(runVelocity(drive, new ChassisSpeeds(1.5, 0, 0)).withTimeout(timeout))
-        .andThen(runVelocity(drive, new ChassisSpeeds(2, 0, 0)).withTimeout(timeout))
-        .andThen(runVelocity(drive, new ChassisSpeeds(3, 0, 0)).withTimeout(timeout))
-        .andThen(runVelocity(drive, new ChassisSpeeds(4, 0, 0)).withTimeout(timeout));
+        .andThen(runDriveVelocity(drive, new ChassisSpeeds(0.5, 0, 0)).withTimeout(timeout))
+        .andThen(runDriveVelocity(drive, new ChassisSpeeds(1, 0, 0)).withTimeout(timeout))
+        .andThen(runDriveVelocity(drive, new ChassisSpeeds(1.5, 0, 0)).withTimeout(timeout))
+        .andThen(runDriveVelocity(drive, new ChassisSpeeds(2, 0, 0)).withTimeout(timeout))
+        .andThen(runDriveVelocity(drive, new ChassisSpeeds(3, 0, 0)).withTimeout(timeout))
+        .andThen(runDriveVelocity(drive, new ChassisSpeeds(4, 0, 0)).withTimeout(timeout));
   }
 
-  private static Command runVelocity(Drive drive, ChassisSpeeds speeds) {
+  private static Command runDriveVelocity(Drive drive, ChassisSpeeds speeds) {
     return Commands.run(
         () -> {
           drive.runVelocity(speeds);
