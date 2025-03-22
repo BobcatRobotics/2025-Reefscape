@@ -21,6 +21,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
+
 import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -39,6 +42,8 @@ public class ArmIOTalonFX implements ArmIO {
   private StatusSignal<ControlModeValue> controlMode;
   private StatusSignal<Double> closedLoopReferenceSlope;
   private StatusSignal<Double> closedLoopReference;
+  private StatusSignal<Voltage> appliedVoltage;
+  private StatusSignal<Current> appliedCurrent;
   
 
   private ArmState desiredState = ArmState.UNKOWN;
@@ -103,8 +108,13 @@ public class ArmIOTalonFX implements ArmIO {
     closedLoopReferenceSlope = motor.getClosedLoopReferenceSlope();
     //motion magic target position
     closedLoopReference = motor.getClosedLoopReference();
+    appliedVoltage = motor.getMotorVoltage();
+    appliedCurrent = motor.getStatorCurrent();
+
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), controlMode, position, velocity, closedLoopReferenceSlope, closedLoopReference);
+        Hertz.of(50), controlMode, position,
+         velocity, closedLoopReferenceSlope, closedLoopReference,
+         appliedVoltage, appliedCurrent);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
@@ -114,7 +124,8 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public void updateInputs(ArmIOInputs inputs) {
-    BaseStatusSignal.refreshAll(position, velocity, controlMode, closedLoopReferenceSlope, closedLoopReference);
+    BaseStatusSignal.refreshAll(position, velocity, controlMode,
+     closedLoopReferenceSlope, closedLoopReference, appliedVoltage, appliedCurrent);
 
     // (-0.5, 0.5) rotations
     inputs.absolutePosition = Rotation2d.fromRotations(position.getValueAsDouble());
@@ -138,6 +149,9 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.isOverridden = isOverridden;
     inputs.closedLoopReferenceSlope = closedLoopReferenceSlope.getValueAsDouble();
     inputs.positionReference = closedLoopReference.getValueAsDouble();
+    inputs.appliedVolts = appliedVoltage.getValueAsDouble();
+    inputs.appliedCurrent = appliedCurrent.getValueAsDouble();
+
   }
 
   /**

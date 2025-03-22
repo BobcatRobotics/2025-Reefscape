@@ -85,9 +85,13 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.velocityRotPerSec = simState.get(1) / Elevator.DRUM_RADIUS.baseUnitMagnitude();
     inputs.appliedVolts = appliedVolts;
     inputs.supplyCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts);
-    inputs.torqueCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts);
     inputs.heightMeters = inputs.rotPosition.getRotations() * Elevator.METERS_PER_ROTATION;
     inputs.aligned = controller.atSetpoint();
+    inputs.overriden = !closedLoop;
+    inputs.distanceToAlignment = controller.getPositionError();
+    inputs.closedLoopReference = controller.getSetpoint();
+    inputs.closedLoopReferenceSlope = 0.0;
+    inputs.supplyCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts);
   }
 
   @Override

@@ -21,6 +21,7 @@ public interface ArmIO {
     public boolean flipped = false;
     public boolean isOverridden = false;
     public double appliedVolts = 0;
+    public double appliedCurrent = 0;
     /**motion magic desired velocity setpoint */
     public double closedLoopReferenceSlope = 0;
     /**motion magic desired position reference */

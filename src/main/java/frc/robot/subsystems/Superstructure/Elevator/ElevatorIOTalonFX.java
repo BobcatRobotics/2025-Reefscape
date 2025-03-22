@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
@@ -47,6 +48,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private StatusSignal<ControlModeValue> controlMode;
   private StatusSignal<Double> closedLoopReferenceSlope;
   private StatusSignal<Double> closedLoopReference;
+  private StatusSignal<Current> supplyCurrent;
+  private StatusSignal<Voltage> appliedVoltage;
 
 
   private ElevatorState desiredState = ElevatorState.UNKNOWN;
@@ -98,9 +101,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     controlMode = motor.getControlMode();
     closedLoopReferenceSlope = motor.getClosedLoopReferenceSlope();
     closedLoopReference = motor.getClosedLoopReference();
+    supplyCurrent = motor.getStatorCurrent();
+    appliedVoltage = motor.getMotorVoltage();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), controlMode, velocity, rotationalPosition, closedLoopReference, closedLoopReferenceSlope);
+        Hertz.of(50), controlMode, velocity, 
+        rotationalPosition, closedLoopReference, closedLoopReferenceSlope,
+        supplyCurrent, appliedVoltage);
 
     motor.optimizeBusUtilization();
     encoder.optimizeBusUtilization();
@@ -108,7 +115,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(velocity, rotationalPosition, controlMode, closedLoopReferenceSlope, closedLoopReference);
+    BaseStatusSignal.refreshAll(velocity, rotationalPosition, controlMode, 
+    closedLoopReferenceSlope, closedLoopReference, supplyCurrent, appliedVoltage);
+
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.rotPosition = Rotation2d.fromRotations(rotationalPosition.getValueAsDouble());
     inputs.positionPercent =
@@ -127,6 +136,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.overriden = isOverridden;
     inputs.closedLoopReference = closedLoopReference.getValueAsDouble();
     inputs.closedLoopReferenceSlope = closedLoopReferenceSlope.getValueAsDouble();
+    inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+    inputs.appliedVolts = appliedVoltage.getValueAsDouble();
   }
 
   @Override
