@@ -12,16 +12,19 @@ public interface ArmIO {
     public ArmState state = ArmState.RIGHT_SIDE_UP;
     public boolean motorConnected = false;
     public boolean encoderConnected = false;
-    public double torqueCurrentAmps = -1;
     public double velocityRotPerSec = -1;
     public boolean aligned = false;
     public double positionDegrees = 0;
     public ControlModeValue controlMode = ControlModeValue.DisabledOutput;
-    public double desiredPositionRotation = 0;
+    public double desiredPositionDegrees = 0;
     public double distanceToAlignment = 0;
     public boolean flipped = false;
     public boolean isOverridden = false;
     public double appliedVolts = 0;
+    /**motion magic desired velocity setpoint */
+    public double closedLoopReferenceSlope = 0;
+    /**motion magic desired position reference */
+    public double positionReference = 0;
   }
 
   /** Updates the set of loggable inputs. */

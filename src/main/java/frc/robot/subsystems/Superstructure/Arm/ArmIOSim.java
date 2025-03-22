@@ -58,16 +58,14 @@ public class ArmIOSim implements ArmIO {
 
     sim.update(Constants.loopPeriodSecs);
 
-    inputs.torqueCurrentAmps = sim.getCurrentDrawAmps();
     inputs.isOverridden = !closedLoop;
     inputs.encoderConnected = true;
     inputs.motorConnected = true;
     inputs.velocityRotPerSec = sim.getVelocityRadPerSec() / (2 * Math.PI);
     inputs.absolutePosition = Rotation2d.fromRadians(sim.getAngleRads());
     inputs.positionDegrees = inputs.absolutePosition.getDegrees();
-    inputs.desiredPositionRotation = controller.getSetpoint() / (2 * Math.PI);
-    inputs.distanceToAlignment =
-        Math.abs(inputs.absolutePosition.getRotations() - inputs.desiredPositionRotation) * 360;
+    inputs.desiredPositionDegrees = controller.getSetpoint() * 360;
+    inputs.distanceToAlignment = controller.getError();
     inputs.flipped = isFlipped;
     inputs.controlMode = ControlModeValue.Reserved;
     inputs.aligned = controller.atSetpoint();

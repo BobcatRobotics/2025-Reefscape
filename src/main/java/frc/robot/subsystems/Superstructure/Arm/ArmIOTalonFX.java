@@ -7,7 +7,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
@@ -21,7 +21,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
 import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -31,13 +30,16 @@ public class ArmIOTalonFX implements ArmIO {
 
   private TalonFX motor;
   private CANcoder encoder;
-  private MotionMagicTorqueCurrentFOC angleRequest = new MotionMagicTorqueCurrentFOC(0);
+  //TODO verify that you only have to set enableFOC once
+  private MotionMagicExpoVoltage angleRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   private DutyCycleOut manualRequest = new DutyCycleOut(0);
 
   private StatusSignal<Angle> position;
-  private StatusSignal<Current> torqueCurrentAmps;
   private StatusSignal<AngularVelocity> velocity;
   private StatusSignal<ControlModeValue> controlMode;
+  private StatusSignal<Double> closedLoopReferenceSlope;
+  private StatusSignal<Double> closedLoopReference;
+  
 
   private ArmState desiredState = ArmState.UNKOWN;
   private boolean flipped = false;
@@ -51,12 +53,18 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    angleConfigs.MotionMagic.MotionMagicExpo_kA = 0.1; //TODO find these
+    angleConfigs.MotionMagic.MotionMagicExpo_kV = 0.12;
+    
+    // coral
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot0.kP = 18;
     angleConfigs.Slot0.kI = 1;
     angleConfigs.Slot0.kD = 30;
     angleConfigs.Slot0.kS = 4.5;
     angleConfigs.Slot0.kG = 6.5;
+    // algae
+    angleConfigs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot1.kP = 18;
     angleConfigs.Slot1.kI = 1;
     angleConfigs.Slot1.kD = 30;
@@ -90,19 +98,24 @@ public class ArmIOTalonFX implements ArmIO {
 
     controlMode = motor.getControlMode();
     position = encoder.getAbsolutePosition();
-    torqueCurrentAmps = motor.getTorqueCurrent();
     velocity = motor.getVelocity();
-
+    //motion magic target velocity
+    closedLoopReferenceSlope = motor.getClosedLoopReferenceSlope();
+    //motion magic target position
+    closedLoopReference = motor.getClosedLoopReference();
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), controlMode, position, torqueCurrentAmps, velocity);
+        Hertz.of(50), controlMode, position, velocity, closedLoopReferenceSlope, closedLoopReference);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
+
+    
   }
 
   @Override
   public void updateInputs(ArmIOInputs inputs) {
-    BaseStatusSignal.refreshAll(position);
+    BaseStatusSignal.refreshAll(position, velocity, controlMode, closedLoopReferenceSlope, closedLoopReference);
+
     // (-0.5, 0.5) rotations
     inputs.absolutePosition = Rotation2d.fromRotations(position.getValueAsDouble());
     inputs.encoderConnected = encoder.isConnected();
@@ -114,17 +127,17 @@ public class ArmIOTalonFX implements ArmIO {
                 < Arm.ARM_TOLERANCE.getRotations()
             : Math.abs(position.getValueAsDouble() - desiredState.rotations)
                 < Arm.ARM_TOLERANCE.getRotations();
-    inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.controlMode = motor.getControlMode().getValue();
-    inputs.torqueCurrentAmps = torqueCurrentAmps.getValueAsDouble();
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.positionDegrees = inputs.absolutePosition.getDegrees();
-    inputs.desiredPositionRotation = inputs.state.rotations;
+    inputs.desiredPositionDegrees = inputs.state.degrees;
     inputs.flipped = flipped;
     double rotations = flipped ? 0.5 - desiredState.rotations : desiredState.rotations;
     inputs.distanceToAlignment = Math.abs(position.getValueAsDouble() - rotations) * 360;
     inputs.isOverridden = isOverridden;
+    inputs.closedLoopReferenceSlope = closedLoopReferenceSlope.getValueAsDouble();
+    inputs.positionReference = closedLoopReference.getValueAsDouble();
   }
 
   /**

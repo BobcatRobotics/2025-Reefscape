@@ -26,7 +26,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
 
   private TalonFX motor;
   private LaserCan laser;
-  private VelocityVoltage request = new VelocityVoltage(0);
+  private VelocityVoltage request = new VelocityVoltage(0).withEnableFOC(true);
   private Alert rangingAlert =
       new Alert(
           "Couldnt set end effector ranging mode!! OMG this is really bad!! the robot will EXPLODE!!!!!! fix IMEDIATELY or i'll DIE a GRUESOME and PAINFUL death!",

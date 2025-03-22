@@ -43,9 +43,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private DutyCycleOut percentOutputRequest = new DutyCycleOut(0);
 
   private StatusSignal<AngularVelocity> velocity;
-  private StatusSignal<Current> torqueCurrent;
   private StatusSignal<Angle> rotationalPosition;
   private StatusSignal<ControlModeValue> controlMode;
+  private StatusSignal<Double> closedLoopReferenceSlope;
+  private StatusSignal<Double> closedLoopReference;
+
 
   private ElevatorState desiredState = ElevatorState.UNKNOWN;
 
@@ -91,13 +93,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     encoderConfig.MagnetSensor.MagnetOffset = 0.20874;
     encoder.getConfigurator().apply(encoderConfig);
 
-    torqueCurrent = motor.getTorqueCurrent();
     velocity = motor.getVelocity();
     rotationalPosition = encoder.getPosition();
     controlMode = motor.getControlMode();
+    closedLoopReferenceSlope = motor.getClosedLoopReferenceSlope();
+    closedLoopReference = motor.getClosedLoopReference();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), controlMode, torqueCurrent, velocity, rotationalPosition);
+        Hertz.of(50), controlMode, velocity, rotationalPosition, closedLoopReference, closedLoopReferenceSlope);
 
     motor.optimizeBusUtilization();
     encoder.optimizeBusUtilization();
@@ -105,8 +108,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(torqueCurrent, velocity, rotationalPosition);
-    inputs.torqueCurrentAmps = torqueCurrent.getValueAsDouble();
+    BaseStatusSignal.refreshAll(velocity, rotationalPosition, controlMode, closedLoopReferenceSlope, closedLoopReference);
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.rotPosition = Rotation2d.fromRotations(rotationalPosition.getValueAsDouble());
     inputs.positionPercent =
@@ -123,6 +125,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.distanceToAlignment =
         rotationalPosition.getValueAsDouble() - desiredState.pos.getRotations() * 360;
     inputs.overriden = isOverridden;
+    inputs.closedLoopReference = closedLoopReference.getValueAsDouble();
+    inputs.closedLoopReferenceSlope = closedLoopReferenceSlope.getValueAsDouble();
   }
 
   @Override

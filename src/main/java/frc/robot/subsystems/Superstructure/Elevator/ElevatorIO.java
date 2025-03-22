@@ -8,26 +8,28 @@ public interface ElevatorIO {
 
   @AutoLog
   public static class ElevatorIOInputs {
-    ElevatorState state = ElevatorState.UNKNOWN;
-    Rotation2d rotPosition = Rotation2d.kZero;
-    double positionRotations = 0;
-    double velocityRotPerSec = -1;
-    double torqueCurrentAmps = -1;
-    double positionPercent = -1;
-    double heightMeters = -1;
+    public ElevatorState state = ElevatorState.UNKNOWN;
+    public Rotation2d rotPosition = Rotation2d.kZero;
+    public double positionRotations = 0;
+    public double velocityRotPerSec = -1;
+    public double positionPercent = -1;
+    public double heightMeters = -1;
     /** is the elevator at its desired state? */
-    boolean aligned = false;
+    public boolean aligned = false;
 
-    boolean overriden = false;
-    double distanceToAlignment = 0;
+    public boolean overriden = false;
+    public double distanceToAlignment = 0;
 
-    ControlModeValue controlMode = ControlModeValue.DisabledOutput;
+    public ControlModeValue controlMode = ControlModeValue.DisabledOutput;
 
-    boolean motorConnected = false;
-    boolean encoderConnected = false;
+    public boolean motorConnected = false;
+    public boolean encoderConnected = false;
 
-    double appliedVolts = 0;
-    double supplyCurrentAmps = 0;
+    public double appliedVolts = 0;
+    public double supplyCurrentAmps = 0;
+
+    public double closedLoopReferenceSlope = 0;
+    public double closedLoopReference = 0;
   }
 
   public default void updateInputs(ElevatorIOInputs inputs) {}
