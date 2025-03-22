@@ -144,4 +144,9 @@ public class SwerveModule {
   public double getFFCharacterizationVelocity() {
     return Units.radiansToRotations(inputs.driveVelocityRadPerSec);
   }
+
+  /** Sets the PID and feedforward constants for the drive motor. */
+  public void setPIDandFF(double kp, double kd, double kv, double ka) {
+    io.setDrivePIDandFF(kp, kd, kv, ka);
+  }
 }

@@ -61,9 +61,10 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private final CANcoder cancoder;
 
   // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
+  private final VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
   private final PositionVoltage positionVoltageRequest = new PositionVoltage(0.0);
-  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
+  private final VelocityVoltage velocityVoltageRequest =
+      new VelocityVoltage(0.0).withEnableFOC(true);
 
   // Torque-current control requests
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
@@ -95,6 +96,10 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
 
+  // Motor configs
+  private final TalonFXConfiguration driveConfig;
+  private final TalonFXConfiguration turnConfig = new TalonFXConfiguration();
+
   public SwerveModuleIOTalonFX(
       SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
           constants) {
@@ -106,7 +111,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     cancoder = new CANcoder(constants.EncoderId, TunerConstants25.DrivetrainConstants.CANBusName);
 
     // Configure drive motor
-    var driveConfig = constants.DriveMotorInitialConfigs;
+    driveConfig = constants.DriveMotorInitialConfigs;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.Slot0 = constants.DriveMotorGains;
     driveConfig.Feedback.SensorToMechanismRatio = constants.DriveMotorGearRatio;
@@ -122,7 +127,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
 
     // Configure turn motor
-    var turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.Slot0 = constants.SteerMotorGains;
     turnConfig.Feedback.FeedbackRemoteSensorID = constants.EncoderId;
@@ -234,7 +238,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   public void setDriveOpenLoop(double output) {
     driveTalon.setControl(
         switch (constants.DriveMotorClosedLoopOutput) {
-          case Voltage -> voltageRequest.withOutput(output);
+          case Voltage -> voltageRequest.withOutput(output).withEnableFOC(true);
           case TorqueCurrentFOC -> torqueCurrentRequest.withOutput(output);
         });
   }
@@ -253,7 +257,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
     driveTalon.setControl(
         switch (constants.DriveMotorClosedLoopOutput) {
-          case Voltage -> velocityVoltageRequest.withVelocity(velocityRotPerSec);
+          case Voltage -> velocityVoltageRequest
+              .withVelocity(velocityRotPerSec)
+              .withEnableFOC(true);
           case TorqueCurrentFOC -> velocityTorqueCurrentRequest.withVelocity(velocityRotPerSec);
         });
   }
@@ -266,5 +272,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
           case TorqueCurrentFOC -> positionTorqueCurrentRequest.withPosition(
               rotation.getRotations());
         });
+  }
+
+  @Override
+  public void setDrivePIDandFF(double kp, double kd, double kv, double ka) {
+    driveConfig.Slot0.kP = kp;
+    driveConfig.Slot0.kD = kd;
+    driveConfig.Slot0.kV = kv;
+    driveConfig.Slot0.kA = ka;
+    tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
   }
 }

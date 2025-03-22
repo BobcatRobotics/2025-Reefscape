@@ -52,4 +52,6 @@ public interface SwerveModuleIO {
 
   /** Run the turn motor to the specified rotation. */
   public default void setTurnPosition(Rotation2d rotation) {}
+
+  public default void setDrivePIDandFF(double kp, double kd, double kv, double ka) {}
 }

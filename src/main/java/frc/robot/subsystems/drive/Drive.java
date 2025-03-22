@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,14 +59,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Drive extends SubsystemBase {
 
   public Pose2d pathPlannerOverride = new Pose2d();
   // TunerConstants25 doesn't include these constants, so they are declared locally
-  public static final double
-      ODOMETRY_FREQUENCY = // if were on the canivore, run at a higher frequency
-      new CANBus(TunerConstants25.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
+  public static final double ODOMETRY_FREQUENCY =
+      RobotBase.isSimulation()
+          ? 50
+          : // if were on the canivore, run at a higher frequency, if were in sim, run at a lower
+          // frequency
+          new CANBus(TunerConstants25.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
   public static final double DRIVE_BASE_RADIUS =
       // maximum distance from the center of the robot to one of the modules
       // on a square drive base they should all be the same
@@ -79,6 +84,20 @@ public class Drive extends SubsystemBase {
               Math.hypot(TunerConstants25.BackLeft.LocationX, TunerConstants25.BackLeft.LocationY),
               Math.hypot(
                   TunerConstants25.BackRight.LocationX, TunerConstants25.BackRight.LocationY)));
+
+  // PID and FF tuning
+  public double kPValue =
+      RobotBase.isSimulation() ? SwerveModuleIOSim.DRIVE_KP : TunerConstants25.driveGains.kP;
+  public double kDValue =
+      RobotBase.isSimulation() ? SwerveModuleIOSim.DRIVE_KD : TunerConstants25.driveGains.kD;
+  public double kVValue =
+      RobotBase.isSimulation() ? SwerveModuleIOSim.DRIVE_KV : TunerConstants25.driveGains.kV;
+  public double kAValue = RobotBase.isSimulation() ? 0 : TunerConstants25.driveGains.kA;
+
+  public final LoggedNetworkNumber kP = new LoggedNetworkNumber("/Tuning/kP", kPValue);
+  public final LoggedNetworkNumber kD = new LoggedNetworkNumber("/Tuning/kD", kDValue);
+  public final LoggedNetworkNumber kV = new LoggedNetworkNumber("/Tuning/kV", kVValue);
+  public final LoggedNetworkNumber kA = new LoggedNetworkNumber("/Tuning/kA", kAValue);
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG = Units.lbsToKilograms(115);
@@ -245,6 +264,20 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+
+      // update pid values
+      if (kP.get() != kPValue
+          || kD.get() != kDValue
+          || kV.get() != kVValue
+          || kA.get() != kAValue) {
+        kPValue = kP.get();
+        kDValue = kD.get();
+        kVValue = kV.get();
+        kAValue = kA.get();
+        for (var module : modules) {
+          module.setPIDandFF(kPValue, kDValue, kVValue, kAValue);
+        }
+      }
     }
 
     // Update gyro alert
