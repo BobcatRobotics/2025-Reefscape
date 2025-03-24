@@ -50,10 +50,8 @@ import frc.robot.subsystems.CoralIntake.CoralIntakeIOSim;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.GyroIO;
-import frc.robot.subsystems.Drive.GyroIOPigeon2;
 import frc.robot.subsystems.Drive.SwerveModuleIO;
 import frc.robot.subsystems.Drive.SwerveModuleIOSim;
-import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
@@ -147,20 +145,20 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+        // drive =
+        //     new Drive(
+        //         new GyroIOPigeon2(),
+        //         new SwerveModuleIOTalonFX(TunerConstants25.FrontLeft),
+        //         new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
+        //         new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
+        //         new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
         drive =
             new Drive(
-                new GyroIOPigeon2(),
-                new SwerveModuleIOTalonFX(TunerConstants25.FrontLeft),
-                new SwerveModuleIOTalonFX(TunerConstants25.FrontRight),
-                new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
-                new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
-        // drive =P
-        //     new Drive(
-        //         new GyroIO() {},
-        //         new SwerveModuleIO() {},
-        //         new SwerveModuleIO() {},
-        //         new SwerveModuleIO() {},
-        //         new SwerveModuleIO() {});
+                new GyroIO() {},
+                new SwerveModuleIO() {},
+                new SwerveModuleIO() {},
+                new SwerveModuleIO() {},
+                new SwerveModuleIO() {});
 
         limelightfl =
             new Vision(drive, new VisionIOLimelight(Constants.LimelightFLConstants.constants));
