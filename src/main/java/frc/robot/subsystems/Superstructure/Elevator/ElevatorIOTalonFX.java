@@ -51,7 +51,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private StatusSignal<Current> supplyCurrent;
   private StatusSignal<Voltage> appliedVoltage;
 
-
   private ElevatorState desiredState = ElevatorState.UNKNOWN;
 
   private boolean isOverridden = false;
@@ -105,9 +104,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     appliedVoltage = motor.getMotorVoltage();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), controlMode, velocity, 
-        rotationalPosition, closedLoopReference, closedLoopReferenceSlope,
-        supplyCurrent, appliedVoltage);
+        Hertz.of(50),
+        controlMode,
+        velocity,
+        rotationalPosition,
+        closedLoopReference,
+        closedLoopReferenceSlope,
+        supplyCurrent,
+        appliedVoltage);
 
     motor.optimizeBusUtilization();
     encoder.optimizeBusUtilization();
@@ -115,8 +119,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(velocity, rotationalPosition, controlMode, 
-    closedLoopReferenceSlope, closedLoopReference, supplyCurrent, appliedVoltage);
+    BaseStatusSignal.refreshAll(
+        velocity,
+        rotationalPosition,
+        controlMode,
+        closedLoopReferenceSlope,
+        closedLoopReference,
+        supplyCurrent,
+        appliedVoltage);
 
     inputs.velocityRotPerSec = velocity.getValueAsDouble();
     inputs.rotPosition = Rotation2d.fromRotations(rotationalPosition.getValueAsDouble());

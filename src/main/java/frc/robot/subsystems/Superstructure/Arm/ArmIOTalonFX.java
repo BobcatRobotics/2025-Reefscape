@@ -23,7 +23,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -33,7 +32,7 @@ public class ArmIOTalonFX implements ArmIO {
 
   private TalonFX motor;
   private CANcoder encoder;
-  //TODO verify that you only have to set enableFOC once
+  // TODO verify that you only have to set enableFOC once
   private MotionMagicExpoVoltage angleRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
   private DutyCycleOut manualRequest = new DutyCycleOut(0);
 
@@ -44,7 +43,6 @@ public class ArmIOTalonFX implements ArmIO {
   private StatusSignal<Double> closedLoopReference;
   private StatusSignal<Voltage> appliedVoltage;
   private StatusSignal<Current> appliedCurrent;
-  
 
   private ArmState desiredState = ArmState.UNKOWN;
   private boolean flipped = false;
@@ -58,9 +56,9 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     angleConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    angleConfigs.MotionMagic.MotionMagicExpo_kA = 0.1; //TODO find these
+    angleConfigs.MotionMagic.MotionMagicExpo_kA = 0.1; // TODO find these
     angleConfigs.MotionMagic.MotionMagicExpo_kV = 0.12;
-    
+
     // coral
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot0.kP = 18;
@@ -104,28 +102,37 @@ public class ArmIOTalonFX implements ArmIO {
     controlMode = motor.getControlMode();
     position = encoder.getAbsolutePosition();
     velocity = motor.getVelocity();
-    //motion magic target velocity
+    // motion magic target velocity
     closedLoopReferenceSlope = motor.getClosedLoopReferenceSlope();
-    //motion magic target position
+    // motion magic target position
     closedLoopReference = motor.getClosedLoopReference();
     appliedVoltage = motor.getMotorVoltage();
     appliedCurrent = motor.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Hertz.of(50), controlMode, position,
-         velocity, closedLoopReferenceSlope, closedLoopReference,
-         appliedVoltage, appliedCurrent);
+        Hertz.of(50),
+        controlMode,
+        position,
+        velocity,
+        closedLoopReferenceSlope,
+        closedLoopReference,
+        appliedVoltage,
+        appliedCurrent);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
-
-    
   }
 
   @Override
   public void updateInputs(ArmIOInputs inputs) {
-    BaseStatusSignal.refreshAll(position, velocity, controlMode,
-     closedLoopReferenceSlope, closedLoopReference, appliedVoltage, appliedCurrent);
+    BaseStatusSignal.refreshAll(
+        position,
+        velocity,
+        controlMode,
+        closedLoopReferenceSlope,
+        closedLoopReference,
+        appliedVoltage,
+        appliedCurrent);
 
     // (-0.5, 0.5) rotations
     inputs.absolutePosition = Rotation2d.fromRotations(position.getValueAsDouble());
@@ -151,7 +158,6 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.positionReference = closedLoopReference.getValueAsDouble();
     inputs.appliedVolts = appliedVoltage.getValueAsDouble();
     inputs.appliedCurrent = appliedCurrent.getValueAsDouble();
-
   }
 
   /**
