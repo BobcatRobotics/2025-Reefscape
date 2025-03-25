@@ -7,7 +7,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
@@ -40,7 +40,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   private CANcoder encoder;
 
-  private MotionMagicTorqueCurrentFOC positionRequest = new MotionMagicTorqueCurrentFOC(0);
+  private MotionMagicExpoVoltage positionRequest =
+      new MotionMagicExpoVoltage(0).withEnableFOC(false);
   private DutyCycleOut percentOutputRequest = new DutyCycleOut(0);
 
   private StatusSignal<AngularVelocity> velocity;
@@ -66,19 +67,29 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.CurrentLimits.StatorCurrentLimit = 120;
 
-    motorConfig.Slot0.kP = 10;
-    motorConfig.Slot0.kI = 1;
-    motorConfig.Slot0.kD = 30;
-    motorConfig.Slot0.kS = 18;
-    motorConfig.Slot0.kG = 36;
-    motorConfig.MotionMagic.MotionMagicAcceleration = 7; // 4.5;
-    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 7.5; // 7.695;
+    motorConfig.Slot0.kP = 3;
+    motorConfig.Slot0.kI = 0;
+    motorConfig.Slot0.kD = 0;
+    motorConfig.Slot0.kS = 0.2;
+    motorConfig.Slot0.kG = 0.9;
+    motorConfig.Slot0.kA = 0.1;
+    motorConfig.Slot0.kV = 1.25;
     motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-
     motorConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
+    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 0; // Expo mode, use max possible velocity;
+    motorConfig.MotionMagic.MotionMagicExpo_kA = 0.7;
+    motorConfig.MotionMagic.MotionMagicExpo_kV = 0.7;
+
+    motorConfig.Voltage.PeakForwardVoltage =
+        13; // this defaults to 16, battery supplies a max of 13, so idk why
+    motorConfig.Voltage.PeakReverseVoltage = -13;
+
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
-    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    motorConfig.Feedback.FeedbackSensorSource =
+        FeedbackSensorSourceValue
+            .RemoteCANcoder; // this should be fused but theres something funky with the gear ratio
+    // rn
     motorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
@@ -92,7 +103,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
     encoder.getConfigurator().apply(encoderConfig);
     encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    encoderConfig.MagnetSensor.MagnetOffset = -0.218066;
+    encoderConfig.MagnetSensor.MagnetOffset = -0.45361328125; // TODO this keeps changing?
     encoder.getConfigurator().apply(encoderConfig);
 
     velocity = motor.getVelocity();
