@@ -81,16 +81,22 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean inTolerance(SuperstructureState desiredState) {
-    if (desiredState.elevatorState == ElevatorState.CORAL_L4) {
-      return (inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations()
-              >= 0)
-          || (Math.abs(
-                  inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations())
-              < ELEVATOR_TOLERANCE.getRotations());
+    switch (desiredState.elevatorState) {
+      case CORAL_L4:
+        return (inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations()
+                >= 0)
+            || (Math.abs(
+                    inputs.rotPosition.getRotations()
+                        - desiredState.elevatorState.pos.getRotations())
+                < ELEVATOR_TOLERANCE.getRotations()); // TODO idk why this is two conditionals
+      case INTAKE_SAFE_ZONE:
+        return inputs.rotPosition.getRotations()
+            > desiredState.elevatorState.pos.getRotations() - 0.5;
+      default:
+        return Math.abs(
+                inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations())
+            < ELEVATOR_TOLERANCE.getRotations();
     }
-    return Math.abs(
-            inputs.rotPosition.getRotations() - desiredState.elevatorState.pos.getRotations())
-        < ELEVATOR_TOLERANCE.getRotations();
   }
 
   public void manualOverride(double percent) {
