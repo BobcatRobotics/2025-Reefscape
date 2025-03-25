@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Superstructure.RobotVisualizer;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -48,15 +49,31 @@ public class Arm extends SubsystemBase {
     return inputs.aligned;
   }
 
+  @AutoLogOutput(key = "Superstructure/ArmInTolerance")
   public boolean inTolerance(SuperstructureState desiredState) {
-
-    if (desiredState.armState == ArmState.NO_OP || desiredState.armState == ArmState.UNKOWN) {
-      return true;
+    switch (desiredState.armState) {
+      case NO_OP:
+        return true;
+      case UNKOWN:
+        return true;
+      case INTAKE_SAFE_ZONE:
+        Logger.recordOutput(
+            "hmmmmmmmmmmmmm",
+            inputs.absolutePosition.getRotations()
+                < (ArmState.INTAKE_SAFE_ZONE.rotations + 10.0 / 360));
+        return inputs.absolutePosition.getRotations()
+            < (ArmState.INTAKE_SAFE_ZONE.rotations + 10.0 / 360);
+      case HANDOFF_FLIP_SAFE_ZONE:
+        return inputs.absolutePosition.getRotations()
+            > (ArmState.HANDOFF_FLIP_SAFE_ZONE.rotations - 10.0 / 360);
+      default:
+        double rotations =
+            inputs.flipped
+                ? 0.5 - desiredState.armState.rotations
+                : desiredState.armState.rotations;
+        return Math.abs(inputs.absolutePosition.getRotations() - rotations)
+            < ARM_TOLERANCE.getRotations();
     }
-    double rotations =
-        inputs.flipped ? 0.5 - desiredState.armState.rotations : desiredState.armState.rotations;
-    return Math.abs(inputs.absolutePosition.getRotations() - rotations)
-        < ARM_TOLERANCE.getRotations();
   }
 
   public ArmState getDesiredState() {

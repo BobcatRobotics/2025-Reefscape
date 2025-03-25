@@ -4,6 +4,11 @@
       "visible": true
     }
   },
+  "Keyboard 3 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -71,7 +76,7 @@
       "buttonCount": 6,
       "buttonKeys": [
         -1,
-        45,
+        -1,
         48,
         57,
         56,
@@ -79,6 +84,7 @@
       ],
       "povConfig": [
         {
+          "key0": 45,
           "key180": 61
         }
       ],
@@ -105,10 +111,10 @@
       "guid": "03000000cf2a00000101000000000000"
     },
     {
-      "guid": "030000006d04000015c2000000000000"
+      "guid": "Keyboard2"
     },
     {
-      "guid": "03000000790000000600000000000000"
+      "guid": "Keyboard3"
     }
   ]
 }

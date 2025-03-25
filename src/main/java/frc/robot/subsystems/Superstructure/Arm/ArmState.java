@@ -12,7 +12,7 @@ public enum ArmState {
   CORAL_PREP_L3(180 - 90),
   PRE_CORAL_PREP_L4(180 - 90),
   CORAL_PREP_L4(180), // TODO tune
-  HANDOFF_FLIP_SAFE_ZONE(180),
+  HANDOFF_FLIP_SAFE_ZONE(180 + 45),
 
   CORAL_SCORE_L1(180 + 25), // normal side
   CORAL_SCORE_L2(180 - 35),
@@ -39,7 +39,7 @@ public enum ArmState {
   FLIPPED_NET_SCORE(0),
   FLIPPED_NET_PREP(25),
   CLIMB(180),
-  INTAKE_SAFE_ZONE(235),
+  INTAKE_SAFE_ZONE(232),
   NO_OP(0), // do nothing, maintain current pos
   UNKOWN(0); // arm isnt at a predefined state
 

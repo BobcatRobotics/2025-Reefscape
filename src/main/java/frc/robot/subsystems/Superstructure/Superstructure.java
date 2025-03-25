@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure {
@@ -486,8 +485,9 @@ public class Superstructure {
   // }
   // }
 
-  @AutoLogOutput(key = "Superstructure/inTolerance")
   public boolean superstructureInTolerance(SuperstructureState goal) {
+    Logger.recordOutput("Superstructure/ArmInTolerance", arm.inTolerance(goal));
+    Logger.recordOutput("Superstructure/ElevatorInTolerance", elevator.inTolerance(goal));
     return arm.inTolerance(goal) && elevator.inTolerance(goal);
   }
 
