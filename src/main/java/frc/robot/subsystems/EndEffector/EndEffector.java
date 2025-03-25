@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class EndEffector extends SubsystemBase {
-  public static double CORAL_IDLE_SPEED = 1;
+  public static double CORAL_IDLE_SPEED = 2;
   public static double ALGAE_IDLE_SPEED = 200;
   public static double INTAKE_CORAL_SPEED = 500;
   public static double INTAKE_ALGAE_SPEED = 500;

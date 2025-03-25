@@ -72,17 +72,17 @@ public class ArmIOTalonFX implements ArmIO {
 
     // algae
     angleConfigs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-    angleConfigs.Slot1.kP = 5;
-    angleConfigs.Slot1.kI = 0.1;
-    angleConfigs.Slot1.kD = 2;
+    angleConfigs.Slot1.kP = 10;
+    angleConfigs.Slot1.kI = 0.5;
+    angleConfigs.Slot1.kD = 0;
     angleConfigs.Slot1.kS = 0.21;
-    angleConfigs.Slot1.kG = 0.7;
-    angleConfigs.Slot1.kA = 0.6;
-    angleConfigs.Slot1.kV = 13;
+    angleConfigs.Slot1.kG = 0.2;
+    angleConfigs.Slot1.kA = 0;
+    angleConfigs.Slot1.kV = 10;
     angleConfigs.Slot1.GravityType = GravityTypeValue.Arm_Cosine;
 
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 0;
-    angleConfigs.MotionMagic.MotionMagicExpo_kA = 5;
+    angleConfigs.MotionMagic.MotionMagicExpo_kA = 2.5;
     angleConfigs.MotionMagic.MotionMagicExpo_kV = 3;
 
     angleConfigs.Voltage.PeakForwardVoltage = 13;
