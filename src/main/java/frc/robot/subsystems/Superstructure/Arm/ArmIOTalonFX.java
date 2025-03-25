@@ -61,23 +61,32 @@ public class ArmIOTalonFX implements ArmIO {
 
     // coral
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-    angleConfigs.Slot0.kP = 18;
-    angleConfigs.Slot0.kI = 1;
-    angleConfigs.Slot0.kD = 30;
-    angleConfigs.Slot0.kS = 4.5;
-    angleConfigs.Slot0.kG = 6.5;
+    angleConfigs.Slot0.kP = 5;
+    angleConfigs.Slot0.kI = 0.1;
+    angleConfigs.Slot0.kD = 0;
+    angleConfigs.Slot0.kS = 0.21;
+    angleConfigs.Slot0.kG = 0.3;
+    angleConfigs.Slot0.kA = 0.6;
+    angleConfigs.Slot0.kV = 13;
+    angleConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
     // algae
     angleConfigs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-    angleConfigs.Slot1.kP = 18;
-    angleConfigs.Slot1.kI = 1;
-    angleConfigs.Slot1.kD = 30;
-    angleConfigs.Slot1.kS = 4.5;
-    angleConfigs.Slot1.kG = 12;
+    angleConfigs.Slot1.kP = 5;
+    angleConfigs.Slot1.kI = 0.1;
+    angleConfigs.Slot1.kD = 2;
+    angleConfigs.Slot1.kS = 0.21;
+    angleConfigs.Slot1.kG = 0.7;
+    angleConfigs.Slot1.kA = 0.6;
+    angleConfigs.Slot1.kV = 13;
+    angleConfigs.Slot1.GravityType = GravityTypeValue.Arm_Cosine;
 
-    angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.5;
-    angleConfigs.MotionMagic.MotionMagicAcceleration = 2;
+    angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 0;
+    angleConfigs.MotionMagic.MotionMagicExpo_kA = 5;
+    angleConfigs.MotionMagic.MotionMagicExpo_kV = 3;
 
-    angleConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    angleConfigs.Voltage.PeakForwardVoltage = 13;
+    angleConfigs.Voltage.PeakReverseVoltage = -13;
 
     angleConfigs.Feedback.FeedbackRemoteSensorID = encoderID;
     angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
