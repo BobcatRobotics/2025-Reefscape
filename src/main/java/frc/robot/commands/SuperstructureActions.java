@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Amps;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -128,7 +129,7 @@ public class SuperstructureActions {
         .setState(SuperstructureState.CORAL_HANDOFF, () -> false)
         .alongWith(endEffector.intakeCoralCommand())
         .until(endEffector::hasPiece)
-        .withTimeout(0.75)
+        .withTimeout(RobotBase.isSimulation() ? 0.25 : 0.75)
         .andThen(
             superstructure
                 .setState(SuperstructureState.CORAL_PREP_L4, () -> false)

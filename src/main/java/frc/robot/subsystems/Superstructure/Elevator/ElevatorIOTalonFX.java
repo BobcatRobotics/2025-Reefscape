@@ -27,7 +27,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class ElevatorIOTalonFX implements ElevatorIO {
 
   public static final double GEAR_RATIO = // TODO i think this is wrong
-      1936 / 192; // GEAR_RATIO motor rotations = 1 rotation of the ouput shaft
+      1936.0 / 192; // GEAR_RATIO motor rotations = 1 rotation of the ouput shaft
   public static final InvertedValue ELEVATOR_MOTOR_INVERTED =
       InvertedValue.CounterClockwise_Positive;
 

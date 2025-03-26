@@ -13,8 +13,7 @@ import frc.robot.Constants.Constants;
 public class ElevatorIOSim implements ElevatorIO {
   public static final double carriageMassKg = Units.lbsToKilograms(6.0);
   public static final double stagesMassKg = Units.lbsToKilograms(8.0);
-  public static final DCMotor gearbox =
-      DCMotor.getKrakenX60Foc(1000).withReduction(ElevatorIOTalonFX.GEAR_RATIO);
+  public static final DCMotor gearbox = DCMotor.getKrakenX60Foc(1000).withReduction(1);
 
   public static final Matrix<N2, N2> A =
       MatBuilder.fill(
@@ -40,7 +39,7 @@ public class ElevatorIOSim implements ElevatorIO {
   private double inputTorqueCurrent = 0.0;
   private double appliedVolts = 0.0;
 
-  private final PIDController controller = new PIDController(20000.0, 0.0, 0.0);
+  private final PIDController controller = new PIDController(3000.0, 0.0, 0.0);
   private boolean closedLoop = false;
   private double feedforward = 0.0;
 

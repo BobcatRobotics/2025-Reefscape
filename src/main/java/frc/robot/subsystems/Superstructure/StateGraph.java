@@ -125,6 +125,7 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.PRE_CORAL_PREP_L4,
+              SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.ALGAE_PREP_L2,
               SuperstructureState.ALGAE_PREP_L3,
               SuperstructureState.HUMAN_INTAKE,
