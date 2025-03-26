@@ -43,6 +43,7 @@ public class ArmIOTalonFX implements ArmIO {
   private StatusSignal<Double> closedLoopReference;
   private StatusSignal<Voltage> appliedVoltage;
   private StatusSignal<Current> appliedCurrent;
+  private StatusSignal<Integer> slot;
 
   private ArmState desiredState = ArmState.UNKOWN;
   private boolean flipped = false;
@@ -117,6 +118,8 @@ public class ArmIOTalonFX implements ArmIO {
     closedLoopReference = motor.getClosedLoopReference();
     appliedVoltage = motor.getMotorVoltage();
     appliedCurrent = motor.getStatorCurrent();
+    slot = motor.getClosedLoopSlot();
+
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         Hertz.of(50),
@@ -126,7 +129,8 @@ public class ArmIOTalonFX implements ArmIO {
         closedLoopReferenceSlope,
         closedLoopReference,
         appliedVoltage,
-        appliedCurrent);
+        appliedCurrent,
+        slot);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
@@ -141,7 +145,8 @@ public class ArmIOTalonFX implements ArmIO {
         closedLoopReferenceSlope,
         closedLoopReference,
         appliedVoltage,
-        appliedCurrent);
+        appliedCurrent,
+        slot);
 
     // (-0.5, 0.5) rotations
     inputs.absolutePosition = Rotation2d.fromRotations(position.getValueAsDouble());
@@ -182,12 +187,14 @@ public class ArmIOTalonFX implements ArmIO {
     double rotations = flipped ? 0.5 - state.rotations : state.rotations;
 
     if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
-      motor.setControl(angleRequest.withPosition(rotations).withFeedForward(-15));
+      motor.setControl(angleRequest.withPosition(rotations).withSlot(1));
       Logger.recordOutput("using feedforward", true);
     } else {
-      motor.setControl(angleRequest.withPosition(rotations).withFeedForward(0));
+      motor.setControl(angleRequest.withPosition(rotations).withSlot(0));
       Logger.recordOutput("using feedforward", false);
     }
+
+    Logger.recordOutput("arm slot", slot.getValue());
 
     isOverridden = false;
   }
