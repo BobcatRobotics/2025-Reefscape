@@ -43,7 +43,6 @@ public class ArmIOTalonFX implements ArmIO {
   private StatusSignal<Double> closedLoopReference;
   private StatusSignal<Voltage> appliedVoltage;
   private StatusSignal<Current> appliedCurrent;
-  private StatusSignal<Integer> slot;
 
   private ArmState desiredState = ArmState.UNKOWN;
   private boolean flipped = false;
@@ -82,6 +81,18 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Slot1.kV = 10;
     angleConfigs.Slot1.GravityType = GravityTypeValue.Arm_Cosine;
 
+    // empty
+    angleConfigs.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+    angleConfigs.Slot2.kP = 10;
+    angleConfigs.Slot2.kI = 0.5;
+    angleConfigs.Slot2.kD = 0;
+    angleConfigs.Slot2.kS = 0.21;
+    angleConfigs.Slot2.kG = 0.2;
+    angleConfigs.Slot2.kA = 0;
+    angleConfigs.Slot2.kV = 10;
+    angleConfigs.Slot2.GravityType = GravityTypeValue.Arm_Cosine;
+
+
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 0;
     angleConfigs.MotionMagic.MotionMagicExpo_kA = 2.5;
     angleConfigs.MotionMagic.MotionMagicExpo_kV = 3;
@@ -118,7 +129,6 @@ public class ArmIOTalonFX implements ArmIO {
     closedLoopReference = motor.getClosedLoopReference();
     appliedVoltage = motor.getMotorVoltage();
     appliedCurrent = motor.getStatorCurrent();
-    slot = motor.getClosedLoopSlot();
 
 
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -129,8 +139,7 @@ public class ArmIOTalonFX implements ArmIO {
         closedLoopReferenceSlope,
         closedLoopReference,
         appliedVoltage,
-        appliedCurrent,
-        slot);
+        appliedCurrent);
 
     encoder.optimizeBusUtilization();
     motor.optimizeBusUtilization();
@@ -145,8 +154,7 @@ public class ArmIOTalonFX implements ArmIO {
         closedLoopReferenceSlope,
         closedLoopReference,
         appliedVoltage,
-        appliedCurrent,
-        slot);
+        appliedCurrent);
 
     // (-0.5, 0.5) rotations
     inputs.absolutePosition = Rotation2d.fromRotations(position.getValueAsDouble());
@@ -185,17 +193,19 @@ public class ArmIOTalonFX implements ArmIO {
     this.flipped = flipped;
     desiredState = state;
     double rotations = flipped ? 0.5 - state.rotations : state.rotations;
+    
+    int slot = 0; //coral
 
-    if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
-      motor.setControl(angleRequest.withPosition(rotations).withSlot(1));
-      Logger.recordOutput("using feedforward", true);
-    } else {
-      motor.setControl(angleRequest.withPosition(rotations).withSlot(0));
-      Logger.recordOutput("using feedforward", false);
+    if(hasPiece){
+      if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
+        slot = 1; //algae
+      }
+    }else{
+      slot = 2; //empty
     }
 
-    Logger.recordOutput("arm slot", slot.getValue());
-
+    motor.setControl(angleRequest.withPosition(rotations).withSlot(slot));
+    Logger.recordOutput("arm slot", slot);
     isOverridden = false;
   }
 
@@ -204,6 +214,7 @@ public class ArmIOTalonFX implements ArmIO {
     MathUtil.clamp(percent, -1, 1);
     percent = MathUtil.applyDeadband(percent, 0.05);
     motor.setControl(manualRequest.withOutput(percent));
+    
     isOverridden = true;
   }
 }
