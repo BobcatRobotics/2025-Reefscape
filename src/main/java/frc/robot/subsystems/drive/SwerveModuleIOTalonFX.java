@@ -18,6 +18,7 @@ import static frc.robot.util.PhoenixUtil.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -98,6 +99,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   // Motor configs
   private final TalonFXConfiguration driveConfig;
+  private final Slot0Configs driveGains;
   private final TalonFXConfiguration turnConfig = new TalonFXConfiguration();
 
   public SwerveModuleIOTalonFX(
@@ -123,6 +125,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         constants.DriveMotorInverted
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
+    driveGains = driveConfig.Slot0;
     tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
     tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
 
@@ -148,6 +151,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         constants.SteerMotorInverted
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
+
     tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
 
     // Configure CANCoder
@@ -276,11 +280,11 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   @Override
   public void setDrivePIDandFF(double kp, double kd, double kv, double ka, double ks) {
-    driveConfig.Slot0.kP = kp;
-    driveConfig.Slot0.kD = kd;
-    driveConfig.Slot0.kV = kv;
-    driveConfig.Slot0.kA = ka;
-    driveConfig.Slot0.kS = ks;
-    tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
+    driveGains.kP = kp;
+    driveGains.kD = kd;
+    driveGains.kV = kv;
+    driveGains.kA = ka;
+    driveGains.kS = ks;
+    tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveGains, 0.25));
   }
 }

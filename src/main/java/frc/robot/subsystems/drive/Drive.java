@@ -399,10 +399,16 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
+  // private double maxSpeed = 0;
+
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
   private ChassisSpeeds getChassisSpeeds() {
-    return kinematics.toChassisSpeeds(getModuleStates());
+    ChassisSpeeds output = kinematics.toChassisSpeeds(getModuleStates());
+    // double speed = Math.hypot(output.vxMetersPerSecond, output.vyMetersPerSecond);
+    // maxSpeed = Math.max(maxSpeed, speed);
+    // Logger.recordOutput("Swerve/MaxSpeedmps", maxSpeed);
+    return output;
   }
 
   /** Returns the position of each module in radians. */

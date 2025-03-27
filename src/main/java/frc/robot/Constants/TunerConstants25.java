@@ -18,7 +18,8 @@ import edu.wpi.first.units.measure.*;
 public class TunerConstants25 {
   // Both sets of gains need to be tuned to your individual robot.
 
-  // The steer motor uses any SwerveModule.SteerRequestType control request with the
+  // The steer motor uses any SwerveModule.SteerRequestType control request with
+  // the
   // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
   private static final Slot0Configs steerGains =
       new Slot0Configs()
@@ -29,8 +30,8 @@ public class TunerConstants25 {
           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
   // When using closed-loop control, the drive motor uses the control
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-  public static final Slot0Configs driveGains = // TODO tune as mechanisms get added on
-      new Slot0Configs().withKP(1).withKI(0).withKD(0);
+  public static final Slot0Configs driveGains =
+      new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0.24604).withKV(0.69950).withKA(0);
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
   private static final ClosedLoopOutputType kSteerClosedLoopOutput =
@@ -52,16 +53,19 @@ public class TunerConstants25 {
 
   // The stator current at which the wheels start to slip;
   // This needs to be tuned to your individual robot
-  private static final Current kSlipCurrent = Amps.of(98);
+  private static final Current kSlipCurrent = Amps.of(92);
 
-  // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
-  // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
+  // Initial configs for the drive and steer motors and the azimuth encoder; these
+  // cannot be null.
+  // Some configs will be overwritten; check the `with*InitialConfigs()` API
+  // documentation.
   private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
   private static final TalonFXConfiguration steerInitialConfigs =
       new TalonFXConfiguration()
           .withCurrentLimits(
               new CurrentLimitsConfigs()
-                  // Swerve azimuth does not require much torque output, so we can set a relatively
+                  // Swerve azimuth does not require much torque output, so we can set a
+                  // relatively
                   // low
                   // stator current limit to help avoid brownouts without impacting performance.
                   .withStatorCurrentLimit(Amps.of(60))
@@ -76,7 +80,7 @@ public class TunerConstants25 {
 
   // Theoretical free speed (m/s) at 12 V applied output;
   // This needs to be tuned to your individual robot
-  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.4512537559);
+  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.43);
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
   // This may need to be tuned to your individual robot
@@ -84,7 +88,7 @@ public class TunerConstants25 {
 
   private static final double kDriveGearRatio = 5.67;
   private static final double kSteerGearRatio = 12.1;
-  public static final Distance kWheelRadius = Inches.of(1.890);
+  public static final Distance kWheelRadius = Inches.of(1.870);
 
   private static final boolean kInvertLeftSide = false;
   private static final boolean kInvertRightSide = true;
