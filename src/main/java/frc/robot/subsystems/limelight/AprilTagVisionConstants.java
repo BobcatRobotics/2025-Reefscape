@@ -44,7 +44,7 @@ public class AprilTagVisionConstants {
   //             };
 
   public class limelightConstants {
-    public static final double rotationTolerance = 100;
+    public static final double rotationTolerance = 10000;
     public static final double throwoutDist = 4.5;
     public static final double xySingleTagStdDev = 0.6;
     public static final double thetaSingleTagStdDev = 9999999;

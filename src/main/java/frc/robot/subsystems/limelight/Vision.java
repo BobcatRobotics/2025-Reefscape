@@ -273,8 +273,10 @@ public class Vision extends SubsystemBase {
         && (botpose.getTranslation().getY() > 0)
         && (botpose.getTranslation().getY() < AprilTagVisionFieldConstants.fieldWidth)) {
 
+      Logger.recordOutput("limelight_" + inputs.name + "/valid", true);
       return true;
     } else {
+      Logger.recordOutput("limelight_" + inputs.name + "/valid", false);
       return false;
     }
   }
