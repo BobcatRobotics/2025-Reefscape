@@ -275,11 +275,12 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   }
 
   @Override
-  public void setDrivePIDandFF(double kp, double kd, double kv, double ka) {
+  public void setDrivePIDandFF(double kp, double kd, double kv, double ka, double ks) {
     driveConfig.Slot0.kP = kp;
     driveConfig.Slot0.kD = kd;
     driveConfig.Slot0.kV = kv;
     driveConfig.Slot0.kA = ka;
+    driveConfig.Slot0.kS = ks;
     tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
   }
 }

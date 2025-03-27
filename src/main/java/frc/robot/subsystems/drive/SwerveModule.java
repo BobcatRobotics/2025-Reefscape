@@ -146,7 +146,7 @@ public class SwerveModule {
   }
 
   /** Sets the PID and feedforward constants for the drive motor. */
-  public void setPIDandFF(double kp, double kd, double kv, double ka) {
-    io.setDrivePIDandFF(kp, kd, kv, ka);
+  public void setPIDandFF(double kp, double kd, double kv, double ka, double ks) {
+    io.setDrivePIDandFF(kp, kd, kv, ka, ks);
   }
 }

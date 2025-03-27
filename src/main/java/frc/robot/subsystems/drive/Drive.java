@@ -93,11 +93,13 @@ public class Drive extends SubsystemBase {
   public double kVValue =
       RobotBase.isSimulation() ? SwerveModuleIOSim.DRIVE_KV : TunerConstants25.driveGains.kV;
   public double kAValue = RobotBase.isSimulation() ? 0 : TunerConstants25.driveGains.kA;
+  public double kSValue = RobotBase.isSimulation() ? 0 : TunerConstants25.driveGains.kS;
 
   public final LoggedNetworkNumber kP = new LoggedNetworkNumber("/Tuning/kP", kPValue);
   public final LoggedNetworkNumber kD = new LoggedNetworkNumber("/Tuning/kD", kDValue);
   public final LoggedNetworkNumber kV = new LoggedNetworkNumber("/Tuning/kV", kVValue);
   public final LoggedNetworkNumber kA = new LoggedNetworkNumber("/Tuning/kA", kAValue);
+  public final LoggedNetworkNumber kS = new LoggedNetworkNumber("/Tuning/kS", kSValue);
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG = Units.lbsToKilograms(115);
@@ -269,13 +271,15 @@ public class Drive extends SubsystemBase {
       if (kP.get() != kPValue
           || kD.get() != kDValue
           || kV.get() != kVValue
-          || kA.get() != kAValue) {
+          || kA.get() != kAValue
+          || kS.get() != kSValue) {
         kPValue = kP.get();
         kDValue = kD.get();
         kVValue = kV.get();
         kAValue = kA.get();
+        kSValue = kS.get();
         for (var module : modules) {
-          module.setPIDandFF(kPValue, kDValue, kVValue, kAValue);
+          module.setPIDandFF(kPValue, kDValue, kVValue, kAValue, kSValue);
         }
       }
     }
