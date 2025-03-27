@@ -92,7 +92,6 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Slot2.kV = 10;
     angleConfigs.Slot2.GravityType = GravityTypeValue.Arm_Cosine;
 
-
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 0;
     angleConfigs.MotionMagic.MotionMagicExpo_kA = 2.5;
     angleConfigs.MotionMagic.MotionMagicExpo_kV = 3;
@@ -129,7 +128,6 @@ public class ArmIOTalonFX implements ArmIO {
     closedLoopReference = motor.getClosedLoopReference();
     appliedVoltage = motor.getMotorVoltage();
     appliedCurrent = motor.getStatorCurrent();
-
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         Hertz.of(50),
@@ -193,15 +191,15 @@ public class ArmIOTalonFX implements ArmIO {
     this.flipped = flipped;
     desiredState = state;
     double rotations = flipped ? 0.5 - state.rotations : state.rotations;
-    
-    int slot = 0; //coral
 
-    if(hasPiece){
+    int slot = 0; // coral
+
+    if (hasPiece) {
       if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
-        slot = 1; //algae
+        slot = 1; // algae
       }
-    }else{
-      slot = 2; //empty
+    } else {
+      slot = 2; // empty
     }
 
     motor.setControl(angleRequest.withPosition(rotations).withSlot(slot));
@@ -214,7 +212,7 @@ public class ArmIOTalonFX implements ArmIO {
     MathUtil.clamp(percent, -1, 1);
     percent = MathUtil.applyDeadband(percent, 0.05);
     motor.setControl(manualRequest.withOutput(percent));
-    
+
     isOverridden = true;
   }
 }
