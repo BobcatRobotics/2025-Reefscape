@@ -176,9 +176,7 @@ public class CharacterizationCommands {
   public static Command velocityRampTuning(Drive drive, Time timeout) {
     return runDriveVelocity(drive, new ChassisSpeeds(0.1, 0, 0))
         .withTimeout(timeout)
-        .andThen(runDriveVelocity(drive, new ChassisSpeeds(0.5, 0, 0)).withTimeout(timeout))
         .andThen(runDriveVelocity(drive, new ChassisSpeeds(1, 0, 0)).withTimeout(timeout))
-        .andThen(runDriveVelocity(drive, new ChassisSpeeds(1.5, 0, 0)).withTimeout(timeout))
         .andThen(runDriveVelocity(drive, new ChassisSpeeds(2, 0, 0)).withTimeout(timeout))
         .andThen(runDriveVelocity(drive, new ChassisSpeeds(3, 0, 0)).withTimeout(timeout))
         .andThen(runDriveVelocity(drive, new ChassisSpeeds(4, 0, 0)).withTimeout(timeout));
