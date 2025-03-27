@@ -116,7 +116,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   }
 
   @Override
-  public void setDrivePIDandFF(double kp, double kd, double kv, double ka) {
+  public void setDrivePIDandFF(double kp, double kd, double kv, double ka, double ks) {
     driveController.setP(kp);
     driveController.setD(kd);
     DRIVE_KV = kv;

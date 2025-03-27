@@ -57,15 +57,20 @@ public class Arm extends SubsystemBase {
       case UNKOWN:
         return true;
       case INTAKE_SAFE_ZONE:
-        Logger.recordOutput(
-            "hmmmmmmmmmmmmm",
-            inputs.absolutePosition.getRotations()
-                < (ArmState.INTAKE_SAFE_ZONE.rotations + 10.0 / 360));
         return inputs.absolutePosition.getRotations()
             < (ArmState.INTAKE_SAFE_ZONE.rotations + 10.0 / 360);
       case HANDOFF_FLIP_SAFE_ZONE:
         return inputs.absolutePosition.getRotations()
             > (ArmState.HANDOFF_FLIP_SAFE_ZONE.rotations - 10.0 / 360);
+      case CORAL_SCORE_L4:
+        return inputs.absolutePosition.getRotations()
+            > ArmState.CORAL_SCORE_L4.rotations - 3.0 / 360;
+      case POST_CORAL_SCORE_L4:
+        return inputs.absolutePosition.getRotations()
+            > ArmState.POST_CORAL_SCORE_L4.rotations - 3.0 / 360;
+      case CORAL_PREP_L4:
+        return inputs.absolutePosition.getRotations()
+            > ArmState.CORAL_PREP_L4.rotations - 3.0 / 360;
       default:
         double rotations =
             inputs.flipped

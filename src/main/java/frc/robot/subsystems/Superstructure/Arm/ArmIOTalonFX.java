@@ -81,6 +81,17 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Slot1.kV = 10;
     angleConfigs.Slot1.GravityType = GravityTypeValue.Arm_Cosine;
 
+    // empty
+    angleConfigs.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+    angleConfigs.Slot2.kP = 10;
+    angleConfigs.Slot2.kI = 0.5;
+    angleConfigs.Slot2.kD = 0;
+    angleConfigs.Slot2.kS = 0.21;
+    angleConfigs.Slot2.kG = 0.2;
+    angleConfigs.Slot2.kA = 0;
+    angleConfigs.Slot2.kV = 10;
+    angleConfigs.Slot2.GravityType = GravityTypeValue.Arm_Cosine;
+
     angleConfigs.MotionMagic.MotionMagicCruiseVelocity = 0;
     angleConfigs.MotionMagic.MotionMagicExpo_kA = 2.5;
     angleConfigs.MotionMagic.MotionMagicExpo_kV = 3;
@@ -181,14 +192,18 @@ public class ArmIOTalonFX implements ArmIO {
     desiredState = state;
     double rotations = flipped ? 0.5 - state.rotations : state.rotations;
 
-    if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
-      motor.setControl(angleRequest.withPosition(rotations).withFeedForward(-15));
-      Logger.recordOutput("using feedforward", true);
+    int slot = 0; // coral
+
+    if (hasPiece) {
+      if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
+        slot = 1; // algae
+      }
     } else {
-      motor.setControl(angleRequest.withPosition(rotations).withFeedForward(0));
-      Logger.recordOutput("using feedforward", false);
+      slot = 2; // empty
     }
 
+    motor.setControl(angleRequest.withPosition(rotations).withSlot(slot));
+    Logger.recordOutput("arm slot", slot);
     isOverridden = false;
   }
 
@@ -197,6 +212,7 @@ public class ArmIOTalonFX implements ArmIO {
     MathUtil.clamp(percent, -1, 1);
     percent = MathUtil.applyDeadband(percent, 0.05);
     motor.setControl(manualRequest.withOutput(percent));
+
     isOverridden = true;
   }
 }

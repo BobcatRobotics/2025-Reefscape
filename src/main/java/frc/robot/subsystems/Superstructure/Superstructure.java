@@ -502,7 +502,7 @@ public class Superstructure {
       case CORAL_L4:
         return setState(SuperstructureState.CORAL_PREP_L4, flipped);
       case NET:
-        return setState(SuperstructureState.NET_PREP, flipped);
+        return setState(SuperstructureState.NET_SCORE, flipped);
       case ALGAE_L2:
         return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
       case ALGAE_L3:
