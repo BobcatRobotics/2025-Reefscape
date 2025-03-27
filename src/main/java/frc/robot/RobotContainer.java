@@ -605,8 +605,8 @@ public class RobotContainer {
             .alongWith(endEffector.idleCoralCommand()));
 
     buttonBoard.net.onTrue(
-        superstructure
-            .setState(SuperstructureState.NET_SCORE, endEffector::hasPiece)
+        SuperstructureActions.prepScore(
+                ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector)
             .alongWith(endEffector.intakeAlgaeCommand()));
 
     // score

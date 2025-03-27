@@ -71,7 +71,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motorConfig.Slot0.kI = 0;
     motorConfig.Slot0.kD = 0;
     motorConfig.Slot0.kS = 0.2;
-    motorConfig.Slot0.kG = 0.9;
+    motorConfig.Slot0.kG = 0.8;
     motorConfig.Slot0.kA = 0.1;
     motorConfig.Slot0.kV = 1.25;
     motorConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;

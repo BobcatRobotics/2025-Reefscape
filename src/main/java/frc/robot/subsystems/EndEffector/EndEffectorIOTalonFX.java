@@ -10,7 +10,7 @@ import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -26,7 +26,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
 
   private TalonFX motor;
   private LaserCan laser;
-  private VelocityVoltage request = new VelocityVoltage(0).withEnableFOC(true);
+  private VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0);
   private Alert rangingAlert =
       new Alert(
           "Couldnt set end effector ranging mode!! OMG this is really bad!! the robot will EXPLODE!!!!!! fix IMEDIATELY or i'll DIE a GRUESOME and PAINFUL death!",
@@ -44,7 +44,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.CurrentLimits.StatorCurrentLimit = 80;
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    motorConfig.Slot0.kP = 0.36;
+    motorConfig.Slot0.kP = 3.6; // TODO tune
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     motor.getConfigurator().apply(motorConfig);
