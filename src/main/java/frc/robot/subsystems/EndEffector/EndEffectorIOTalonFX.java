@@ -44,7 +44,7 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.CurrentLimits.StatorCurrentLimit = 80;
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    motorConfig.Slot0.kP = 3.6; // TODO tune
+    motorConfig.Slot0.kP = 5; // TODO tune
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     motor.getConfigurator().apply(motorConfig);

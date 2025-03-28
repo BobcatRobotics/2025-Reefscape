@@ -32,7 +32,7 @@ public class Vision extends SubsystemBase {
 
   public boolean apriltagPipeline;
   private double xyStdDev;
-  private double thetaStdDev;
+  private double thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
   private AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
@@ -129,16 +129,22 @@ public class Vision extends SubsystemBase {
         // Logger.recordOutput("Odometry/swerveRotationRateR", swerve.getRotationRate().getY());
       }
 
-      if (inputs.tagCount < 2) {
-        xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
-        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
-      } else {
-        xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
-        thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
-      }
+      // if (inputs.tagCount < 2) {
+      //   xyStdDev = AprilTagVisionConstants.limelightConstants.xySingleTagStdDev;
+      //   thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaSingleTagStdDev;
+      // } else {
+      //   xyStdDev = AprilTagVisionConstants.limelightConstants.xyMultiTagStdDev;
+      //   thetaStdDev = AprilTagVisionConstants.limelightConstants.thetaMultiTagStdDev;
+      // }
 
       if (swerve.getRotationRate().getZ() <= Units.degreesToRadians(720)) {
         if (getPoseValidMG2(swerve.getRotation())) {
+
+          xyStdDev =
+              AprilTagVisionConstants.limelightConstants.multiFunctionConstant
+                  * inputs.avgTagDist
+                  / (Math.sqrt(inputs.tagCount));
+
           swerve.updatePose(
               new VisionObservation(
                   getBotPoseMG2(),

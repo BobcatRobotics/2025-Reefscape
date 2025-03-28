@@ -62,7 +62,7 @@ public class ArmIOTalonFX implements ArmIO {
     // coral
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot0.kP = 5;
-    angleConfigs.Slot0.kI = 0.1;
+    angleConfigs.Slot0.kI = 0;
     angleConfigs.Slot0.kD = 0;
     angleConfigs.Slot0.kS = 0.21;
     angleConfigs.Slot0.kG = 0.3;
@@ -73,7 +73,7 @@ public class ArmIOTalonFX implements ArmIO {
     // algae
     angleConfigs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot1.kP = 10;
-    angleConfigs.Slot1.kI = 0.5;
+    angleConfigs.Slot1.kI = 0;
     angleConfigs.Slot1.kD = 0;
     angleConfigs.Slot1.kS = 0.21;
     angleConfigs.Slot1.kG = 0.2;
@@ -84,7 +84,7 @@ public class ArmIOTalonFX implements ArmIO {
     // empty
     angleConfigs.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     angleConfigs.Slot2.kP = 10;
-    angleConfigs.Slot2.kI = 0.5;
+    angleConfigs.Slot2.kI = 0;
     angleConfigs.Slot2.kD = 0;
     angleConfigs.Slot2.kS = 0.21;
     angleConfigs.Slot2.kG = 0.2;

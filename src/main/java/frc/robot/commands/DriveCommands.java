@@ -398,10 +398,10 @@ public class DriveCommands {
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     ProfiledPIDController xController =
-        new ProfiledPIDController(3, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+        new ProfiledPIDController(2, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
 
     ProfiledPIDController yController =
-        new ProfiledPIDController(5, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+        new ProfiledPIDController(2, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
 
     return Commands.run(
             () -> {

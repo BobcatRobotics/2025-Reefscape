@@ -7,15 +7,15 @@ import edu.wpi.first.units.measure.Distance;
 
 public enum ElevatorState {
   IDLE_UPSIDE_DOWN(
-      Rotation2d.fromRotations(1.5)), // upside down, for quick pickup once game piece intook
+      Rotation2d.fromRotations(1.3)), // upside down, for quick pickup once game piece intook
   IDLE_RIGHT_SIDE_UP(
       Rotation2d.fromRotations(0)), // right side up for quick transition to scoring zone
   CORAL_HANDOFF(
-      Rotation2d.fromRotations(0.9)), // picking up coral with the end effector //OLD 1.015
-  CORAL_L1(Rotation2d.fromRotations(1.5)), // elevator pos doesnt matter for score or prep
-  CORAL_L2(Rotation2d.fromRotations(0.55)),
+      Rotation2d.fromRotations(0.95)), // picking up coral with the end effector //OLD 1.015
+  CORAL_L1(Rotation2d.fromRotations(1.35)), // elevator pos doesnt matter for score or prep
+  CORAL_L2(Rotation2d.fromRotations(0.65)),
   POST_CORAL_L2(Rotation2d.fromRotations(0)),
-  CORAL_L3(Rotation2d.fromRotations(1.4)),
+  CORAL_L3(Rotation2d.fromRotations(1.63)),
   POST_CORAL_L3(Rotation2d.fromRotations(0.4)),
   CORAL_L4(Rotation2d.fromRotations(3)),
   POST_CORAL_L4(Rotation2d.fromRotations(3)),
