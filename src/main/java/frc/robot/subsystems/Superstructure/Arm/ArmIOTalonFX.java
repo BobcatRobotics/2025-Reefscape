@@ -194,13 +194,13 @@ public class ArmIOTalonFX implements ArmIO {
 
     int slot = 0; // coral
 
-    if (hasPiece) {
-      if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
-        slot = 1; // algae
-      }
-    } else {
-      slot = 2; // empty
-    }
+    // if (hasPiece) {
+    //   if ((state == ArmState.NET_SCORE || state == ArmState.NET_PREP)) {
+    //     slot = 1; // algae
+    //   }
+    // } else {
+    //   slot = 2; // empty
+    // }
 
     motor.setControl(angleRequest.withPosition(rotations).withSlot(slot));
     Logger.recordOutput("arm slot", slot);

@@ -43,9 +43,9 @@ public class DriveCommands {
   static final double DRIVE_KDX = 0;
   static final double ANGLE_MAX_VELOCITY = 8.0;
   static final double ANGLE_MAX_ACCELERATION = 4;
-  static final Distance ALIGN_DISTANCE = Inches.of(16); // TODO this should be zero
+  static final Distance ALIGN_DISTANCE = Inches.of(14.5); // 16 // TODO this should be zero
 
-  static final Distance END_EFFECTOR_BIAS = Inches.of(2.3); // towards climber
+  static final Distance END_EFFECTOR_BIAS = Inches.of(3.7); // towards climber
 
   private DriveCommands() {}
 
@@ -389,22 +389,38 @@ public class DriveCommands {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 
+    double AidenAlignDeadzone = .25;
+
+    double XYPIDthreshold = .006;
+    double ThetaPIDthreshold = .004;
+
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            2,
+            3,
             0.0,
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     ProfiledPIDController xController =
-        new ProfiledPIDController(2, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
+        new ProfiledPIDController(4, 0.0, DRIVE_KDX, new TrapezoidProfile.Constraints(5, 3.0));
 
     ProfiledPIDController yController =
-        new ProfiledPIDController(2, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
+        new ProfiledPIDController(4, 0.0, DRIVE_KDY, new TrapezoidProfile.Constraints(5, 3.0));
 
     return Commands.run(
             () -> {
+              boolean useAidenAlign = false;
+
+              if (Math.sqrt(
+                      Math.pow(aidenAlignX.getAsDouble(), 2)
+                          + Math.pow(aidenAlignY.getAsDouble(), 2))
+                  > AidenAlignDeadzone) {
+                useAidenAlign = true;
+              }
+
+              boolean usePID = true;
+
               if (ccwSupplier.getAsBoolean()) {
                 drive.setAdjustY(FieldConstants.Reef.reefToBranchY);
               } else if (cwSupplier.getAsBoolean()) {
@@ -481,6 +497,16 @@ public class DriveCommands {
                   angleController.calculate(
                       drive.getPose().getRotation().getRadians(), closestRotation.getRadians());
 
+              if (Math.abs(xController.getPositionError()) <= XYPIDthreshold) {
+                xOutput = 0;
+              }
+              if (Math.abs(yController.getPositionError()) <= XYPIDthreshold) {
+                yOutput = 0;
+              }
+              if (Math.abs(angleController.getPositionError()) <= ThetaPIDthreshold) {
+                omegaOutput = 0;
+              }
+
               Logger.recordOutput("driveToReef/xError", xController.getPositionError());
               Logger.recordOutput("driveToReef/xPID", xOutput);
               Logger.recordOutput("driveToReef/yError", yController.getPositionError());
@@ -533,8 +559,10 @@ public class DriveCommands {
                           drive.getRotation())
                       // AidenAlign
                       .plus(
-                          new ChassisSpeeds(
-                              aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0))
+                          useAidenAlign
+                              ? new ChassisSpeeds(
+                                  aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0)
+                              : new ChassisSpeeds())
                       .plus(
                           ChassisSpeeds.fromFieldRelativeSpeeds(
                               overrideSpeeds,

@@ -66,7 +66,7 @@ public class SuperstructureActions {
   public static Command intakeCoralGround(
       Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
     return superstructure
-        .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
+        .setState(SuperstructureState.HANDOFF_PREP, () -> false)
         .alongWith(
             new RunCommand(
                 () -> {
@@ -91,10 +91,7 @@ public class SuperstructureActions {
         .setState(SuperstructureState.INTAKE_ALGAE_GROUND, () -> false)
         .alongWith(endEffector.intakeAlgaeCommand())
         .until(endEffector::hasPiece)
-        .andThen(
-            superstructure
-                .setState(SuperstructureState.IDLE_ALGAE, () -> false)
-                .alongWith(endEffector.idleAlgaeCommand()));
+        .andThen(endEffector.idleAlgaeCommand());
   }
 
   public static Command outtakeCoralGround(

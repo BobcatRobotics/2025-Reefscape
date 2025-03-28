@@ -92,7 +92,7 @@ public class StateGraph {
             },
             new SuperstructureState[] {
               SuperstructureState.UPSIDE_DOWN_IDLE,
-              SuperstructureState.CORAL_HANDOFF,
+              SuperstructureState.HANDOFF_PREP,
               SuperstructureState.ELEVATOR_AND_ARM_SAFE_ZONE,
               SuperstructureState.ALGAE_PREP_L2,
               SuperstructureState.ALGAE_PREP_L3,
@@ -101,6 +101,13 @@ public class StateGraph {
               SuperstructureState.HUMAN_INTAKE,
             },
             new SuperstructureState[] {
+              SuperstructureState.CORAL_HANDOFF,
+              SuperstructureState.UPSIDE_DOWN_IDLE,
+              SuperstructureState.ELEVATOR_SAFE_ZONE,
+              SuperstructureState.HANDOFF_PREP
+            },
+            new SuperstructureState[] {
+              SuperstructureState.HANDOFF_PREP,
               SuperstructureState.CORAL_HANDOFF,
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.ELEVATOR_SAFE_ZONE
