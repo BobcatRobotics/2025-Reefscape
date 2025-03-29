@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Popsicle1"
+            "pathName": "DCMP CCW MVP"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ScoreCoralL4CCW"
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Archive",
+  "folder": "MVP",
   "choreoAuto": false
 }

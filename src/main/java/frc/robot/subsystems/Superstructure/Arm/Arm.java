@@ -71,6 +71,11 @@ public class Arm extends SubsystemBase {
       case CORAL_PREP_L4:
         return inputs.absolutePosition.getRotations()
             > ArmState.CORAL_PREP_L4.rotations - 3.0 / 360;
+      case CORAL_SCORE_L2:
+        return inputs.absolutePosition.getRotations() > ArmState.CORAL_SCORE_L2.rotations - 3 / 360;
+      case CORAL_SCORE_L3:
+        return inputs.absolutePosition.getRotations() > ArmState.CORAL_SCORE_L3.rotations - 3 / 360;
+
       default:
         double rotations =
             inputs.flipped

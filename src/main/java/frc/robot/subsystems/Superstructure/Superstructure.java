@@ -70,6 +70,10 @@ public class Superstructure {
     return scoringLevel;
   }
 
+  public boolean isScoringLevelCoralL2orL3() {
+    return getScoringLevel() == ScoringLevel.CORAL_L2 || getScoringLevel() == ScoringLevel.CORAL_L3;
+  }
+
   public boolean isAlgaeScoringLevel() {
     return getScoringLevel() == ScoringLevel.ALGAE_L2 || getScoringLevel() == ScoringLevel.ALGAE_L3;
   }

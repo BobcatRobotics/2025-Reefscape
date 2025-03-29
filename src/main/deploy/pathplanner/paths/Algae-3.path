@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.832406015037594,
-        "y": 3.989719309052359
+        "x": 5.8,
+        "y": 4.103
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.832406015037594,
-        "y": 3.989719309052359
+        "x": 6.8,
+        "y": 4.103
       },
       "isLocked": false,
       "linkedName": "Algae-2-End"
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

@@ -3,18 +3,20 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+    "Algae Pluck",
     "Combo Meal",
     "DCMP",
     "Its a start",
     "MVP",
-    "Algae Pluck",
+    "DCMP MVP",
     "Popsicle"
   ],
   "autoFolders": [
-    "Archive"
+    "Archive",
+    "MVP"
   ],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 2.0,
+  "defaultMaxVel": 4.43,
+  "defaultMaxAccel": 2.75,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
@@ -40,7 +42,7 @@
   "robotFeatures": [
     "{\"name\":\"elevator\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.27},\"size\":{\"width\":0.2,\"length\":0.3},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":true}}",
     "{\"name\":\"intake\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":-0.35,\"y\":0.0},\"size\":{\"width\":0.8,\"length\":0.1},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":true}}",
-    "{\"name\":\"Arm\",\"type\":\"line\",\"data\":{\"start\":{\"x\":0.0,\"y\":-0.3},\"end\":{\"x\":0.0,\"y\":0.08382},\"strokeWidth\":0.04}}",
-    "{\"name\":\"EE\",\"type\":\"line\",\"data\":{\"start\":{\"x\":-0.02,\"y\":0.084},\"end\":{\"x\":0.2,\"y\":0.08382},\"strokeWidth\":0.04}}"
+    "{\"name\":\"Arm\",\"type\":\"line\",\"data\":{\"start\":{\"x\":0.0,\"y\":-0.3},\"end\":{\"x\":0.0,\"y\":0.084},\"strokeWidth\":0.04}}",
+    "{\"name\":\"EE\",\"type\":\"line\",\"data\":{\"start\":{\"x\":-0.02,\"y\":0.084},\"end\":{\"x\":0.45,\"y\":0.084},\"strokeWidth\":0.04}}"
   ]
 }

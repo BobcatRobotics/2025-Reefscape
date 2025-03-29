@@ -17,6 +17,7 @@ import au.grapplerobotics.CanBridge;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -155,6 +156,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // robotContainer.limelight.resetGyroLL4();
+    PPHolonomicDriveController.clearFeedbackOverrides();
     robotContainer.limelightbl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightbr.setPipeline(LimelightFLConstants.apriltagPipelineIndex);
     robotContainer.limelightfl.setPipeline(LimelightFLConstants.apriltagPipelineIndex);

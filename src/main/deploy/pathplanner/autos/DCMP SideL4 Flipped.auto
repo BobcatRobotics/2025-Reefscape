@@ -7,25 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DCMP-1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PrepL4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PlaceL4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DCMP-2"
+            "pathName": "Flipped DCMP Side MVP"
           }
         },
         {
@@ -50,6 +32,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "MVP",
   "choreoAuto": false
 }

@@ -73,6 +73,14 @@ public class EndEffector extends SubsystemBase {
     io.setSpeed(CORAL_IDLE_SPEED);
   }
 
+  public Command stop() {
+    return new RunCommand(
+        () -> {
+          io.setSpeed(0);
+        },
+        this);
+  }
+
   public Command idleAlgaeCommand() {
     return new RunCommand(
         () -> {

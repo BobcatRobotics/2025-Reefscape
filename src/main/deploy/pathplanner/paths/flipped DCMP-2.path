@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.709431818181818,
-        "y": 5.062045454545454
+        "x": 5.07,
+        "y": 2.864749999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1075375939849623,
-        "y": 5.308261278195489
+        "x": 3.838096428094758,
+        "y": 2.058889467038051
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DCMP-1-Flipped-End"
     },
     {
       "anchor": {
         "x": 1.8011842105263156,
-        "y": 7.135836466165412
+        "y": 0.8639999999999999
       },
       "prevControl": {
-        "x": 2.188098604765347,
-        "y": 6.370650155342247
+        "x": 2.0669999999999997,
+        "y": 0.5539999999999998
       },
       "nextControl": {
-        "x": 1.6883740143616675,
-        "y": 7.358937025647664
+        "x": 1.235193576745919,
+        "y": 1.5240702569976312
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.133928571428571,
-        "y": 4.173449248120301
+        "x": 3.75375,
+        "y": 3.0109999999999992
       },
       "prevControl": {
-        "x": 3.0707429262852455,
-        "y": 4.589660185249067
+        "x": 3.7408217841028875,
+        "y": 2.761334501314823
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,14 +46,18 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.08366890380313,
-      "rotationDegrees": -53.016046596382765
+      "waypointRelativePos": 0.6206896551724204,
+      "rotationDegrees": 53.016
+    },
+    {
+      "waypointRelativePos": 1.3685823754789015,
+      "rotationDegrees": 59.99999999999999
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.647091412742382,
+      "minWaypointRelativePos": 0.5652370203160253,
       "maxWaypointRelativePos": 1.4537396121883688,
       "constraints": {
         "maxVelocity": 2.0,
@@ -66,7 +70,7 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.5113573407202212,
+      "minWaypointRelativePos": 1.6559819413092478,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -115,8 +119,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -124,7 +128,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.8184554616885805
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "DCMP",
@@ -132,5 +136,5 @@
     "velocity": 0,
     "rotation": 119.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

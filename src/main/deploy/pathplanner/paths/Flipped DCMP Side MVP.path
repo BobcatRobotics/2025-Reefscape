@@ -3,40 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.120696721311476,
-        "y": 2.495
+        "x": 7.166,
+        "y": 2.4349999999999996
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.17169579488825,
-        "y": 2.445702220365371
+        "x": 5.9433934086188795,
+        "y": 2.3736238032130466
       },
       "isLocked": false,
-      "linkedName": "Popsicle1StartFlipped"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.1330451127819545,
-        "y": 2.495
+        "x": 5.07,
+        "y": 2.864749999999999
       },
       "prevControl": {
-        "x": 6.669680938285021,
-        "y": 2.632849965473297
+        "x": 5.324139463410756,
+        "y": 2.859047325352236
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Popsicle1EndFlipped"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.33760972316001997,
+      "minWaypointRelativePos": 0.4655086848635175,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 4.5,
-        "maxAcceleration": 2.0,
+        "maxVelocity": 4.43,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -47,6 +47,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "PrepL4",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepL4"
+        }
+      }
+    },
+    {
       "name": "DeployTounge",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
@@ -56,12 +67,6 @@
           "name": "DeployTounge"
         }
       }
-    },
-    {
-      "name": "ScoreCoralL4CWOverride",
-      "waypointRelativePos": 0.26902173913043503,
-      "endWaypointRelativePos": 1.0,
-      "command": null
     }
   ],
   "globalConstraints": {
@@ -73,11 +78,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 120.96375653207345
+    "velocity": 0,
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Combo Meal",
+  "folder": "DCMP MVP",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

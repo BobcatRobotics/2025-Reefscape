@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DCMP CW MVP"
+            "pathName": "DCMP-1-Flipped"
           }
         },
         {
@@ -25,37 +25,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Algae-2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Algae-3"
+            "pathName": "flipped DCMP-2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ScoreAlgae"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Algae-4"
+            "name": "PrepL4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ScoreAlgae"
+            "name": "PlaceL4"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Algae-5"
+            "name": "Stow"
           }
         }
       ]

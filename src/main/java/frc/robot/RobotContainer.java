@@ -475,8 +475,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "PrepAlgaePluckL2",
-        SuperstructureActions.prepScore(
-                ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector)
+        superstructure
+            .setState(SuperstructureState.ALGAE_PREP_L2, endEffector::hasPiece)
             .alongWith(endEffector.intakeAlgaeCommand())
             .until(endEffector::hasPiece));
 
@@ -491,10 +491,12 @@ public class RobotContainer {
         "ScoreAlgae",
         superstructure
             .setState(SuperstructureState.NET_SCORE, endEffector::hasPiece)
-            .andThen(endEffector.outtakeCommand().until(() -> !endEffector.hasPiece())));
+            .andThen(endEffector.outtakeFastCommand().until(() -> !endEffector.hasPiece())));
     NamedCommands.registerCommand(
         "PrepNetScore",
-        superstructure.setState(SuperstructureState.NET_SCORE, endEffector::hasPiece));
+        SuperstructureActions.prepScore(
+                ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector)
+            .alongWith(endEffector.intakeAlgaeCommand()));
   }
 
   public void updateControllerAlerts() {
@@ -613,7 +615,13 @@ public class RobotContainer {
     joystick.thumb.onTrue(
         new ConditionalCommand(
             superstructure.gotToLastPrepPosition(endEffector::hasPiece),
-            superstructure.score(drive::isCoralSideDesired, endEffector::hasPiece),
+            superstructure
+                .score(drive::isCoralSideDesired, endEffector::hasPiece)
+                .alongWith(
+                    new ConditionalCommand(
+                        endEffector.stop(),
+                        Commands.none(),
+                        superstructure::isScoringLevelCoralL2orL3)),
             superstructure::isScoring));
 
     // stow
