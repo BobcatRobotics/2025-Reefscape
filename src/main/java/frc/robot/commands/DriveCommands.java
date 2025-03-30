@@ -596,10 +596,10 @@ public class DriveCommands {
 
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            .1,
+            .2,
             0.0,
             0,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY / 3, ANGLE_MAX_ACCELERATION / 3));
     angleController.enableContinuousInput(-180, 180);
     LinearFilter omegaFilter = LinearFilter.movingAverage(5);
 

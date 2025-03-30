@@ -24,6 +24,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class CoralIntakeIOTalonFX implements CoralIntakeIO {
 
@@ -34,6 +35,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
   private TalonFX roller;
   private TalonFX pivot;
   private LaserCan laser;
+  private DigitalInput frontSensor = new DigitalInput(9);
   private PositionVoltage positionRequest = new PositionVoltage(0);
   private TorqueCurrentFOC rollerRequest = new TorqueCurrentFOC(0);
   private Alert rangingAlert =
@@ -105,6 +107,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
         inputs.laserCanDistanceMilimeters == -1
             ? false
             : inputs.laserCanDistanceMilimeters < LASER_THRESHOLD.in(Millimeters);
+    inputs.frontSensorDetected = frontSensor.get();
   }
 
   @Override
