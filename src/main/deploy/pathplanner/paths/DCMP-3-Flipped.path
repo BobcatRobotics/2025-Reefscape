@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.158151973757644,
-        "y": 2.544448675464939
+        "x": 1.0221901535682028,
+        "y": 1.8713241851333517
       },
       "isLocked": false,
       "linkedName": "DCMP-2-Flipped-End"
     },
     {
       "anchor": {
-        "x": 1.667851027395871,
-        "y": 1.2377354452075622
+        "x": 1.6423155737704918,
+        "y": 1.153944672131147
       },
       "prevControl": {
-        "x": 1.3383110831767762,
-        "y": 1.5074913331096478
+        "x": 1.210758196721312,
+        "y": 1.4296618852459029
       },
       "nextControl": {
-        "x": 2.4971118638922296,
-        "y": 0.5589163910209901
+        "x": 2.7719787142305066,
+        "y": 0.4322154435039106
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 2.816340516090418
       },
       "prevControl": {
-        "x": 3.846717823691747,
-        "y": 2.659899179194582
+        "x": 3.7949817819653813,
+        "y": 2.8565887906995457
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,15 +46,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5108055009823117,
-      "rotationDegrees": 136.36148555691778
+      "waypointRelativePos": 0.27897838899804744,
+      "rotationDegrees": 96.59381363486109
+    },
+    {
+      "waypointRelativePos": 1.02946954813359,
+      "rotationDegrees": 128.8483744782026
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0.45714285714286174,
-      "maxWaypointRelativePos": 1.4428571428571388,
+      "maxWaypointRelativePos": 1.2870201096892169,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 1.75,
@@ -104,7 +108,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.42380952380952,
+      "waypointRelativePos": 1.3796465569774559,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

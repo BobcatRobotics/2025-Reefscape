@@ -20,12 +20,12 @@
         "y": 1.261834016393535
       },
       "prevControl": {
-        "x": 1.9062029004809704,
-        "y": 0.2854266091466764
+        "x": 2.267856305193409,
+        "y": 0.44550694111084754
       },
       "nextControl": {
-        "x": 1.3675727892863503,
-        "y": 2.7209686003604077
+        "x": 0.7911885245901636,
+        "y": 2.5325307377049184
       },
       "isLocked": false,
       "linkedName": null
@@ -97,7 +97,7 @@
     },
     {
       "name": "StowIntake",
-      "waypointRelativePos": 1.1017672151127407,
+      "waypointRelativePos": 1.0773918342474096,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -108,7 +108,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.248019500304689,
+      "waypointRelativePos": 1.2772699573430801,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
