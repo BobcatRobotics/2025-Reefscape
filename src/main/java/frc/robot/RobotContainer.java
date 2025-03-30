@@ -391,11 +391,14 @@ public class RobotContainer {
         "PrepL4", superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false));
     NamedCommands.registerCommand(
         "PlaceL4",
-        superstructure
-            .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
-            .andThen(
-                superstructure.setState(
-                    SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece))); // ,
+        new ConditionalCommand(
+            superstructure
+                .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
+                .andThen(
+                    superstructure.setState(
+                        SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)),
+            superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece),
+            endEffector::hasPiece)); // ,
     // superstructure
     // .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
     // .alongWith(endEffector.idleCoralCommand()),
@@ -558,11 +561,12 @@ public class RobotContainer {
     // BranchSide.COUNTER_CLOCKWISE,
     // ScoringLevel.CORAL_L4));
 
-    joystick
-        .axisLessThan(3, -.9)
-        .whileTrue(
-            DriveCommands.driveToCoral(
-                drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
+    // joystick
+    //     .axisLessThan(3, -.9)
+    //     .whileTrue(
+    //         DriveCommands.driveToCoral(
+    //             drive, photon, () -> 0, () -> 0, () -> 0,
+    // superstructure::getElevatorPercentage));
     // .withDeadline(
     // SuperstructureActions.intakeCoralGround(superstructure, intake,
     // trimSupplier)));

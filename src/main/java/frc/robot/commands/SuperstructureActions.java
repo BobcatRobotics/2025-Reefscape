@@ -141,15 +141,14 @@ public class SuperstructureActions {
         .until(endEffector::hasPiece)
         .withTimeout(RobotBase.isSimulation() ? 0.25 : 0.75)
         .andThen(
-            // new ConditionalCommand(
-            superstructure
-                .setState(SuperstructureState.CORAL_PREP_L4, () -> false)
-                .alongWith(endEffector.idleCoralCommand()));
-    // ,
-    // superstructure
-    //     .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
-    //     .alongWith(endEffector.idleCoralCommand()),
-    // () -> endEffector.hasPiece()));
+            new ConditionalCommand(
+                superstructure
+                    .setState(SuperstructureState.CORAL_PREP_L4, () -> false)
+                    .alongWith(endEffector.idleCoralCommand()),
+                superstructure
+                    .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
+                    .alongWith(endEffector.idleCoralCommand()),
+                () -> endEffector.hasPiece()));
   }
 
   public static Command handoffNoIdle(Superstructure superstructure, EndEffector endEffector) {

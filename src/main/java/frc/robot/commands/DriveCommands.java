@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -685,20 +686,22 @@ public class DriveCommands {
               // omega = Math.copySign(omega * omega, omega);
 
               // Convert to field relative speeds & send command
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
-                      -xOutput, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) +
-                      // xOutput,
-                      0,
-                      omegaOutput); // * drive.getMaxAngularSpeedRadPerSec());
-              drive.runVelocity(speeds);
-            },
-            drive)
+              // ChassisSpeeds speeds =
+              //     new ChassisSpeeds(
+              //         -xOutput, // -(StickMagnitude * drive.getMaxLinearSpeedMetersPerSec()) +
+              //         // xOutput,
+              //         0,
+              //         omegaOutput); // * drive.getMaxAngularSpeedRadPerSec());
+              // drive.runVelocity(speeds);
+              drive.setPPOverride(0.0, .0, omegaOutput);
+              PPHolonomicDriveController.clearXYFeedbackOverride();
+            })
         .unless(() -> !photon.hasCoral())
         .beforeStarting(
             () -> {
               angleController.reset(0);
-            });
+            })
+        .finallyDo(() -> PPHolonomicDriveController.clearFeedbackOverrides());
   }
 
   public static Command driveToProcessor(

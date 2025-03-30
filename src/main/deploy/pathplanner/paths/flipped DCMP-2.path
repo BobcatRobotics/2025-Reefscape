@@ -96,6 +96,17 @@
       }
     },
     {
+      "name": "DriveToCoral",
+      "waypointRelativePos": 0.6045094454600833,
+      "endWaypointRelativePos": 0.9750152346130374,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "DriveToCoral"
+        }
+      }
+    },
+    {
       "name": "StowIntake",
       "waypointRelativePos": 1.0773918342474096,
       "endWaypointRelativePos": null,
