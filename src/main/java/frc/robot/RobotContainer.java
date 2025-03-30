@@ -155,12 +155,12 @@ public class RobotContainer {
                 new SwerveModuleIOTalonFX(TunerConstants25.BackLeft),
                 new SwerveModuleIOTalonFX(TunerConstants25.BackRight));
         // drive =
-        //     new Drive(
-        //         new GyroIO() {},
-        //         new SwerveModuleIO() {},
-        //         new SwerveModuleIO() {},
-        //         new SwerveModuleIO() {},
-        //         new SwerveModuleIO() {});
+        // new Drive(
+        // new GyroIO() {},
+        // new SwerveModuleIO() {},
+        // new SwerveModuleIO() {},
+        // new SwerveModuleIO() {},
+        // new SwerveModuleIO() {});
 
         limelightfl =
             new Vision(drive, new VisionIOLimelight(Constants.LimelightFLConstants.constants));
@@ -194,7 +194,8 @@ public class RobotContainer {
         // new SwerveModuleIO() {});
         // limelight = new Vision(drive, new VisionIO() {});
         // superstructure =
-        //     new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO() {}));
+        // new Superstructure(new Arm(new ArmIO() {}), new Elevator(new ElevatorIO()
+        // {}));
 
         superstructure =
             new Superstructure(
@@ -325,7 +326,8 @@ public class RobotContainer {
                     .until(intake::hasPiece)));
 
     NamedCommands.registerCommand(
-        "HandoffThenPrep", SuperstructureActions.handoffThenPrepL4(superstructure, endEffector));
+        "HandoffThenPrep",
+        SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCW",
@@ -377,11 +379,11 @@ public class RobotContainer {
             .andThen(
                 new RunCommand(() -> intake.retract()).withTimeout(1)
                 // .andThen(
-                //     new RunCommand(
-                //             () -> { // retract for a quarter second
-                //               intake.retract();
-                //             })
-                //         .withTimeout(0.25))
+                // new RunCommand(
+                // () -> { // retract for a quarter second
+                // intake.retract();
+                // })
+                // .withTimeout(0.25))
                 // .andThen(new RunCommand(() -> intake.deploy()).withTimeout(0.25)) // depo
                 ));
 
@@ -389,11 +391,16 @@ public class RobotContainer {
         "PrepL4", superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false));
     NamedCommands.registerCommand(
         "PlaceL4",
-        superstructure
-            .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
-            .andThen(
-                superstructure.setState(
-                    SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)));
+        new ConditionalCommand(
+            superstructure
+                .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
+                .andThen(
+                    superstructure.setState(
+                        SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)),
+            superstructure
+                .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
+                .alongWith(endEffector.idleCoralCommand()),
+            () -> endEffector.hasPiece()));
     NamedCommands.registerCommand(
         "FlipAndIntake",
         new RunCommand(() -> intake.deploy())
@@ -553,8 +560,9 @@ public class RobotContainer {
     // ScoringLevel.CORAL_L4));
 
     // leftRuffy.button.whileTrue(
-    //     DriveCommands.driveToCoral(
-    //         drive, photon, () -> 0, () -> 0, () -> 0, superstructure::getElevatorPercentage));
+    // DriveCommands.driveToCoral(
+    // drive, photon, () -> 0, () -> 0, () -> 0,
+    // superstructure::getElevatorPercentage));
     // .withDeadline(
     // SuperstructureActions.intakeCoralGround(superstructure, intake,
     // trimSupplier)));

@@ -41,9 +41,39 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP-3-Flipped"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Stow"
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP-4-Flipped"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
           }
         }
       ]
