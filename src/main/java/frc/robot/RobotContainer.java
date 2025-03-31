@@ -395,7 +395,11 @@ public class RobotContainer {
                 ));
 
     NamedCommands.registerCommand(
-        "PrepL4", superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false));
+        "PrepL4",
+        new ConditionalCommand(
+            superstructure.goToPrepPos(ScoringLevel.CORAL_L4, () -> false),
+            superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false),
+            endEffector::hasPiece));
     NamedCommands.registerCommand(
         "PlaceL4",
         new ConditionalCommand(

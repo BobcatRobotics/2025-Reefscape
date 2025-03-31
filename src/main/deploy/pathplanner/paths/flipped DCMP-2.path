@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.07,
-        "y": 2.864749999999999
+        "x": 5.022848360655738,
+        "y": 2.8561987704918033
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.068852459012816,
-        "y": 0.2308913934427146
+        "x": 2.5598812791522865,
+        "y": 0.4786149781182969
       },
       "isLocked": false,
       "linkedName": "DCMP-1-Flipped-End"
     },
     {
       "anchor": {
-        "x": 1.474487704918033,
-        "y": 1.141956967213115
+        "x": 1.4505122950819673,
+        "y": 1.1059938524590154
       },
       "prevControl": {
-        "x": 2.0520776166723964,
-        "y": 0.32562989193042735
+        "x": 1.6527451035138139,
+        "y": 0.8588277948981098
       },
       "nextControl": {
-        "x": 0.5754098360691505,
-        "y": 2.412653688524499
+        "x": 0.8402005633495534,
+        "y": 1.8519081567955764
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 3.0109999999999992
       },
       "prevControl": {
-        "x": 3.9777298199791424,
-        "y": 2.899945777918571
+        "x": 4.002060421604428,
+        "y": 3.0400161079855885
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.4872298624754542,
-      "rotationDegrees": -6.486822814866751
+      "rotationDegrees": -28.904646398157347
     },
     {
       "waypointRelativePos": 1.1434184675835102,
@@ -57,10 +57,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5652370203160253,
-      "maxWaypointRelativePos": 1.4537396121883688,
+      "minWaypointRelativePos": 0.35588056063377205,
+      "maxWaypointRelativePos": 1.2821450335161586,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 1.5,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -73,7 +73,7 @@
       "minWaypointRelativePos": 1.6559819413092478,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 4.43,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -97,7 +97,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.2772699573430801,
+      "waypointRelativePos": 1.1407678244972592,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

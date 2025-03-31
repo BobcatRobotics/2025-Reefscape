@@ -145,10 +145,9 @@ public class SuperstructureActions {
                 superstructure
                     .setState(SuperstructureState.CORAL_PREP_L4, () -> false)
                     .alongWith(endEffector.idleCoralCommand()),
-                superstructure
-                    .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
-                    .alongWith(endEffector.idleCoralCommand()),
-                () -> endEffector.hasPiece()));
+                superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false),
+                // .alongWith(endEffector.idleCoralCommand()),
+                endEffector::hasPiece));
   }
 
   public static Command handoffNoIdle(Superstructure superstructure, EndEffector endEffector) {
