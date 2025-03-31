@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.166,
+        "y": 5.6168
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.801812431538172,
+        "y": 5.464952224520072
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.022848360655738,
+        "y": 5.1958
+      },
+      "prevControl": {
+        "x": 5.802049180320644,
+        "y": 5.4695184426170975
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "DCMP-1-End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6221218961625262,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.43,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PrepL4",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepL4"
+        }
+      }
+    },
+    {
+      "name": "DeployIntakeEndDeployed",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "DeployTounge"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -119.8026823593151
+  },
+  "reversed": false,
+  "folder": "DCMP",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

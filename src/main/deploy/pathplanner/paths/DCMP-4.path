@@ -3,62 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.022848360655738,
-        "y": 5.1958
+        "x": 4.041720664979365,
+        "y": 5.2358
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5893442622950817,
-        "y": 7.579354508196721
+        "x": 2.146025285299328,
+        "y": 6.5413647654694085
       },
       "isLocked": false,
-      "linkedName": "DCMP-1-End"
+      "linkedName": "DCMP-3-End"
     },
     {
       "anchor": {
-        "x": 1.4505122950819673,
+        "x": 1.234733606557377,
         "y": 6.9458
       },
       "prevControl": {
-        "x": 1.6666933644641784,
-        "y": 7.213966237599349
+        "x": 2.0379098360655736,
+        "y": 7.555379098360655
       },
       "nextControl": {
-        "x": 0.6952868852459015,
-        "y": 6.008965163934425
+        "x": 0.678328345106271,
+        "y": 6.523510339104317
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.75375,
-        "y": 5.0408
+        "x": 3.201511457251527,
+        "y": 4.2398
       },
       "prevControl": {
-        "x": 3.2007172131147543,
-        "y": 5.469518442622951
+        "x": 2.955613390232617,
+        "y": 4.284901448273461
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DCMP-2-End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4872298624754542,
-      "rotationDegrees": 50.48503250181571
-    },
-    {
-      "waypointRelativePos": 1.1434184675835102,
-      "rotationDegrees": 60.437365540032125
+      "waypointRelativePos": 0.4990176817288992,
+      "rotationDegrees": 31.914505409831005
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5460085313832933,
-      "maxWaypointRelativePos": 1.2918951858622783,
+      "minWaypointRelativePos": 0.3412553321145705,
+      "maxWaypointRelativePos": 1.2041438147471115,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 1.0,
@@ -70,11 +66,11 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.8135283363802592,
+      "minWaypointRelativePos": 1.7285714285714286,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 4.43,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 2.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -86,7 +82,7 @@
   "eventMarkers": [
     {
       "name": "RetractThatThang",
-      "waypointRelativePos": 0.09750692520775386,
+      "waypointRelativePos": 0.06666666666666665,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -97,7 +93,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.4235222425350258,
+      "waypointRelativePos": 1.3904761904761869,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -117,13 +113,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.60322369320018
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "DCMP",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.8026823593151
+    "rotation": -61.1705762933199
   },
   "useDefaultConstraints": true
 }
