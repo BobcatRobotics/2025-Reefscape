@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.690266393439046,
-        "y": 1.261834016393535
+        "x": 1.474487704918033,
+        "y": 1.141956967213115
       },
       "prevControl": {
-        "x": 2.267856305193409,
-        "y": 0.44550694111084754
+        "x": 2.0520776166723964,
+        "y": 0.32562989193042735
       },
       "nextControl": {
-        "x": 0.7911885245901636,
-        "y": 2.5325307377049184
+        "x": 0.5754098360691505,
+        "y": 2.412653688524499
       },
       "isLocked": false,
       "linkedName": null
@@ -51,7 +51,7 @@
     },
     {
       "waypointRelativePos": 1.1434184675835102,
-      "rotationDegrees": -15.2757602002666
+      "rotationDegrees": -36.27832173942854
     }
   ],
   "constraintZones": [
@@ -92,28 +92,6 @@
         "type": "named",
         "data": {
           "name": "RetractThatThang"
-        }
-      }
-    },
-    {
-      "name": "DriveToCoral",
-      "waypointRelativePos": 0.6045094454600833,
-      "endWaypointRelativePos": 0.9750152346130374,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "DriveToCoral"
-        }
-      }
-    },
-    {
-      "name": "StowIntake",
-      "waypointRelativePos": 1.0773918342474096,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "StowIntake"
         }
       }
     },

@@ -107,7 +107,7 @@ public class CoralIntakeIOTalonFX implements CoralIntakeIO {
         inputs.laserCanDistanceMilimeters == -1
             ? false
             : inputs.laserCanDistanceMilimeters < LASER_THRESHOLD.in(Millimeters);
-    inputs.frontSensorDetected = frontSensor.get();
+    inputs.frontSensorDetected = frontSensor.get() == true ? false : true;
   }
 
   @Override

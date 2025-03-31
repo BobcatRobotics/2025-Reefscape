@@ -32,6 +32,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
 import frc.robot.AidensGamepads.Ruffy;
@@ -327,7 +329,12 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "HandoffThenPrep",
-        SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector));
+        new SequentialCommandGroup(
+            new WaitCommand(.5).until(() -> (intake.frontSensor() && !intake.hasPiece())),
+            new WaitCommand(0.45)
+                .until(intake::hasPiece)
+                .deadlineFor(Commands.run(() -> intake.retract())),
+            SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector)));
 
     NamedCommands.registerCommand(
         "ScoreCoralL4CCW",

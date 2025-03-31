@@ -96,30 +96,8 @@
       }
     },
     {
-      "name": "DriveToCoral",
-      "waypointRelativePos": 0.4972577696526561,
-      "endWaypointRelativePos": 1.0432663010359522,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "DriveToCoral"
-        }
-      }
-    },
-    {
-      "name": "StowIntake",
-      "waypointRelativePos": 1.350396099939056,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "StowIntake"
-        }
-      }
-    },
-    {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.4673979280926206,
+      "waypointRelativePos": 1.394271785496652,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

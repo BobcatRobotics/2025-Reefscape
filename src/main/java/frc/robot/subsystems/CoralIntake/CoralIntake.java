@@ -79,6 +79,10 @@ public class CoralIntake extends SubsystemBase {
     return inputs.hasPiece;
   }
 
+  public boolean frontSensor() {
+    return inputs.frontSensorDetected;
+  }
+
   public void zeroPosition() {
     io.zeroPosition();
   }
