@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.Logger;
 public class Arm extends SubsystemBase {
 
   // TODO make this as small as possible
-  public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(2);
+  public static final Rotation2d ARM_TOLERANCE = Rotation2d.fromDegrees(3.5);
 
   private Alert motorDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);
   private Alert encoderDisconnected = new Alert("Arm motor disconnected!", AlertType.kWarning);

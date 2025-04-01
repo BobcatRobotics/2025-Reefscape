@@ -61,7 +61,7 @@ public class ArmIOTalonFX implements ArmIO {
 
     // coral
     angleConfigs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
-    angleConfigs.Slot0.kP = 5;
+    angleConfigs.Slot0.kP = 15;
     angleConfigs.Slot0.kI = 0;
     angleConfigs.Slot0.kD = 0;
     angleConfigs.Slot0.kS = 0.21;

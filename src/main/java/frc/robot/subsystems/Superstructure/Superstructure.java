@@ -57,6 +57,7 @@ public class Superstructure {
 
   public void setLastPrepPosition(SuperstructureState state) {
     lastPrepPosition = state;
+    Logger.recordOutput("lastPrepPos", state);
   }
 
   public SuperstructureState getLastPrepPosition() {
@@ -307,6 +308,7 @@ public class Superstructure {
     return Commands.run(
             () -> {
               isScoring = true;
+              Logger.recordOutput("isScoring", true);
               SuperstructureState goal = getDesiredScoringState();
               boolean armFlipped = shouldFlipArm.getAsBoolean();
               Logger.recordOutput("desiredscoringstate", getDesiredScoringState());
@@ -339,11 +341,18 @@ public class Superstructure {
   }
 
   public Command gotToLastPrepPosition(BooleanSupplier hasPiece) {
+
     return setState(this::getLastPrepPosition, hasPiece)
-        .alongWith(new InstantCommand(() -> isScoring = false));
+        .alongWith(
+            new InstantCommand(
+                () -> {
+                  isScoring = false;
+                  Logger.recordOutput("isScoring", false);
+                }));
   }
 
   public boolean isScoring() {
+    Logger.recordOutput("isScoring", isScoring);
     return isScoring;
   }
 

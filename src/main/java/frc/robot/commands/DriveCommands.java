@@ -80,7 +80,7 @@ public class DriveCommands {
     return Commands.run(
         () -> {
           double maxSpeed = drive.getMaxLinearSpeedMetersPerSec();
-          if (climbLimiter.getAsBoolean()){
+          if (climbLimiter.getAsBoolean()) {
             maxSpeed = maxSpeed * 0.15;
           }
           boolean useFineStrafe =
