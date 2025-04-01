@@ -8,24 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5598812791522865,
-        "y": 0.4786149781182969
+        "x": 2.4166137348101837,
+        "y": 0.8579012777290895
       },
       "isLocked": false,
       "linkedName": "DCMP-1-Flipped-End"
     },
     {
       "anchor": {
-        "x": 1.4505122950819673,
-        "y": 1.1059938524590154
+        "x": 2.0123120300751878,
+        "y": 0.7492199248120311
       },
       "prevControl": {
-        "x": 1.6527451035138139,
-        "y": 0.8588277948981098
+        "x": 2.2622790678654,
+        "y": 0.7451603659213886
       },
       "nextControl": {
-        "x": 0.8402005633495534,
-        "y": 1.8519081567955764
+        "x": 1.7617334626598224,
+        "y": 0.7532894151742335
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.2139849624060148,
+        "y": 1.3298214285714278
+      },
+      "prevControl": {
+        "x": 1.1999524111804152,
+        "y": 1.0802155642450844
+      },
+      "nextControl": {
+        "x": 1.238515781845053,
+        "y": 1.766166629830646
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +52,8 @@
         "y": 3.0109999999999992
       },
       "prevControl": {
-        "x": 4.002060421604428,
-        "y": 3.0400161079855885
+        "x": 2.652402186747892,
+        "y": 1.5426885551044747
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,19 +62,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4872298624754542,
-      "rotationDegrees": -28.904646398157347
+      "waypointRelativePos": 0.95,
+      "rotationDegrees": -34.094637213246976
     },
     {
-      "waypointRelativePos": 1.1434184675835102,
+      "waypointRelativePos": 2.14341846758351,
       "rotationDegrees": -36.27832173942854
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.35588056063377205,
-      "maxWaypointRelativePos": 1.2821450335161586,
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 2.2821450335161586,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 1.0,
@@ -70,8 +86,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6559819413092478,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 2.655981941309248,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 4.43,
         "maxAcceleration": 1.0,
@@ -86,7 +102,7 @@
   "eventMarkers": [
     {
       "name": "RetractThatThang",
-      "waypointRelativePos": 0.09750692520775386,
+      "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -97,7 +113,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.1407678244972592,
+      "waypointRelativePos": 2.140767824497259,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
