@@ -321,7 +321,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "HandoffThenPrep",
         new SequentialCommandGroup(
-            new WaitCommand(.5).until(() -> (intake.frontSensor() && !intake.hasPiece())),
+            new WaitCommand(.5).until(() -> (intake.frontSensor())),
             new WaitCommand(0.45)
                 .until(intake::hasPiece)
                 .deadlineFor(Commands.run(() -> intake.retract())),
