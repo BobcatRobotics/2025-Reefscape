@@ -50,4 +50,8 @@ public class LogitechJoystick extends CommandJoystick {
     bottom11 = super.button(11);
     bottom12 = super.button(12);
   }
+
+  public Trigger throttleGreaterThan(double value) {
+    return new Trigger(() -> throttle.getAsDouble() > value);
+  }
 }

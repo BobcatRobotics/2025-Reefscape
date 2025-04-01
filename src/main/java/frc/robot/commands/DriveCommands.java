@@ -74,10 +74,15 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier,
       DoubleSupplier elevatorHeightPercentage,
       DoubleSupplier fineStrafeXSupplier,
-      DoubleSupplier fineStrafeYSupplier) {
+      DoubleSupplier fineStrafeYSupplier,
+      BooleanSupplier climbLimiter) {
+
     return Commands.run(
         () -> {
           double maxSpeed = drive.getMaxLinearSpeedMetersPerSec();
+          if (climbLimiter.getAsBoolean()){
+            maxSpeed = maxSpeed * 0.15;
+          }
           boolean useFineStrafe =
               Math.abs(fineStrafeXSupplier.getAsDouble()) > 0.25
                   || Math.abs(fineStrafeYSupplier.getAsDouble()) > 0.25; // TODO verify deadzone

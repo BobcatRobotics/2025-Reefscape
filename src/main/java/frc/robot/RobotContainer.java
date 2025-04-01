@@ -541,7 +541,8 @@ public class RobotContainer {
             () -> -rightRuffy.xAxis.getAsDouble(),
             superstructure::getElevatorPercentage,
             rightRuffy::getZ,
-            leftRuffy::getZ));
+            leftRuffy::getZ,
+            joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
 
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(
