@@ -561,8 +561,10 @@ public class DriveCommands {
                       // AidenAlign
                       .plus(
                           useAidenAlign
-                              ? new ChassisSpeeds(
-                                  aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0)
+                              ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                  new ChassisSpeeds(
+                                      aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0),
+                                  drive.getRotation())
                               : new ChassisSpeeds())
                       .plus(
                           ChassisSpeeds.fromFieldRelativeSpeeds(

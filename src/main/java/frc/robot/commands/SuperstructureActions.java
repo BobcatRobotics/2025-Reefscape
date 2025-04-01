@@ -65,19 +65,16 @@ public class SuperstructureActions {
    */
   public static Command intakeCoralGround(
       Superstructure superstructure, CoralIntake intake, Supplier<Angle> trim) {
-    return superstructure
-        .setState(SuperstructureState.HANDOFF_PREP, () -> false)
-        .alongWith(
-            new RunCommand(
-                () -> {
-                  intake.deploy(trim.get());
-                  intake.runIn();
-                },
-                intake))
+    return new RunCommand(
+            () -> {
+              intake.deploy(trim.get());
+              intake.runIn();
+            },
+            intake)
         .finallyDo(
             () -> {
               intake.retract();
-              intake.stop();
+              intake.dampenCoral();
             })
         .handleInterrupt(
             () -> {

@@ -30,9 +30,9 @@ public class ClimberIOTalonFX implements ClimberIO {
     motorConfig.CurrentLimits.StatorCurrentLimit = 60; // TODO tune
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 66;
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 66 + 60;
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -145;
+    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -145 + 60;
     motor.getConfigurator().apply(motorConfig);
     motor.setPosition(0);
 

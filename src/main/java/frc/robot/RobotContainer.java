@@ -15,7 +15,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -40,7 +39,6 @@ import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants25;
 import frc.robot.commands.AutoCommands;
-import frc.robot.commands.CharacterizationCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.SuperstructureActions;
 import frc.robot.subsystems.Climber.Climber;
@@ -264,22 +262,15 @@ public class RobotContainer {
     registerCommands();
     // autobuilder handles 'do nothing' command
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    // autoChooser.addOption("Popsicle", new PathPlannerAuto("Popsicle"));
-    autoChooser.addOption(
-        "MVP CW L4",
-        AutoCommands.fullAutoReefScore(
-            drive, superstructure, endEffector, BranchSide.CLOCKWISE, ScoringLevel.CORAL_L4, true));
-    autoChooser.addOption(
-        "SwerveFFTest", CharacterizationCommands.velocityRampTuning(drive, Seconds.of(1.5)));
 
     // Set up SysId routine
     // drivetrain
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization",
-        CharacterizationCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization",
-        CharacterizationCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization",
+    //     CharacterizationCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization",
+    //     CharacterizationCommands.feedforwardCharacterization(drive));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -409,7 +400,11 @@ public class RobotContainer {
                     superstructure.setState(
                         SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)),
             superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece),
-            endEffector::hasPiece)); // ,
+            endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "PlaceL4NoRetract",
+        superstructure.setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece));
     // superstructure
     // .setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false)
     // .alongWith(endEffector.idleCoralCommand()),
@@ -673,8 +668,11 @@ public class RobotContainer {
                 .finallyDo(() -> endEffector.idleCoral()));
 
     // intake from ground
-    joystick.bottomLeft.onTrue(
-        superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece));
+    joystick
+        .bottomLeft
+        .and(() -> !endEffector.hasPiece())
+        .onTrue(
+            superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece));
 
     joystick.bottomLeft.whileTrue(
         SuperstructureActions.intakeCoralGround(superstructure, intake, trimSupplier));

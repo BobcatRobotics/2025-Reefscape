@@ -13,6 +13,7 @@ public class Climber extends SubsystemBase {
   private ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private final Alert motorDisconnectedAlert =
       new Alert("Climber motor disconnected!", AlertType.kWarning);
+  private boolean hasDeployed = false;
 
   public Climber(ClimberIO io) {
     this.io = io;
@@ -27,6 +28,7 @@ public class Climber extends SubsystemBase {
 
   public void setDutyCycle(double output) {
     io.setDutyCycle(output);
+    hasDeployed = true;
   }
 
   public void setPosition(Rotation2d pos) {
@@ -34,6 +36,6 @@ public class Climber extends SubsystemBase {
   }
 
   public Command idleIn() {
-    return Commands.run(() -> io.setDutyCycle(-0.0), this); // TODO tune
+    return Commands.run(() -> io.setDutyCycle(-0.03), this).unless(() -> hasDeployed); // TODO tune
   }
 }

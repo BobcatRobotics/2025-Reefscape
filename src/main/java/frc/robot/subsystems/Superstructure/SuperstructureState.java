@@ -36,8 +36,6 @@ public enum SuperstructureState {
 
   ALGAE_PREP_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L2),
   ALGAE_PREP_L3(ElevatorState.ALGAE_L3, ArmState.ALGAE_PREP_L3),
-  ALGAE_LIFT_L2(ElevatorState.ALGAE_L2, ArmState.ALGAE_PREP_L2),
-  ALGAE_LIFT_L3(ElevatorState.ALGAE_L3, ArmState.ALGAE_PREP_L3),
 
   NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
   NET_PREP(ElevatorState.NET_PREP, ArmState.NET_PREP),

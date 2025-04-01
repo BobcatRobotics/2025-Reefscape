@@ -80,6 +80,7 @@ public class StateGraph {
         List.of(
             new SuperstructureState[] {
               SuperstructureState.UNKNOWN,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
               SuperstructureState.ELEVATOR_SAFE_ZONE,
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
@@ -123,7 +124,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.ALGAE_PREP_L2,
-              SuperstructureState.ALGAE_PREP_L3
+              SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.NET_PREP
             },
             new SuperstructureState[] {
               SuperstructureState.RIGHT_SIDE_UP_IDLE,
@@ -200,6 +202,8 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.INTAKE_ALGAE_GROUND,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3
             },
             new SuperstructureState[] {
               SuperstructureState.CORAL_SCORE_L1,
@@ -244,7 +248,7 @@ public class StateGraph {
               SuperstructureState.PRE_CORAL_PREP_L4,
               SuperstructureState.CORAL_PREP_L4,
               SuperstructureState.ALGAE_PREP_L2,
-              SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.ALGAE_PREP_L3
             },
             new SuperstructureState[] {
               SuperstructureState.IDLE_ALGAE,
@@ -302,7 +306,9 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
               SuperstructureState.PRE_CORAL_PREP_L4,
-              SuperstructureState.RIGHT_SIDE_UP_IDLE
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3
             },
             new SuperstructureState[] {
               SuperstructureState.HUMAN_INTAKE, SuperstructureState.POST_HUMAN_INTAKE
