@@ -569,10 +569,10 @@ public class DriveCommands {
                               ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                   new ChassisSpeeds(
                                       aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0),
-                                      isFlipped
+                                  isFlipped
                                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
                                       : drive.getRotation())
-                                  : new ChassisSpeeds())
+                              : new ChassisSpeeds())
                       .plus(
                           ChassisSpeeds.fromFieldRelativeSpeeds(
                               overrideSpeeds,

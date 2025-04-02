@@ -161,7 +161,7 @@ public class Vision extends SubsystemBase {
             visionStdDevKP = visionStdDevKPTuner.get();
           }
 
-          //mm yes fancy std dev function yummy yummy give us a controls award
+          // mm yes fancy std dev function yummy yummy give us a controls award
           xyStdDev = visionStdDevKP * inputs.avgTagDist / (Math.sqrt(inputs.tagCount));
 
           Logger.recordOutput("Vision/TranslationalStdDev", xyStdDev);

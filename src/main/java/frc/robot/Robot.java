@@ -13,37 +13,25 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import au.grapplerobotics.CanBridge;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.LimelightFLConstants;
-import frc.robot.commands.DriveCommands;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TunerConstants25;
-import frc.robot.subsystems.Drive.ScoreSide;
-import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.RotationUtil;
-
-import static edu.wpi.first.units.Units.Meters;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import frc.robot.commands.DriveCommands;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -57,6 +45,10 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   RobotContainer robotContainer;
+
+  private double endEffectorBiasInches = DriveCommands.END_EFFECTOR_BIAS.in(Inches);
+  private final LoggedNetworkNumber endEffectorBiasInchesTuner =
+      new LoggedNetworkNumber("/Tuning/endEffectorBiasInches", endEffectorBiasInches);
 
   public Robot() {
     CanBridge.runTCP();
@@ -140,80 +132,86 @@ public class Robot extends LoggedRobot {
     // Return to normal thread priority
     Threads.setCurrentThreadPriority(false, 10);
 
-        List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
+    //   if(endEffectorBiasInches != endEffectorBiasInchesTuner.get()){
+    //   endEffectorBiasInches = endEffectorBiasInchesTuner.get();
+    // }
+    // Distance END_EFFECTOR_BIAS = Inches.of(endEffectorBiasInches);
 
-              List<Pose2d> flippedFaces = new ArrayList<>();
+    // List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 
-              for (int j = 0; j < faces.size(); j++) {
-                flippedFaces.add(AllianceFlipUtil.apply(faces.get(j)));
-              }
+    //       List<Pose2d> flippedFaces = new ArrayList<>();
 
-              Pose2d nearestFace = robotContainer.drive.getPose().nearest(flippedFaces);
-              Logger.recordOutput("driveToReef/reef_face/raw", nearestFace);
+    //       for (int j = 0; j < faces.size(); j++) {
+    //         flippedFaces.add(AllianceFlipUtil.apply(faces.get(j)));
+    //       }
 
-              int faceIndex = -1;
-              for (int i = 0; i < flippedFaces.size(); i++) {
-                if (flippedFaces.get(i) == nearestFace) {
-                  faceIndex = i;
-                  break;
-                }
-              }
+    //       Pose2d nearestFace = robotContainer.drive.getPose().nearest(flippedFaces);
+    //       Logger.recordOutput("driveToReef/reef_face/raw", nearestFace);
 
-              Pose2d poseDirection =
-                  AllianceFlipUtil.apply(
-                      new Pose2d(
-                          (FieldConstants.Reef.center),
-                          (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
+    //       int faceIndex = -1;
+    //       for (int i = 0; i < flippedFaces.size(); i++) {
+    //         if (flippedFaces.get(i) == nearestFace) {
+    //           faceIndex = i;
+    //           break;
+    //         }
+    //       }
 
-              Logger.recordOutput("driveToReef/reef_face/poseDirection", poseDirection);
-              Logger.recordOutput("driveToReef/reef_face/faceIndex", faceIndex);
+    //       Pose2d poseDirection =
+    //           AllianceFlipUtil.apply(
+    //               new Pose2d(
+    //                   (FieldConstants.Reef.center),
+    //                   (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
 
-              double diff =
-                  RotationUtil.wrapRot2d(robotContainer.drive.getPose().getRotation())
-                      .minus(poseDirection.getRotation())
-                      .getDegrees();
+    //       Logger.recordOutput("driveToReef/reef_face/poseDirection", poseDirection);
+    //       Logger.recordOutput("driveToReef/reef_face/faceIndex", faceIndex);
 
-              double transformY = 0;
+    //       double diff =
+    //           RotationUtil.wrapRot2d(robotContainer.drive.getPose().getRotation())
+    //               .minus(poseDirection.getRotation())
+    //               .getDegrees();
 
-              Rotation2d closestRotation =
-                  robotContainer.drive.getPose().getRotation().minus(Rotation2d.fromDegrees(diff));
+    //       double transformY = 0;
 
-              if (Math.abs(diff) >= 90) { // use coral side
-                robotContainer.drive.setDesiredScoringSide(ScoreSide.FRONT);
-                closestRotation = closestRotation.plus(Rotation2d.k180deg);
-                transformY = DriveCommands.END_EFFECTOR_BIAS.in(Meters);
-              } else { // use front
-                robotContainer.drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
-                transformY = -DriveCommands.END_EFFECTOR_BIAS.in(Meters);
-              }
+    //       Rotation2d closestRotation =
+    //           robotContainer.drive.getPose().getRotation().minus(Rotation2d.fromDegrees(diff));
 
-              double adjustX =
-                  DriveCommands.ALIGN_DISTANCE.baseUnitMagnitude() + FieldConstants.Reef.faceToCenter;
-              // double adjustY = Units.inchesToMeters(0);
+    //       if (Math.abs(diff) >= 90) { // use coral side
+    //         robotContainer.drive.setDesiredScoringSide(ScoreSide.FRONT);
+    //         closestRotation = closestRotation.plus(Rotation2d.k180deg);
+    //         transformY = END_EFFECTOR_BIAS.in(Meters);
+    //       } else { // use front
+    //         robotContainer.drive.setDesiredScoringSide(ScoreSide.CORAL_INTAKE);
+    //         transformY = -END_EFFECTOR_BIAS.in(Meters);
+    //       }
 
-              Pose2d offsetFaceCCW =
-                  new Pose2d(
-                      poseDirection
-                          .transformBy(
-                              new Transform2d(
-                                  adjustX, FieldConstants.Reef.reefToBranchY + transformY, new Rotation2d()))
-                          .getTranslation(),
-                      poseDirection.getRotation());
+    //       double adjustX =
+    //           DriveCommands.ALIGN_DISTANCE.baseUnitMagnitude() +
+    // FieldConstants.Reef.faceToCenter;
+    //       // double adjustY = Units.inchesToMeters(0);
 
-                      Pose2d offsetFaceCW =
-                      new Pose2d(
-                          poseDirection
-                              .transformBy(
-                                  new Transform2d(
-                                      adjustX, -FieldConstants.Reef.reefToBranchY + transformY, new Rotation2d()))
-                              .getTranslation(),
-                          poseDirection.getRotation());
-    
+    //       Pose2d offsetFaceCCW =
+    //           new Pose2d(
+    //               poseDirection
+    //                   .transformBy(
+    //                       new Transform2d(
+    //                           adjustX, FieldConstants.Reef.reefToBranchY + transformY, new
+    // Rotation2d()))
+    //                   .getTranslation(),
+    //               poseDirection.getRotation());
 
-                          Logger.recordOutput("AutoAlignTune/reef_face/offsetCW", offsetFaceCW);
-              Logger.recordOutput("AutoAlignTune/reef_face/offsetCCW", offsetFaceCCW);
+    //               Pose2d offsetFaceCW =
+    //               new Pose2d(
+    //                   poseDirection
+    //                       .transformBy(
+    //                           new Transform2d(
+    //                               adjustX, -FieldConstants.Reef.reefToBranchY + transformY, new
+    // Rotation2d()))
+    //                       .getTranslation(),
+    //                   poseDirection.getRotation());
 
-    
+    //                   Logger.recordOutput("AutoAlignTune/reef_face/offsetCW", offsetFaceCW);
+    //       Logger.recordOutput("AutoAlignTune/reef_face/offsetCCW", offsetFaceCCW);
+
   }
 
   /** This function is called once when the robot is disabled. */
