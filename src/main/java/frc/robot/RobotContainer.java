@@ -323,7 +323,7 @@ public class RobotContainer {
         new SequentialCommandGroup(
             new WaitCommand(.5).until(() -> (intake.frontSensor())),
             new WaitCommand(0.45)
-                .until(intake::hasPiece)
+                .until(()->intake.hasPiece() && !intake.frontSensor())
                 .deadlineFor(Commands.run(() -> intake.retract())),
             SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector)));
 
