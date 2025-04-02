@@ -540,8 +540,8 @@ public class RobotContainer {
             () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
             () -> -rightRuffy.xAxis.getAsDouble(),
             superstructure::getElevatorPercentage,
-            rightRuffy::getZ,
             leftRuffy::getZ,
+            rightRuffy::getZ,
             joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
 
     // Reset gyro to 0 deg

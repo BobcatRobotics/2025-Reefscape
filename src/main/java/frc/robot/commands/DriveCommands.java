@@ -44,9 +44,9 @@ public class DriveCommands {
   static final double DRIVE_KDX = 0;
   static final double ANGLE_MAX_VELOCITY = 8.0;
   static final double ANGLE_MAX_ACCELERATION = 4;
-  static final Distance ALIGN_DISTANCE = Inches.of(14.5); // 16 // TODO this should be zero
+  public static final Distance ALIGN_DISTANCE = Inches.of(14.5); // 16 // TODO this should be zero
 
-  static final Distance END_EFFECTOR_BIAS = Inches.of(1); // towards climber
+  public static final Distance END_EFFECTOR_BIAS = Inches.of(1); // towards climber
 
   private DriveCommands() {}
 
@@ -569,8 +569,10 @@ public class DriveCommands {
                               ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                   new ChassisSpeeds(
                                       aidenAlignX.getAsDouble(), aidenAlignY.getAsDouble(), 0),
-                                  drive.getRotation())
-                              : new ChassisSpeeds())
+                                      isFlipped
+                                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                                      : drive.getRotation())
+                                  : new ChassisSpeeds())
                       .plus(
                           ChassisSpeeds.fromFieldRelativeSpeeds(
                               overrideSpeeds,
