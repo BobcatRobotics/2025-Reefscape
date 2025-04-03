@@ -401,7 +401,8 @@ public class RobotContainer {
                 .andThen(
                     superstructure
                         .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
-                        .deadlineFor(endEffector.coralOut(() -> ScoringLevel.CORAL_L4))).withTimeout(0.3),
+                        .deadlineFor(endEffector.coralOut(() -> ScoringLevel.CORAL_L4)))
+                .withTimeout(0.3),
             superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece),
             endEffector::hasPiece));
 
