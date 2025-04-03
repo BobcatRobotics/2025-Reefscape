@@ -164,7 +164,10 @@ public class Vision extends SubsystemBase {
           // mm yes fancy std dev function yummy yummy give us a controls award
           xyStdDev =
               (limelightConstants.multiFunctionConstant * inputs.avgTagDist)
-                  / (Math.sqrt(DriverStation.isAutonomous()&&DriverStation.isDSAttached() ? inputs.tagCount * 0.92 : inputs.tagCount)); //trust single tag slightly less in auto
+                  / (Math.sqrt(
+                      DriverStation.isAutonomous() && DriverStation.isDSAttached()
+                          ? inputs.tagCount * 0.92
+                          : inputs.tagCount)); // trust single tag slightly less in auto
 
           Logger.recordOutput("Vision/TranslationalStdDev", xyStdDev);
 
