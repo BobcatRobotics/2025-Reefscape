@@ -694,15 +694,20 @@ public class RobotContainer {
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()).ignoringDisable(true));
 
     // climber
-    joystick.bottom7.whileTrue(
-        new RunCommand(
+    joystick
+        .bottom7
+        .whileTrue(
+            new RunCommand(
+                    () -> {
+                      climber.setDutyCycle(-joystick.getY());
+                    },
+                    climber)
+                .alongWith(
+                    superstructure.setState(SuperstructureState.CLIMB, endEffector::hasPiece)))
+        .onFalse(
+            new RunCommand(
                 () -> {
-                  climber.setDutyCycle(-joystick.getY());
-                },
-                climber)
-            .alongWith(superstructure.setState(SuperstructureState.CLIMB, endEffector::hasPiece))).onFalse(new RunCommand(
-                () -> {
-                  climber.setDutyCycle(0); 
+                  climber.setDutyCycle(0);
                 },
                 climber));
 
