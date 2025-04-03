@@ -86,6 +86,7 @@ public class CoralIntake extends SubsystemBase {
   public void zeroPosition() {
     io.zeroPosition();
   }
+  
 
   @Override
   public void periodic() {

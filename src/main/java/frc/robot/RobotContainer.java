@@ -322,8 +322,9 @@ public class RobotContainer {
         "HandoffThenPrep",
         new SequentialCommandGroup(
             new WaitCommand(.5).until(() -> (intake.frontSensor())),
-            new WaitCommand(0.45)
+            new WaitCommand(0.35)
                 .until(() -> intake.hasPiece() && !intake.frontSensor())
+                .andThen(new WaitCommand(0.1))
                 .deadlineFor(Commands.run(() -> intake.retract())),
             SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector)));
 
@@ -635,7 +636,7 @@ public class RobotContainer {
         new ConditionalCommand(
             superstructure.gotToLastPrepPosition(endEffector::hasPiece),
             superstructure
-                .score(drive::isCoralSideDesired, endEffector::hasPiece)
+                .score(() -> false, endEffector::hasPiece)
                 .alongWith(
                     new ConditionalCommand(
                         endEffector.stop(),
