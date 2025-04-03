@@ -63,10 +63,10 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.95,
-      "rotationDegrees": -4.568099013601293
+      "rotationDegrees": -10.30010880775498
     },
     {
-      "waypointRelativePos": 2.14341846758351,
+      "waypointRelativePos": 2.339999999999991,
       "rotationDegrees": -19.72370338991259
     }
   ],
@@ -113,7 +113,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 2.140767824497259,
+      "waypointRelativePos": 2.3567867036011028,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
