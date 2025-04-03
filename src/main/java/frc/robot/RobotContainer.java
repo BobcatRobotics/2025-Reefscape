@@ -763,6 +763,6 @@ public class RobotContainer {
 
   @AutoLogOutput(key = "Superstructure/usingAlgae")
   public boolean shouldUseAlgae() {
-    return drive.getAdjustY() == 0 || joystick.bottom11.getAsBoolean();
+    return joystick.bottom11.getAsBoolean();
   }
 }
