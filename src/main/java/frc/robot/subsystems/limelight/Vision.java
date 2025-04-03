@@ -164,7 +164,7 @@ public class Vision extends SubsystemBase {
           // mm yes fancy std dev function yummy yummy give us a controls award
           xyStdDev =
               (limelightConstants.multiFunctionConstant * inputs.avgTagDist)
-                  / (Math.sqrt(inputs.tagCount));
+                  / (Math.sqrt(inputs.tagCount * 0.92));
 
           Logger.recordOutput("Vision/TranslationalStdDev", xyStdDev);
 
