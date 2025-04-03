@@ -627,8 +627,7 @@ public class RobotContainer {
             .alongWith(endEffector.idleCoralCommand()));
 
     buttonBoard.net.onTrue(
-        SuperstructureActions.prepScore(
-                ScoringLevel.NET, () -> false, superstructure, endEffector)
+        SuperstructureActions.prepScore(ScoringLevel.NET, () -> false, superstructure, endEffector)
             .alongWith(endEffector.intakeAlgaeCommand()));
 
     // score

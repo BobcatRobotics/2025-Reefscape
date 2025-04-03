@@ -102,7 +102,7 @@
   "eventMarkers": [
     {
       "name": "RetractThatThang",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.05118829981718484,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
