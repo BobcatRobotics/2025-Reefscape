@@ -601,34 +601,34 @@ public class RobotContainer {
     // reef levels
     buttonBoard.l1.onTrue(
         SuperstructureActions.prepScore(
-            ScoringLevel.CORAL_L1, drive::isCoralSideDesired, superstructure, endEffector));
+            ScoringLevel.CORAL_L1, () -> false, superstructure, endEffector));
 
     buttonBoard.l2.onTrue(
         new ConditionalCommand(
             SuperstructureActions.prepScore(
-                    ScoringLevel.ALGAE_L2, drive::isCoralSideDesired, superstructure, endEffector)
+                    ScoringLevel.ALGAE_L2, () -> false, superstructure, endEffector)
                 .alongWith(endEffector.intakeAlgaeCommand()),
             SuperstructureActions.prepScore(
-                ScoringLevel.CORAL_L2, drive::isCoralSideDesired, superstructure, endEffector),
+                ScoringLevel.CORAL_L2, () -> false, superstructure, endEffector),
             this::shouldUseAlgae));
 
     buttonBoard.l3.onTrue(
         new ConditionalCommand(
             SuperstructureActions.prepScore(
-                    ScoringLevel.ALGAE_L3, drive::isCoralSideDesired, superstructure, endEffector)
+                    ScoringLevel.ALGAE_L3, () -> false, superstructure, endEffector)
                 .alongWith(endEffector.intakeAlgaeCommand()),
             SuperstructureActions.prepScore(
-                ScoringLevel.CORAL_L3, drive::isCoralSideDesired, superstructure, endEffector),
+                ScoringLevel.CORAL_L3, () -> false, superstructure, endEffector),
             this::shouldUseAlgae));
 
     buttonBoard.l4.onTrue(
         SuperstructureActions.prepScore(
-                ScoringLevel.CORAL_L4, drive::isCoralSideDesired, superstructure, endEffector)
+                ScoringLevel.CORAL_L4, () -> false, superstructure, endEffector)
             .alongWith(endEffector.idleCoralCommand()));
 
     buttonBoard.net.onTrue(
         SuperstructureActions.prepScore(
-                ScoringLevel.NET, drive::isCoralSideDesired, superstructure, endEffector)
+                ScoringLevel.NET, () -> false, superstructure, endEffector)
             .alongWith(endEffector.intakeAlgaeCommand()));
 
     // score
