@@ -8,7 +8,7 @@ import edu.wpi.first.units.measure.Angle;
 
 public enum IntakeState {
   DEPLOY(13.5, Units.radiansToDegrees(-8.5)), // TODO find this
-  RETRACT(0.74, 90),
+  RETRACT(1.5, 90),
   ALGAE_PICKUP(8, 100),
   UNKNOWN(-1, -1);
 

@@ -697,10 +697,14 @@ public class RobotContainer {
     joystick.bottom7.whileTrue(
         new RunCommand(
                 () -> {
-                  climber.setDutyCycle(-joystick.getY()); // TODO maybe invert
+                  climber.setDutyCycle(-joystick.getY());
                 },
                 climber)
-            .alongWith(superstructure.setState(SuperstructureState.CLIMB, endEffector::hasPiece)));
+            .alongWith(superstructure.setState(SuperstructureState.CLIMB, endEffector::hasPiece))).onFalse(new RunCommand(
+                () -> {
+                  climber.setDutyCycle(0); 
+                },
+                climber));
 
     // death stars
     joystick.bottom9.whileTrue(

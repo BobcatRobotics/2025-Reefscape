@@ -50,7 +50,7 @@
   "eventMarkers": [
     {
       "name": "PrepAlgaePluckL2",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.4192565508835946,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
