@@ -56,6 +56,7 @@ import frc.robot.subsystems.Drive.SwerveModuleIOSim;
 import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
+import frc.robot.subsystems.EndEffector.EndEffectorIOSim;
 import frc.robot.subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.subsystems.Limelight.Vision;
 import frc.robot.subsystems.Limelight.VisionIO;
@@ -222,7 +223,7 @@ public class RobotContainer {
                 new SwerveModuleIOSim(TunerConstants25.BackRight));
         superstructure =
             new Superstructure(new Arm(new ArmIOSim()), new Elevator(new ElevatorIOSim()));
-        endEffector = new EndEffector(new EndEffectorIO() {});
+        endEffector = new EndEffector(new EndEffectorIOSim() {});
 
         limelightfl = new Vision(drive, new VisionIO() {});
         limelightfr = new Vision(drive, new VisionIO() {});
@@ -694,15 +695,20 @@ public class RobotContainer {
     joystick.bottom8.onTrue(new InstantCommand(() -> intake.zeroPosition()).ignoringDisable(true));
 
     // climber
-    joystick.bottom7.whileTrue(
-        new RunCommand(
+    joystick
+        .bottom7
+        .whileTrue(
+            new RunCommand(
+                    () -> {
+                      climber.setDutyCycle(-joystick.getY());
+                    },
+                    climber)
+                .alongWith(
+                    superstructure.setState(SuperstructureState.CLIMB, endEffector::hasPiece)))
+        .onFalse(
+            new RunCommand(
                 () -> {
-                  climber.setDutyCycle(-joystick.getY());
-                },
-                climber)
-            .alongWith(superstructure.setState(SuperstructureState.CLIMB, endEffector::hasPiece))).onFalse(new RunCommand(
-                () -> {
-                  climber.setDutyCycle(0); 
+                  climber.setDutyCycle(0);
                 },
                 climber));
 
