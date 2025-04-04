@@ -128,12 +128,6 @@
               "data": {
                 "name": "HandoffThenPrep"
               }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "IntakeDrop"
-              }
             }
           ]
         }
