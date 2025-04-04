@@ -11,7 +11,7 @@ public enum ArmState {
   CORAL_PREP_L2(180 - 80),
   CORAL_PREP_L3(180 - 80),
   PRE_CORAL_PREP_L4(180 - 90),
-  CORAL_PREP_L4(180 - 50), // TODO tune
+  CORAL_PREP_L4(180 - 57), // TODO tune
   HANDOFF_FLIP_SAFE_ZONE(180 + 45),
 
   CORAL_SCORE_L1(180 + 25), // normal side
