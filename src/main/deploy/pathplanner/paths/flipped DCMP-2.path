@@ -120,9 +120,22 @@
       "waypointRelativePos": 2.3567867036011028,
       "endWaypointRelativePos": null,
       "command": {
-        "type": "named",
+        "type": "parallel",
         "data": {
-          "name": "HandoffThenPrep"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "HandoffThenPrep"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeDrop"
+              }
+            }
+          ]
         }
       }
     }

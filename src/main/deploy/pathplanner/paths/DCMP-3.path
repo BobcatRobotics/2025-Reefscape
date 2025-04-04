@@ -20,8 +20,8 @@
         "y": 6.563199999999999
       },
       "prevControl": {
-        "x": 1.107712229980588,
-        "y": 6.322368334786846
+        "x": 1.1077122299805877,
+        "y": 6.322368334786845
       },
       "nextControl": {
         "x": 1.2533912637143656,
@@ -116,9 +116,22 @@
       "waypointRelativePos": 1.5,
       "endWaypointRelativePos": null,
       "command": {
-        "type": "named",
+        "type": "parallel",
         "data": {
-          "name": "HandoffThenPrep"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "HandoffThenPrep"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeDrop"
+              }
+            }
+          ]
         }
       }
     }
