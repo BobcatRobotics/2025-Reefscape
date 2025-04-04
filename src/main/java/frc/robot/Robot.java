@@ -14,32 +14,20 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 
 import au.grapplerobotics.CanBridge;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BuildConstants;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.LimelightFLConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TunerConstants25;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Drive.ScoreSide;
-import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.RotationUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -171,7 +159,8 @@ public class Robot extends LoggedRobot {
     // // Pose2d poseDirection =
     // //     AllianceFlipUtil.apply(
     // //         new Pose2d(
-    // //             (FieldConstants.Reef.center), (Rotation2d.fromDegrees(180 - (60 * faceIndex)))));
+    // //             (FieldConstants.Reef.center), (Rotation2d.fromDegrees(180 - (60 *
+    // faceIndex)))));
 
     // // Logger.recordOutput("driveToReef/reef_face/poseDirection", poseDirection);
     // // Logger.recordOutput("driveToReef/reef_face/faceIndex", faceIndex);
@@ -204,7 +193,8 @@ public class Robot extends LoggedRobot {
     // //         poseDirection
     // //             .transformBy(
     // //                 new Transform2d(
-    // //                     adjustX, FieldConstants.Reef.reefToBranchY + transformY, new Rotation2d()))
+    // //                     adjustX, FieldConstants.Reef.reefToBranchY + transformY, new
+    // Rotation2d()))
     // //             .getTranslation(),
     // //         poseDirection.getRotation());
 
@@ -213,7 +203,8 @@ public class Robot extends LoggedRobot {
     // //         poseDirection
     // //             .transformBy(
     // //                 new Transform2d(
-    // //                     adjustX, -FieldConstants.Reef.reefToBranchY + transformY, new Rotation2d()))
+    // //                     adjustX, -FieldConstants.Reef.reefToBranchY + transformY, new
+    // Rotation2d()))
     // //             .getTranslation(),
     // //         poseDirection.getRotation());
 

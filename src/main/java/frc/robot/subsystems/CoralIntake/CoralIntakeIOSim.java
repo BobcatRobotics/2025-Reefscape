@@ -1,5 +1,6 @@
 package frc.robot.subsystems.CoralIntake;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.MathUtil;
@@ -7,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants.Constants;
@@ -32,6 +34,8 @@ public class CoralIntakeIOSim implements CoralIntakeIO {
   private boolean wasNotAuto = true;
   private IntakeState desiredState = IntakeState.UNKNOWN;
   private boolean closedLoop = true;
+
+  private Current rollerVelocity = Amps.of(0);
 
   public CoralIntakeIOSim() {
     controller = new PIDController(1.25, 0.0, 0.25);
@@ -70,6 +74,7 @@ public class CoralIntakeIOSim implements CoralIntakeIO {
     inputs.state = desiredState;
     inputs.rollerMotorConnected = true;
     inputs.pivotMotorConnected = true;
+    inputs.desiredRollerVelocityRPM = rollerVelocity.baseUnitMagnitude();
 
     Logger.recordOutput("desiredAngleRads", desiredState.simAngle.in(Radians));
     runVolts(controller.calculate(sim.getAngleRads(), desiredState.simAngle.in(Radians)));
@@ -114,5 +119,10 @@ public class CoralIntakeIOSim implements CoralIntakeIO {
   @Override
   public void retract() {
     setState(IntakeState.RETRACT);
+  }
+
+  @Override
+  public void setSpeed(Current velocity) {
+    velocity = rollerVelocity;
   }
 }

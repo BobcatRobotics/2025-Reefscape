@@ -1,14 +1,4 @@
 {
-  "Keyboard 2 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
-  "Keyboard 3 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "keyboardJoysticks": [
     {
       "axisConfig": [

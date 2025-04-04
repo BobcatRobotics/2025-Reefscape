@@ -330,7 +330,9 @@ public class RobotContainer {
                 .andThen(new WaitCommand(0.0))
                 .deadlineFor(Commands.run(() -> intake.retract())),
             SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector)
-                .alongWith(Commands.run(() -> intake.deploy()))));
+                .alongWith(
+                    Commands.run(() -> intake.deploy())
+                        .alongWith(Commands.run(() -> intake.stop())))));
 
     // SuperstructureActions.handoffThenPrepL4Auto(superstructure,
     // endEffector)).alongWith(Commands.run(()-> intake.deploy())));
