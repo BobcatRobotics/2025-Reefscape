@@ -113,7 +113,7 @@
     },
     {
       "name": "HandoffThenPrep",
-      "waypointRelativePos": 1.5,
+      "waypointRelativePos": 1.5063985374771454,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

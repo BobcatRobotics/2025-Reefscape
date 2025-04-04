@@ -327,7 +327,6 @@ public class RobotContainer {
             new WaitCommand(.5).until(() -> (intake.frontSensor())),
             new WaitCommand(0.35)
                 .until(() -> intake.hasPiece() && !intake.frontSensor())
-                .andThen(new WaitCommand(0.0))
                 .deadlineFor(Commands.run(() -> intake.retract())),
             SuperstructureActions.handoffThenPrepL4Auto(superstructure, endEffector)
                 .alongWith(
