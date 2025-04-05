@@ -395,7 +395,7 @@ public class DriveCommands {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 
-    double AidenAlignDeadzone = .25;
+    double AidenAlignDeadzone = .5;
 
     double XYPIDthreshold = .006;
     double ThetaPIDthreshold = .004;
