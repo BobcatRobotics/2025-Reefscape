@@ -270,8 +270,6 @@ public class StateGraph {
               SuperstructureState.INTAKE_ALGAE_GROUND,
               SuperstructureState.NET_PREP,
               SuperstructureState.ALGAE_SCORE_PROCESSOR,
-              SuperstructureState.ELEVATOR_SAFE_ZONE,
-              SuperstructureState.ELEVATOR_AND_ARM_SAFE_ZONE,
               SuperstructureState.RIGHT_SIDE_UP_IDLE
             },
             new SuperstructureState[] {
