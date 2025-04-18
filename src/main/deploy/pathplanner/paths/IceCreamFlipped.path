@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.1330451127819545,
+        "y": 2.495
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.732217481361114,
+        "y": 1.6532005433041808
+      },
+      "isLocked": false,
+      "linkedName": "Popsicle1EndFlipped"
+    },
+    {
+      "anchor": {
+        "x": 1.6948795180722889,
+        "y": 0.9837349397590345
+      },
+      "prevControl": {
+        "x": 1.648270659010389,
+        "y": 1.2293517434532197
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IceCreamEndFlipped"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5212694125590818,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.4,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "DriveToCoral",
+      "waypointRelativePos": 0.6455097906819641,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 50.33144677837368
+  },
+  "reversed": false,
+  "folder": "Combo Meal",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 120.96375653207345
+  },
+  "useDefaultConstraints": true
+}

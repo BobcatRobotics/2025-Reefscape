@@ -1,0 +1,80 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.8,
+        "y": 4.103
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.8,
+        "y": 4.103
+      },
+      "isLocked": false,
+      "linkedName": "Algae-2-End"
+    },
+    {
+      "anchor": {
+        "x": 7.552254098360655,
+        "y": 5.2897028688524586
+      },
+      "prevControl": {
+        "x": 6.552254098360655,
+        "y": 5.2897028688524586
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Algae-3-end"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.4606946983546511,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PrepNetScore",
+      "waypointRelativePos": 0.640443213296398,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepNetScore"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Algae Pluck",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

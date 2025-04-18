@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP-1-Flipped"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "flipped DCMP-2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP-3-Flipped"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP-4-Flipped"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Popsicle1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreCoralL4CCW"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Archive",
+  "choreoAuto": false
+}

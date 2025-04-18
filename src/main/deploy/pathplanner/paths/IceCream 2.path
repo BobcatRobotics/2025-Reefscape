@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.7741803278688524,
+        "y": 7.111834016393442
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.478107975336081,
+        "y": 6.5523773910336764
+      },
+      "isLocked": false,
+      "linkedName": "Ice Cream End"
+    },
+    {
+      "anchor": {
+        "x": 3.524385245901639,
+        "y": 5.517469262295082
+      },
+      "prevControl": {
+        "x": 2.810634712981554,
+        "y": 6.065240181621235
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Ice Cream 2 End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.40783254557729515,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.4,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "RetractThatThang",
+      "waypointRelativePos": 0.3835246455097712,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -61.11175896877485
+  },
+  "reversed": false,
+  "folder": "Combo Meal",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -51.51980175165697
+  },
+  "useDefaultConstraints": true
+}

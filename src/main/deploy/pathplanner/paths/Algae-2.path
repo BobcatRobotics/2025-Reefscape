@@ -1,0 +1,82 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.810999999999999,
+        "y": 3.9079999999999995
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.080884164515238,
+        "y": 3.9207496744375026
+      },
+      "isLocked": false,
+      "linkedName": "DCMP CW MVP End"
+    },
+    {
+      "anchor": {
+        "x": 6.8347500000000005,
+        "y": 4.0445
+      },
+      "prevControl": {
+        "x": 6.848045600100027,
+        "y": 3.7948537963076947
+      },
+      "nextControl": {
+        "x": 6.81987176170142,
+        "y": 4.3238627727162635
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8,
+        "y": 4.103
+      },
+      "prevControl": {
+        "x": 6.05196027201488,
+        "y": 4.0940582141522475
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Algae-2-End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PrepAlgaePluckL2",
+      "waypointRelativePos": 0.4192565508835946,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepAlgaePluckL2"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Algae Pluck",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": false
+}

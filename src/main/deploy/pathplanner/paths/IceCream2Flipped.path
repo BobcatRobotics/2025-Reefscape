@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.6948795180722889,
+        "y": 0.9837349397590345
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.919598496452159,
+        "y": 0.8741841261796391
+      },
+      "isLocked": false,
+      "linkedName": "IceCreamEndFlipped"
+    },
+    {
+      "anchor": {
+        "x": 3.3445696721311475,
+        "y": 2.4486168032786884
+      },
+      "prevControl": {
+        "x": 3.0673601995753352,
+        "y": 2.332387052221866
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IceCream2EndFlipped"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 1.0,
+    "rotation": 58.2642908083801
+  },
+  "reversed": false,
+  "folder": "Combo Meal",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 50.33144677837368
+  },
+  "useDefaultConstraints": true
+}

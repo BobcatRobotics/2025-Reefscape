@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP CW MVP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlaceL4NoRetract"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae-2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae-3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae-4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae-5"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
