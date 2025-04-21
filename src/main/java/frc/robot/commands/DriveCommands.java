@@ -482,14 +482,31 @@ public class DriveCommands {
                   ALIGN_DISTANCE.baseUnitMagnitude() + FieldConstants.Reef.faceToCenter;
               // double adjustY = Units.inchesToMeters(0);
 
-              Pose2d offsetFace =
-                  new Pose2d(
-                      poseDirection
-                          .transformBy(
-                              new Transform2d(
-                                  adjustX, drive.getAdjustY() + transformY, new Rotation2d()))
-                          .getTranslation(),
-                      poseDirection.getRotation());
+              Translation2d cwOffset =
+                  poseDirection
+                      .transformBy(
+                          new Transform2d(
+                              adjustX,
+                              -FieldConstants.Reef.reefToBranchY + transformY,
+                              new Rotation2d()))
+                      .getTranslation();
+
+              Translation2d ccwOffset =
+                  poseDirection
+                      .transformBy(
+                          new Transform2d(
+                              adjustX,
+                              FieldConstants.Reef.reefToBranchY + transformY,
+                              new Rotation2d()))
+                      .getTranslation();
+
+              Logger.recordOutput("driveToReef/reef_face/ccwOffset", ccwOffset);
+              Logger.recordOutput("driveToReef/reef_face/cwOffset", cwOffset);
+
+              Translation2d nearest =
+                  drive.getPose().getTranslation().nearest(Arrays.asList(cwOffset, ccwOffset));
+
+              Pose2d offsetFace = new Pose2d(nearest, poseDirection.getRotation());
               Logger.recordOutput("adjustY", drive.getAdjustY());
 
               Logger.recordOutput("driveToReef/reef_face/adjustY", drive.getAdjustY());
