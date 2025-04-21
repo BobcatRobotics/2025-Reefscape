@@ -293,15 +293,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopOverride", Commands.run(() -> drive.clearPPOverride()));
     NamedCommands.registerCommand("AutoalignCCW", DriveCommands.driveToReefAuto(drive, true));
     NamedCommands.registerCommand("AutoalignCW", DriveCommands.driveToReefAuto(drive, false));
+
+    NamedCommands.registerCommand(
+        "PrepLick",
+        superstructure.setState(SuperstructureState.POPSICLE_LICK, endEffector::hasPiece));
+
     NamedCommands.registerCommand(
         "PopsicleLick",
         superstructure
             .setState(SuperstructureState.POPSICLE_LICK, endEffector::hasPiece)
             .alongWith(endEffector.intakeCoralCommand())
             .until(endEffector::hasPiece)
+            .withTimeout(1)
             .andThen(
                 superstructure
-                    .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, endEffector::hasPiece)
+                    .setState(SuperstructureState.POPSICLE_DUMP, endEffector::hasPiece)
                     .alongWith(endEffector.idleCoralCommand())));
 
     // retract and start intaking
@@ -395,6 +401,24 @@ public class RobotContainer {
             endEffector::hasPiece));
     NamedCommands.registerCommand(
         "PlaceL4",
+        new ConditionalCommand(
+            superstructure
+                .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
+                .andThen(
+                    superstructure
+                        .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
+                        .deadlineFor(endEffector.coralOut(() -> ScoringLevel.CORAL_L4))),
+            superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece),
+            endEffector::hasPiece));
+
+    NamedCommands.registerCommand(
+        "PrepL4Backwards",
+        new ConditionalCommand(
+            superstructure.goToPrepPos(ScoringLevel.CORAL_L4_BACKWARDS, () -> false),
+            superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, () -> false),
+            endEffector::hasPiece));
+    NamedCommands.registerCommand(
+        "PlaceL4Backwards",
         new ConditionalCommand(
             superstructure
                 .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)

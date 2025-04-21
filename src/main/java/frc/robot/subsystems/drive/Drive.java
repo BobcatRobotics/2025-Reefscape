@@ -103,7 +103,7 @@ public class Drive extends SubsystemBase {
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG = Units.lbsToKilograms(115);
-  private static final double ROBOT_MOI = 4.2; // TODO find these //4.23321575 MOI from cad
+  private static final double ROBOT_MOI = 8; // TODO tune
   private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(

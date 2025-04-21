@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.1981390977443604,
+        "y": 7.525103383458646
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.093327505700686,
+        "y": 7.525103383458646
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.1009398496240603,
+        "y": 6.970892857142856
+      },
+      "prevControl": {
+        "x": 3.8192435157166176,
+        "y": 7.655803901432481
+      },
+      "nextControl": {
+        "x": 2.5936197643937566,
+        "y": 6.487157153475411
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.533533834586466,
+        "y": 4.199840225563909
+      },
+      "prevControl": {
+        "x": 2.567873515115848,
+        "y": 5.786761275409901
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "MTTD1-End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5872727272727264,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "MadTown Throwdown Hoedown Showdown",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -179.23610153907
+  },
+  "useDefaultConstraints": true
+}

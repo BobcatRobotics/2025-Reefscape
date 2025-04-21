@@ -1,0 +1,66 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.533533834586466,
+        "y": 4.199840225563909
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.927542093446137,
+        "y": 4.195866559882367
+      },
+      "isLocked": false,
+      "linkedName": "MTTD1-End"
+    },
+    {
+      "anchor": {
+        "x": 3.232894736842105,
+        "y": 4.199840225563909
+      },
+      "prevControl": {
+        "x": 2.982896752588937,
+        "y": 4.200844152529782
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "MTTD2-End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PrepL4Backwards",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepL4"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "MadTown Throwdown Hoedown Showdown",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

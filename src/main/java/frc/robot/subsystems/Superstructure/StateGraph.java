@@ -334,7 +334,41 @@ public class StateGraph {
               SuperstructureState.CORAL_PREP_L1,
               SuperstructureState.CORAL_PREP_L2,
               SuperstructureState.CORAL_PREP_L3,
-              SuperstructureState.PRE_CORAL_PREP_L4
+              SuperstructureState.PRE_CORAL_PREP_L4,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.POPSICLE_DUMP
+            },
+            new SuperstructureState[] {
+              SuperstructureState.POPSICLE_DUMP,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.CORAL_PREP_L1,
+              SuperstructureState.CORAL_PREP_L2,
+              SuperstructureState.CORAL_PREP_L3,
+              SuperstructureState.PRE_CORAL_PREP_L4,
+              SuperstructureState.ALGAE_PREP_L2,
+              SuperstructureState.ALGAE_PREP_L3,
+              SuperstructureState.POPSICLE_LICK
+            },
+            new SuperstructureState[]{
+              SuperstructureState.BACKWARDS_PRE_CORAL_PREP_L4,
+              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.BACKWARDS_CORAL_SCORE_L4
+            },
+            new SuperstructureState[]{
+              SuperstructureState.BACKWARDS_CORAL_PREP_L4,
+              SuperstructureState.CORAL_PREP_L4,
+              SuperstructureState.BACKWARDS_POST_CORAL_SCORE_L4
+            },
+            new SuperstructureState[]{
+              SuperstructureState.BACKWARDS_CORAL_SCORE_L4,
+              SuperstructureState.BACKWARDS_POST_CORAL_SCORE_L4,
+              SuperstructureState.UPSIDE_DOWN_IDLE
+            },
+            new SuperstructureState[]{
+              SuperstructureState.BACKWARDS_POST_CORAL_SCORE_L4,
+              SuperstructureState.BACKWARDS_CORAL_SCORE_L4,
+              SuperstructureState.UPSIDE_DOWN_IDLE
             });
 
     // for each set of transitions

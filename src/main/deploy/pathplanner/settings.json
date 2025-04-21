@@ -6,9 +6,10 @@
     "Algae Pluck",
     "Combo Meal",
     "DCMP",
+    "DCMP MVP",
     "Its a start",
     "MVP",
-    "DCMP MVP",
+    "MadTown Throwdown Hoedown Showdown",
     "Popsicle"
   ],
   "autoFolders": [
@@ -21,7 +22,7 @@
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 74.088,
-  "robotMOI": 6.883,
+  "robotMOI": 8.0,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.048,
   "driveGearing": 5.143,

@@ -34,7 +34,9 @@ public enum ElevatorState {
   UNKNOWN(Rotation2d.fromRotations(0)),
   CLIMB(Rotation2d.fromRotations(0)),
   HUMAN_INTAKE(Rotation2d.fromRotations(2.8)),
-  POST_HUMAN_INTAKE(Rotation2d.fromRotations(2.3)); // elevator isnt at a predefined state
+  POST_HUMAN_INTAKE(Rotation2d.fromRotations(2.3)),
+  POPSICLE_LICK(Rotation2d.fromRotations(0)),
+  POPSICLE_DUMP(Rotation2d.fromRotations(1)); // elevator isnt at a predefined state
 
   ElevatorState(Rotation2d pos) {
     this.pos = pos;

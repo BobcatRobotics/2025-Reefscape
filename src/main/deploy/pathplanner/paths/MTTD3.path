@@ -1,0 +1,120 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.232894736842105,
+        "y": 4.199840225563909
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.246633549360679,
+        "y": 6.006464585342119
+      },
+      "isLocked": false,
+      "linkedName": "MTTD2-End"
+    },
+    {
+      "anchor": {
+        "x": 1.3921240601573865,
+        "y": 5.7898966165431345
+      },
+      "prevControl": {
+        "x": 1.6134786970070158,
+        "y": 6.02254798418647
+      },
+      "nextControl": {
+        "x": 0.9825390722700913,
+        "y": 5.359408649566905
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.232894736842105,
+        "y": 3.889746240601504
+      },
+      "prevControl": {
+        "x": 2.691765942808791,
+        "y": 4.368481506361231
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.589090909090909,
+      "rotationDegrees": 177.82740082449763
+    },
+    {
+      "waypointRelativePos": 1.2563636363636397,
+      "rotationDegrees": 119.98624645540814
+    },
+    {
+      "waypointRelativePos": 1.6345454545454563,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.7246537396121865,
+      "maxWaypointRelativePos": 1.2565096952908572,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PrepLick",
+      "waypointRelativePos": 0.17285318559556492,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepLick"
+        }
+      }
+    },
+    {
+      "name": "PopsicleLick",
+      "waypointRelativePos": 0.7822714681440454,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PopsicleLick"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "MadTown Throwdown Hoedown Showdown",
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

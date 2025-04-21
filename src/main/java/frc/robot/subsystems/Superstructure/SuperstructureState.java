@@ -22,6 +22,8 @@ public enum SuperstructureState {
   CORAL_PREP_L3(ElevatorState.CORAL_L3, ArmState.CORAL_PREP_L3),
   PRE_CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.PRE_CORAL_PREP_L4),
   CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.CORAL_PREP_L4),
+  BACKWARDS_PRE_CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.BACKWARDS_PRE_CORAL_PREP_L4),
+  BACKWARDS_CORAL_PREP_L4(ElevatorState.CORAL_L4, ArmState.BACKWARDS_CORAL_PREP_L4),
   CORAL_SCORE_L1(ElevatorState.CORAL_L1, ArmState.CORAL_SCORE_L1),
   CORAL_SCORE_L2(ElevatorState.CORAL_SCORE_L2, ArmState.CORAL_SCORE_L2),
   POST_CORAL_SCORE_L2(ElevatorState.POST_CORAL_L2, ArmState.POST_CORAL_SCORE_L2),
@@ -29,6 +31,9 @@ public enum SuperstructureState {
   POST_CORAL_SCORE_L3(ElevatorState.POST_CORAL_L3, ArmState.CORAL_SCORE_L3),
   CORAL_SCORE_L4(ElevatorState.CORAL_L4, ArmState.CORAL_SCORE_L4),
   POST_CORAL_SCORE_L4(ElevatorState.POST_CORAL_L4, ArmState.POST_CORAL_SCORE_L4),
+  BACKWARDS_CORAL_SCORE_L4(ElevatorState.CORAL_L4, ArmState.CORAL_SCORE_L4),
+  BACKWARDS_POST_CORAL_SCORE_L4(ElevatorState.POST_CORAL_L4, ArmState.POST_CORAL_SCORE_L4),
+
 
   IDLE_ALGAE(ElevatorState.IDLE_ALGAE, ArmState.IDLE_ALGAE),
   ALGAE_SCORE_PROCESSOR(ElevatorState.ALGAE_SCORE_PROCESSOR, ArmState.ALGAE_SCORE_PROCESSOR),
@@ -40,9 +45,12 @@ public enum SuperstructureState {
   NET_SCORE(ElevatorState.NET_SCORE, ArmState.NET_SCORE),
   NET_PREP(ElevatorState.NET_PREP, ArmState.NET_PREP),
   CLIMB(ElevatorState.CLIMB, ArmState.CLIMB),
+
   HUMAN_INTAKE(ElevatorState.HUMAN_INTAKE, ArmState.HUMAN_INTAKE),
   POST_HUMAN_INTAKE(ElevatorState.POST_HUMAN_INTAKE, ArmState.HUMAN_INTAKE),
-  POPSICLE_LICK(ElevatorState.IDLE_RIGHT_SIDE_UP, ArmState.CLIMB);
+
+  POPSICLE_LICK(ElevatorState.POPSICLE_LICK, ArmState.POPSICLE_LICK),
+  POPSICLE_DUMP(ElevatorState.POPSICLE_DUMP, ArmState.POPSICLE_DUMP);
 
   SuperstructureState(ElevatorState elevatorState, ArmState armState) {
     this.armState = armState;

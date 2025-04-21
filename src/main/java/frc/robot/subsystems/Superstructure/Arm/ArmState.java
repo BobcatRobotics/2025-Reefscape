@@ -11,7 +11,9 @@ public enum ArmState {
   CORAL_PREP_L2(180 - 80),
   CORAL_PREP_L3(180 - 80),
   PRE_CORAL_PREP_L4(180 - 90),
-  CORAL_PREP_L4(180 - 50), // TODO tune
+  CORAL_PREP_L4(180 - 50),
+  BACKWARDS_PRE_CORAL_PREP_L4(90),
+  BACKWARDS_CORAL_PREP_L4(50),
   HANDOFF_FLIP_SAFE_ZONE(180 + 45),
 
   CORAL_SCORE_L1(180 + 25), // normal side
@@ -41,7 +43,9 @@ public enum ArmState {
   CLIMB(180),
   INTAKE_SAFE_ZONE(232),
   NO_OP(0), // do nothing, maintain current pos
-  UNKOWN(0); // arm isnt at a predefined state
+  UNKOWN(0), // arm isnt at a predefined state
+  POPSICLE_LICK(180),
+  POPSICLE_DUMP(200);
 
   ArmState(double degrees) {
     this.degrees = degrees;
