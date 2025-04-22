@@ -520,6 +520,8 @@ public class Superstructure {
         return setState(SuperstructureState.ALGAE_PREP_L2, flipped);
       case ALGAE_L3:
         return setState(SuperstructureState.ALGAE_PREP_L3, flipped);
+      case CORAL_L4_BACKWARDS:
+        return setState(SuperstructureState.BACKWARDS_CORAL_PREP_L4, flipped);
       default:
         return setState(SuperstructureState.CORAL_PREP_L1, flipped);
     }

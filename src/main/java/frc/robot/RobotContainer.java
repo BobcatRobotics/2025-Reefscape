@@ -421,10 +421,12 @@ public class RobotContainer {
         "PlaceL4Backwards",
         new ConditionalCommand(
             superstructure
-                .setState(SuperstructureState.CORAL_SCORE_L4, endEffector::hasPiece)
+                .setState(SuperstructureState.BACKWARDS_CORAL_SCORE_L4, endEffector::hasPiece)
                 .andThen(
                     superstructure
-                        .setState(SuperstructureState.POST_CORAL_SCORE_L4, endEffector::hasPiece)
+                        .setState(
+                            SuperstructureState.BACKWARDS_POST_CORAL_SCORE_L4,
+                            endEffector::hasPiece)
                         .deadlineFor(endEffector.coralOut(() -> ScoringLevel.CORAL_L4))),
             superstructure.setState(SuperstructureState.UPSIDE_DOWN_IDLE, endEffector::hasPiece),
             endEffector::hasPiece));

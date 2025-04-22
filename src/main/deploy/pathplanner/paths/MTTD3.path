@@ -77,7 +77,7 @@
   "eventMarkers": [
     {
       "name": "PrepLick",
-      "waypointRelativePos": 0.17285318559556492,
+      "waypointRelativePos": 0.05540166204986213,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

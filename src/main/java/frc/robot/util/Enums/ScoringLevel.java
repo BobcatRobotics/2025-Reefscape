@@ -10,7 +10,8 @@ public enum ScoringLevel {
   ALGAE_L2(SuperstructureState.ALGAE_PREP_L2, SuperstructureState.ALGAE_PREP_L2),
   ALGAE_L3(SuperstructureState.ALGAE_PREP_L3, SuperstructureState.ALGAE_PREP_L2),
   NET(SuperstructureState.NET_SCORE, SuperstructureState.RIGHT_SIDE_UP_IDLE),
-  CORAL_L4_BACKWARDS(SuperstructureState.BACKWARDS_CORAL_PREP_L4, SuperstructureState.POST_CORAL_SCORE_L4);
+  CORAL_L4_BACKWARDS(
+      SuperstructureState.BACKWARDS_CORAL_PREP_L4, SuperstructureState.POST_CORAL_SCORE_L4);
 
   ScoringLevel(SuperstructureState prepState, SuperstructureState postState) {
     this.postState = postState;
