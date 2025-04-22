@@ -36,8 +36,8 @@
         "y": 4.199840225563909
       },
       "prevControl": {
-        "x": 2.567873515115848,
-        "y": 5.786761275409901
+        "x": 1.985921052631579,
+        "y": 4.180046992481203
       },
       "nextControl": null,
       "isLocked": false,
@@ -52,7 +52,19 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "PrepL4Backwards",
+      "waypointRelativePos": 1.7373961218836536,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepL4Backwards"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.43,
     "maxAcceleration": 2.75,
@@ -62,7 +74,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": 180.0
   },
   "reversed": false,

@@ -24,6 +24,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -308,6 +309,7 @@ public class RobotContainer {
             .andThen(
                 superstructure
                     .setState(SuperstructureState.POPSICLE_DUMP, endEffector::hasPiece)
+                    .unless(RobotBase::isSimulation)
                     .alongWith(endEffector.idleCoralCommand())));
 
     // retract and start intaking

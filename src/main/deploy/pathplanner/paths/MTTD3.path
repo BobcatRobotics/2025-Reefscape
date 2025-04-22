@@ -8,64 +8,35 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.246633549360679,
-        "y": 6.006464585342119
+        "x": 2.3685902255639095,
+        "y": 4.166851503759398
       },
       "isLocked": false,
       "linkedName": "MTTD2-End"
     },
     {
       "anchor": {
-        "x": 1.3921240601573865,
-        "y": 5.7898966165431345
+        "x": 2.348796992481203,
+        "y": 5.842678571428571
       },
       "prevControl": {
-        "x": 1.6134786970070158,
-        "y": 6.02254798418647
-      },
-      "nextControl": {
-        "x": 0.9825390722700913,
-        "y": 5.359408649566905
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.232894736842105,
-        "y": 3.889746240601504
-      },
-      "prevControl": {
-        "x": 2.691765942808791,
-        "y": 4.368481506361231
+        "x": 2.916203007518797,
+        "y": 5.842678571428571
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MTTD3-End"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.589090909090909,
-      "rotationDegrees": 177.82740082449763
-    },
-    {
-      "waypointRelativePos": 1.2563636363636397,
-      "rotationDegrees": 119.98624645540814
-    },
-    {
-      "waypointRelativePos": 1.6345454545454563,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7246537396121865,
-      "maxWaypointRelativePos": 1.2565096952908572,
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -77,23 +48,12 @@
   "eventMarkers": [
     {
       "name": "PrepLick",
-      "waypointRelativePos": 0.05540166204986213,
+      "waypointRelativePos": 0.05,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "PrepLick"
-        }
-      }
-    },
-    {
-      "name": "PopsicleLick",
-      "waypointRelativePos": 0.7822714681440454,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "PopsicleLick"
         }
       }
     }
@@ -107,8 +67,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": -177.06432655357892
   },
   "reversed": false,
   "folder": "MadTown Throwdown Hoedown Showdown",

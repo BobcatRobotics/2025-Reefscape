@@ -1,0 +1,112 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.348796992481203,
+        "y": 5.842678571428571
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6507372377644067,
+        "y": 5.921029900361962
+      },
+      "isLocked": false,
+      "linkedName": "MTTD3-End"
+    },
+    {
+      "anchor": {
+        "x": 1.240375939849624,
+        "y": 5.427020676691729
+      },
+      "prevControl": {
+        "x": 1.282605659295044,
+        "y": 5.717261821236038
+      },
+      "nextControl": {
+        "x": 1.134723244068756,
+        "y": 4.70087899850077
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.2658834586466163,
+        "y": 3.942528195488722
+      },
+      "prevControl": {
+        "x": 2.4153861208108873,
+        "y": 4.54315032880463
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6054545454545491,
+      "rotationDegrees": 170.59097702069292
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.024376731301938855,
+      "maxWaypointRelativePos": 1.2565096952908565,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PopsicleLick",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PopsicleLick"
+        }
+      }
+    },
+    {
+      "name": "PrepL4Backwards",
+      "waypointRelativePos": 1.5756232686980647,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PrepL4Backwards"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.43,
+    "maxAcceleration": 2.75,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "MadTown Throwdown Hoedown Showdown",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -177.06432655357892
+  },
+  "useDefaultConstraints": true
+}
