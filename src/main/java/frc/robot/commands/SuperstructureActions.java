@@ -157,4 +157,10 @@ public class SuperstructureActions {
                 .setState(SuperstructureState.RIGHT_SIDE_UP_IDLE, () -> false)
                 .raceWith(endEffector.idleCoralCommand()));
   }
+
+  public static Command launchBall(Superstructure superstructure) {
+    return superstructure
+        .setState(SuperstructureState.BALL_PREP, () -> false)
+        .andThen(superstructure.setState(SuperstructureState.BALL_LAUNCH, () -> false));
+  }
 }

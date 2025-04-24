@@ -47,7 +47,9 @@ public enum ArmState {
   NO_OP(0), // do nothing, maintain current pos
   UNKOWN(0), // arm isnt at a predefined state
   POPSICLE_LICK(180),
-  POPSICLE_DUMP(200);
+  POPSICLE_DUMP(200),
+  BALL_PREP(0),
+  BALL_LAUNCH(120);
 
   ArmState(double degrees) {
     this.degrees = degrees;

@@ -148,6 +148,7 @@ public class StateGraph {
               SuperstructureState.CLIMB,
               SuperstructureState.POPSICLE_LICK,
               SuperstructureState.ALGAE_SCORE_PROCESSOR,
+              SuperstructureState.BALL_PREP
             },
             new SuperstructureState[] {
               SuperstructureState.HANDOFF_FLIP_SAFE_ZONE, SuperstructureState.ELEVATOR_SAFE_ZONE
@@ -386,6 +387,14 @@ public class StateGraph {
               SuperstructureState.BACKWARDS_CORAL_SCORE_L4,
               SuperstructureState.UPSIDE_DOWN_IDLE,
               SuperstructureState.POPSICLE_LICK
+            },
+            new SuperstructureState[] {
+              SuperstructureState.BALL_PREP, SuperstructureState.BALL_LAUNCH
+            },
+            new SuperstructureState[] {
+              SuperstructureState.BALL_LAUNCH,
+              SuperstructureState.RIGHT_SIDE_UP_IDLE,
+              SuperstructureState.BALL_PREP
             });
 
     // for each set of transitions

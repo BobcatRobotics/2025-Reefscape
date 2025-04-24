@@ -615,18 +615,11 @@ public class RobotContainer {
     endEffector.setDefaultCommand(endEffector.idleCoralCommand());
     climber.setDefaultCommand(climber.idleIn());
 
-    double aidenAlignStrength = 1;
     // autoalign
-    joystick.trigger.whileTrue(
-        DriveCommands.driveToReef(
-            drive,
-            () -> -leftRuffy.yAxis.getAsDouble(),
-            () -> leftRuffy.xAxis.getAsDouble(),
-            () -> -rightRuffy.xAxis.getAsDouble(),
-            joystick.povRight(),
-            joystick.povLeft(),
-            () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+    joystick
+        .trigger
+        .whileTrue(SuperstructureActions.launchBall(superstructure))
+        .onFalse(endEffector.outtakeFastCommand().withTimeout(1).andThen(endEffector.stop()));
 
     // reef levels
     buttonBoard.l1.onTrue(
@@ -796,7 +789,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return SuperstructureActions.launchBall(superstructure);
   }
 
   @AutoLogOutput(key = "Superstructure/usingAlgae")

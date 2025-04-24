@@ -50,7 +50,9 @@ public enum SuperstructureState {
   POST_HUMAN_INTAKE(ElevatorState.POST_HUMAN_INTAKE, ArmState.HUMAN_INTAKE),
 
   POPSICLE_LICK(ElevatorState.POPSICLE_LICK, ArmState.POPSICLE_LICK),
-  POPSICLE_DUMP(ElevatorState.POPSICLE_DUMP, ArmState.POPSICLE_DUMP);
+  POPSICLE_DUMP(ElevatorState.POPSICLE_DUMP, ArmState.POPSICLE_DUMP),
+  BALL_PREP(ElevatorState.CORAL_L3, ArmState.BALL_PREP),
+  BALL_LAUNCH(ElevatorState.CORAL_L3, ArmState.BALL_LAUNCH);
 
   SuperstructureState(ElevatorState elevatorState, ArmState armState) {
     this.armState = armState;
