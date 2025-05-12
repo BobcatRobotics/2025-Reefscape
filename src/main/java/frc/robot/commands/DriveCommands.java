@@ -391,7 +391,8 @@ public class DriveCommands {
       BooleanSupplier ccwSupplier,
       BooleanSupplier cwSupplier,
       DoubleSupplier aidenAlignX,
-      DoubleSupplier aidenAlignY) {
+      DoubleSupplier aidenAlignY,
+      BooleanSupplier algaeSupplier) {
 
     List<Pose2d> faces = Arrays.asList(FieldConstants.Reef.centerFaces);
 

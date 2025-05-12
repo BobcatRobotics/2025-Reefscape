@@ -118,7 +118,7 @@ public class EndEffector extends SubsystemBase {
   public Command outtakeCommand() {
     return new RunCommand(
         () -> {
-          io.setSpeed(OUTTAKE_SPEED);
+          io.setSpeed(-10000);
         },
         this);
   }

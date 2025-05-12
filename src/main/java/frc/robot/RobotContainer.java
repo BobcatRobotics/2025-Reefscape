@@ -575,6 +575,17 @@ public class RobotContainer {
             rightRuffy::getZ,
             joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
 
+    // drive.setDefaultCommand(
+    //     DriveCommands.fieldRelativeJoystickDrive(
+    //         drive,
+    //         () -> -joystick.yAxis.getAsDouble() * stickInvert,
+    //         () -> -joystick.xAxis.getAsDouble() * stickInvert,
+    //         () -> -joystick.zAxis.getAsDouble() * 0.3,
+    //         superstructure::getElevatorPercentage,
+    //         leftRuffy::getZ,
+    //         rightRuffy::getZ,
+    //         joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
+
     // Reset gyro to 0 deg
     rightRuffy.button.onTrue(
         Commands.runOnce(
@@ -626,7 +637,8 @@ public class RobotContainer {
             joystick.povRight(),
             joystick.povLeft(),
             () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,
-            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength));
+            () -> -joystick.xAxis.getAsDouble() * aidenAlignStrength,
+            joystick.bottom12));
 
     // reef levels
     buttonBoard.l1.onTrue(
