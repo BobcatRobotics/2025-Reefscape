@@ -567,9 +567,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
-            () -> -leftRuffy.yAxis.getAsDouble() * stickInvert,
-            () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
-            () -> -rightRuffy.xAxis.getAsDouble(),
+            () -> -leftRuffy.yAxis.getAsDouble() * 0.2 * stickInvert,
+            () -> leftRuffy.xAxis.getAsDouble() * 0.2 * stickInvert,
+            () -> -rightRuffy.xAxis.getAsDouble() * 0.2,
             superstructure::getElevatorPercentage,
             leftRuffy::getZ,
             rightRuffy::getZ,
