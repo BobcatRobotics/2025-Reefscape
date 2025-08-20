@@ -123,8 +123,8 @@ public class RobotContainer {
 
   // Controllers
   // driver
-  private final Ruffy leftRuffy = new Ruffy(0);
-  private final Ruffy rightRuffy = new Ruffy(1);
+  private final Ruffy leftRuffy = new Ruffy(1);
+  private final Ruffy rightRuffy = new Ruffy(0);
 
   // operator
   private final LogitechJoystick joystick = new LogitechJoystick(2);
@@ -567,9 +567,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
-            () -> -leftRuffy.yAxis.getAsDouble() * 0.2 * stickInvert,
-            () -> leftRuffy.xAxis.getAsDouble() * 0.2 * stickInvert,
-            () -> -rightRuffy.xAxis.getAsDouble() * 0.2,
+            () -> -leftRuffy.yAxis.getAsDouble() * 0.6 * stickInvert,
+            () -> leftRuffy.xAxis.getAsDouble() * 0.6 * stickInvert,
+            () -> -rightRuffy.xAxis.getAsDouble() * 0.5,
             superstructure::getElevatorPercentage,
             leftRuffy::getZ,
             rightRuffy::getZ,
