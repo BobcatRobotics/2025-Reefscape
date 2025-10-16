@@ -34,9 +34,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.AidensGamepads.ButtonBoard;
 import frc.robot.AidensGamepads.LogitechJoystick;
-import frc.robot.AidensGamepads.Ruffy;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.TunerConstants25;
 import frc.robot.commands.AutoCommands;
@@ -49,12 +49,6 @@ import frc.robot.subsystems.CoralIntake.CoralIntake;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIO;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOSim;
 import frc.robot.subsystems.CoralIntake.CoralIntakeIOTalonFX;
-import frc.robot.subsystems.Drive.Drive;
-import frc.robot.subsystems.Drive.GyroIO;
-import frc.robot.subsystems.Drive.GyroIOPigeon2;
-import frc.robot.subsystems.Drive.SwerveModuleIO;
-import frc.robot.subsystems.Drive.SwerveModuleIOSim;
-import frc.robot.subsystems.Drive.SwerveModuleIOTalonFX;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorIO;
 import frc.robot.subsystems.EndEffector.EndEffectorIOSim;
@@ -75,6 +69,12 @@ import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Superstructure.Elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.Superstructure.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.SwerveModuleIO;
+import frc.robot.subsystems.drive.SwerveModuleIOSim;
+import frc.robot.subsystems.drive.SwerveModuleIOTalonFX;
 import frc.robot.util.Enums.BranchSide;
 import frc.robot.util.Enums.ScoringLevel;
 import java.util.function.Supplier;
@@ -123,8 +123,10 @@ public class RobotContainer {
 
   // Controllers
   // driver
-  private final Ruffy leftRuffy = new Ruffy(0);
-  private final Ruffy rightRuffy = new Ruffy(1);
+  //   private final Ruffy leftRuffy = new Ruffy(0);
+  //   private final Ruffy rightRuffy = new Ruffy(1);
+
+  private final CommandXboxController driverController = new CommandXboxController(0);
 
   // operator
   private final LogitechJoystick joystick = new LogitechJoystick(2);
@@ -137,10 +139,10 @@ public class RobotContainer {
       new Alert("Button board unplugged!", AlertType.kWarning);
   private final Alert joystickUnpluggedAlert =
       new Alert("Operator Joystick unplugged!", AlertType.kWarning);
-  private final Alert leftRuffyUnpluggedAlert =
-      new Alert("Left ruffy unplugged!", AlertType.kWarning);
-  private final Alert rightRuffyUnpluggedAlert =
-      new Alert("Right Ruffy unplugged!", AlertType.kWarning);
+  private final Alert xboxControllerUnpluggedAlert =
+      new Alert("Xbox Controller unplugged!", AlertType.kWarning);
+  //   private final Alert rightRuffyUnpluggedAlert =
+  //       new Alert("Right Ruffy unplugged!", AlertType.kWarning);
 
   public Supplier<Angle> trimSupplier = () -> Rotations.of(0);
 
@@ -548,8 +550,9 @@ public class RobotContainer {
   public void updateControllerAlerts() {
     buttonBoardUnpluggedAlert.set(!buttonBoard.isConnected());
     joystickUnpluggedAlert.set(!joystick.isConnected());
-    leftRuffyUnpluggedAlert.set(!leftRuffy.isConnected());
-    rightRuffyUnpluggedAlert.set(!rightRuffy.isConnected());
+    // leftRuffyUnpluggedAlert.set(!leftRuffy.isConnected());
+    // rightRuffyUnpluggedAlert.set(!rightRuffy.isConnected());
+    xboxControllerUnpluggedAlert.set(!driverController.isConnected());
   }
 
   /**
@@ -567,14 +570,21 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.fieldRelativeJoystickDrive(
             drive,
-            () -> -leftRuffy.yAxis.getAsDouble() * stickInvert,
-            () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
-            () -> -rightRuffy.xAxis.getAsDouble(),
+            // () -> -leftRuffy.yAxis.getAsDouble() * stickInvert,
+            // () -> leftRuffy.xAxis.getAsDouble() * stickInvert,
+            // () -> -rightRuffy.xAxis.getAsDouble(),
+            () -> -driverController.getLeftY() * stickInvert,
+            () -> driverController.getLeftX() * stickInvert,
+            () -> -driverController.getRightX(),
             superstructure::getElevatorPercentage,
-            leftRuffy::getZ,
-            rightRuffy::getZ,
-            joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
+            // leftRuffy::getZ,
+            // rightRuffy::getZ,
 
+            // CHECK
+            
+            driverController.leftStick():: getZ,
+            driverController.rightStick():: getZ,
+            joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
     // drive.setDefaultCommand(
     //     DriveCommands.fieldRelativeJoystickDrive(
     //         drive,
@@ -587,20 +597,26 @@ public class RobotContainer {
     //         joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
 
     // Reset gyro to 0 deg
-    rightRuffy.button.onTrue(
-        Commands.runOnce(
-                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
-            .andThen(
-                Commands.runOnce(
-                    () -> {
-                      // limelightbl.resetGyroLL4();
-                      // limelightbr.resetGyroLL4();
-                    }))
-            .ignoringDisable(true));
-
-    leftRuffy.button.onTrue(
-        Commands.runOnce(() -> stickInvert = stickInvert * -1).ignoringDisable(true));
+    // rightRuffy.button.onTrue
+    driverController
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                    drive)
+                .andThen(
+                    Commands.runOnce(
+                        () -> {
+                          // limelightbl.resetGyroLL4();
+                          // limelightbr.resetGyroLL4();
+                        }))
+                .ignoringDisable(true));
+    // leftRuffy.button.onTrue
+    driverController
+        .b()
+        .onTrue(Commands.runOnce(() -> stickInvert = stickInvert * -1).ignoringDisable(true));
 
     // leftRuffy.button.onTrue(
     // AutoCommands.fullAutoReefScore(
@@ -631,9 +647,12 @@ public class RobotContainer {
     joystick.trigger.whileTrue(
         DriveCommands.driveToReef(
             drive,
-            () -> -leftRuffy.yAxis.getAsDouble(),
-            () -> leftRuffy.xAxis.getAsDouble(),
-            () -> -rightRuffy.xAxis.getAsDouble(),
+            () -> -driverController.getLeftY(),
+            () -> driverController.getLeftX(),
+            () -> driverController.getRightX(),
+            // () -> -leftRuffy.yAxis.getAsDouble(),
+            // () -> leftRuffy.xAxis.getAsDouble(),
+            // () -> -rightRuffy.xAxis.getAsDouble(),
             joystick.povRight(),
             joystick.povLeft(),
             () -> -joystick.yAxis.getAsDouble() * aidenAlignStrength,

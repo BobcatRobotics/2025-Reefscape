@@ -11,7 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.Drive;
+// changed from capital D to lowercase
+package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
