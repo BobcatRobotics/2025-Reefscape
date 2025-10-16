@@ -581,9 +581,11 @@ public class RobotContainer {
             // rightRuffy::getZ,
 
             // CHECK
-            
-            driverController.leftStick():: getZ,
-            driverController.rightStick():: getZ,
+            // get raw axis 2 = right
+            // get raw axis 3 = left
+
+            driverController.getRawAxis(2),
+            driverController.getRawAxis(3),
             joystick.bottom7.and(joystick.throttleGreaterThan(0.75))));
     // drive.setDefaultCommand(
     //     DriveCommands.fieldRelativeJoystickDrive(

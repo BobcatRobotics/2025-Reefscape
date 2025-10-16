@@ -73,8 +73,11 @@ public class DriveCommands {
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       DoubleSupplier elevatorHeightPercentage,
-      DoubleSupplier fineStrafeXSupplier,
-      DoubleSupplier fineStrafeYSupplier,
+      // DoubleSupplier fineStrafeXSupplier,
+      // DoubleSupplier fineStrafeYSupplier,
+      // PLEASE RENAME LATTER
+      double rightXTriggerDoubleSupplier,
+      double leftYTriggerDoubleSupplier,
       BooleanSupplier climbLimiter) {
 
     return Commands.run(
@@ -84,8 +87,8 @@ public class DriveCommands {
             maxSpeed = maxSpeed * 0.15;
           }
           boolean useFineStrafe =
-              Math.abs(fineStrafeXSupplier.getAsDouble()) > 0.25
-                  || Math.abs(fineStrafeYSupplier.getAsDouble()) > 0.25; // TODO verify deadzone
+              Math.abs(rightXTriggerDoubleSupplier) > 0.25
+                  || Math.abs(leftYTriggerDoubleSupplier) > 0.25; // TODO verify deadzone
 
           if (useFineStrafe) {
             maxSpeed = maxSpeed * 0.25;
@@ -103,7 +106,7 @@ public class DriveCommands {
           Translation2d linearVelocity =
               useFineStrafe
                   ? getLinearVelocityFromJoysticks(
-                      fineStrafeXSupplier.getAsDouble(), fineStrafeYSupplier.getAsDouble())
+                      rightXTriggerDoubleSupplier, leftYTriggerDoubleSupplier)
                   : getLinearVelocityFromJoysticks(
                       xSupplier.getAsDouble(), ySupplier.getAsDouble());
 

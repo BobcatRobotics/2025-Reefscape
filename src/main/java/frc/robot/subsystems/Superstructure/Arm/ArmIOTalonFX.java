@@ -100,7 +100,7 @@ public class ArmIOTalonFX implements ArmIO {
     angleConfigs.Voltage.PeakReverseVoltage = -13;
 
     angleConfigs.Feedback.FeedbackRemoteSensorID = encoderID;
-    angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
     angleConfigs.Feedback.RotorToSensorRatio = ARM_ROTOR_TO_SENSOR_RATIO;
     angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ARM_MAX_ANGLE.getRotations();
